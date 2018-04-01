@@ -1,0 +1,19 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "y",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "react-device-detect": "^1.0.1",
+    "react-tools": "^0.13.3",
+    "requirejs-babel-jsx": "^1.0.0",
+    "ws": "^5.1.0"
+  }
+}
