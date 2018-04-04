@@ -37,28 +37,27 @@ define(['jsx!./MobileApp'], (MobileApp) => {
 			};
 		}
 
-		renderGrid() {
-			const cells = [];
-			for(let y = 0; y < 21; y ++) {
-				for(let x = 0; x < 21; x ++) {
-					let key = `${x}-${y}`;
-					let id = (key === this.state.ship.index) ? 'ship' : '';
-					let classes = `cell ${key}`;
-					let comp = (
-						<div className={classes} id={id} key={key}>
-							{x}{y}
-						</div>
-					)
-					cells.push(comp);
-				}	
-			}
-			return cells;
-		}
+		// renderGrid() {
+		// 	const cells = [];
+		// 	for(let y = 0; y < 21; y ++) {
+		// 		for(let x = 0; x < 21; x ++) {
+		// 			let key = `${x}-${y}`;
+		// 			let id = (key === this.state.ship.index) ? 'ship' : '';
+		// 			let classes = `cell ${key}`;
+		// 			let comp = (
+		// 				<div className={classes} id={id} key={key}>
+		// 					{x}{y}
+		// 				</div>
+		// 			)
+		// 			cells.push(comp);
+		// 		}	
+		// 	}
+		// 	return cells;
+		// }
 
 		render() {
 			//const grid = this.renderGrid();
 			return (
-				//<div className="grid">
 				<div className="data">
 					<ul>
 						<li>alpha: {this.state.ovec.alpha}</li>
