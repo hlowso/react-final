@@ -6,9 +6,15 @@ requirejs.config({
   }
 });
 
-requirejs(['jsx!app/index'], App => {
+requirejs(['jsx!app/index', 'jsx!app/MobileApp'], (App, MobileApp) => {
+  
+  const isMobile = () => {
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)); 
+  };
+
+  const Comp = (isMobile()) ? MobileApp : App;
 	ReactDOM.render(
-		React.createElement(App), 
+		React.createElement(Comp), 
 		document.getElementById('root')
 	);
 }); 

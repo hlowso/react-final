@@ -14,6 +14,7 @@
     "react-device-detect": "^1.0.1",
     "react-tools": "^0.13.3",
     "requirejs-babel-jsx": "^1.0.0",
+    "uuid-v4": "^0.1.0",
     "ws": "^5.1.0"
   }
 }

@@ -1,10 +1,14 @@
 .grid {
 	display: grid;
-	grid-template-columns: repeat(20, 65px);
+	grid-template-columns: repeat(21, 65px);
 }
 
 .cell {
 	height: 30px;
 	border: 1px solid black;
 	background-color: grey;
+}
+
+#ship {
+	background-color: black;
 }
