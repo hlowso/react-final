@@ -6,8 +6,8 @@ const uuid          = require('uuid-v4');
 
 const server        = express()
   .use(express.static('public'))
-  //.use('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
-  .use('/test', (req, res) => res.sendFile(__dirname + '/public/test.html'))
+  .use('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
+  // .use('/test', (req, res) => res.sendFile(__dirname + '/public/test.html'))
   .listen(PORT, () => console.log(`WebSocket server listening on port: ${PORT}`));
 
 const wss           = new SocketServer({ server });
@@ -18,7 +18,7 @@ const handleDesktopMessage = (ws, message) => {
   links.push({
     id,
     code: message.code,
-    desktopSocket: ws 
+    desktopSocket: ws
   });
   ws.id = id;
 };
@@ -48,7 +48,7 @@ const handleMobileMessage = (ws, message) => {
       link.desktopSocket.send(JSON.stringify({
         ovec: message.ovec
         //acv: message.acv
-      })); 
+      }));
       break;
   }
 };
