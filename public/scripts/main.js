@@ -13,13 +13,8 @@ requirejs(['jsx!app/index', 'jsx!app/MobileApp', "Phaser"], (App, MobileApp) => 
     return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
   };
 
-
-
-
+  
 });
-function phaser(Phaser) {
 
-
-}
 
 
