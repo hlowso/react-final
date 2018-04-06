@@ -1,8 +1,11 @@
 // TODO ensure that while the user is configuring, if they're straddling the line between -180 and 180, then that's taken into account
+// TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 
 define([], () => {
 
 	const initial_alphas = [];
+	const initial_gammas = [];
+
 
 	class MobileApp extends React.Component {
 		constructor(props) {
@@ -17,8 +20,7 @@ define([], () => {
 					gamma: 0.0
 				},
 				alpha_offset: 0.0,
-				povec: {
-					r: 0.0,
+				velocity: {
 					x: 0.0,
 					y: 0.0
 				},
@@ -29,27 +31,10 @@ define([], () => {
 			);
 			this.configHandler = this.configHandler.bind(this);
 		}
-		// getMotionHandler() {
-		// 	return function(event) {
-		// 		ws.send(JSON.stringify({
-		// 			device: 'mobile',
-					
-		// 		}));
-		// 	};
-		// };
 
 		componentDidMount() {
 
-			// const motionHandler = (event) => {
-			// 	this.send({
-			// 		subject: 'push',
-			// 		acv: event.acceleration
-			// 	});
-			// };
-
 			const orientationHandler = (event) => {
-				
-
 
 				// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
 				// IS TO GIVE ALPHA THE SAME RANGE AS BETA
@@ -121,26 +106,23 @@ define([], () => {
 				message2: "you clicked",
 				useOrientaion: () => {
 					initial_alphas.push(this.state.ovec.alpha);
+					initial_gammas.push(this.state.ovec.gamma);
 				}
 			}, setTimeout(() => {
 					const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
+					const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
+
 					const alpha_offset = alpha_sum / initial_alphas.length;
+					const gamma_offset = alpha_sum / initial_gammas.length;
+
+					const y_zero = (gamma_offset > 0.0) ? -1.0 (gamma_offset - 90.0) : -1.0 * (gamma_offset + 90.0);
+
 					this.setState({
 						alpha_offset,
+						y_zero,
 						// message: `Configuring is done! The length of that array is ${initial_alphas.length}, also alpha_sum is ${alpha_sum}, and alpha_offset is ${alpha_offset}`,
-						message2: `Here's your offset: alpha_offset: ${alpha_offset}`,
+						message2: `configuring is done, here is gamma ${gamma_offset}, and the length ${initial_gammas.length}, y_zero is ${y_zero}`,
 						
-
-// USE THE FOLLOWING FOR THE TRANSFORM
-				// this.setState({
-				// 	ovec: {
-				// 		alpha: (1.0 - C) * a + C * b - this.state.origin.alpha, 
-				// 		beta: (1.0 - C) * b + C * a - this.state.origin.beta, 
-				// 		gamma: g - this.state.origin.gamma
-				// 	} 
-				// }, this.state.useOrientaion());
-
-
 						useOrientaion: () => {
 							const a = this.state.ovec.alpha;
 							const b = this.state.ovec.beta;
@@ -170,49 +152,21 @@ define([], () => {
 							else {
 								beta_component_for_x = b;
 								alpha_component_for_x = a;
-								y =  -1.0 * (g + 90.0); 
+								y = -1.0 * (g + 90.0); 
 							}
 
-							x = ((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
-							
-
-
-							// const r = (1.0 - C) * a + C * b;
-
-							// let x = (1.0 - C) * b + C * a;
-							// let y =  ? g - 180.0 : g;
-							
-
-							
-
-							// if(x > 90.0) {
-							// 	x -= 180.0;
-							// }
-							// else if(x < -90.0) {
-							// 	x += 180.0;
-							// }
-
-							// if(alpha > 90.0 || alpha < -90.0) {
-							// 	y *= -1.0;
-							// 	x *= -1.0;
-							// }
-
-							
+							x = -1.0 * (((1.0 - C) * beta_component_for_x + C * alpha_component_for_x));
+							y = y - this.state.y_zero;
 
 							this.setState({
-								povec: {
-									// a,
-									// b,
-									// g,
-									// C,
-									alpha: 0.0,
+								velocity: {
 									x,
 									y
 								}
 							});
 						}
 					});
-				}, 1000)
+				}, 5000)
 			
 			);
 
@@ -227,7 +181,6 @@ define([], () => {
 			);
 			return (
 				<div>
-					<h1>RENDERING</h1>
 					<h1>{this.state.message}</h1>
 					<h1>{this.state.message2}</h1>
 					<ul>
@@ -237,9 +190,8 @@ define([], () => {
 
 			 			<li> PROCESSED </li>
 
-						<li>r: {this.state.povec.r}</li>
-						<li>x: {this.state.povec.x}</li>
-			 			<li>y: {this.state.povec.y}</li>
+						<li>x velocity: {this.state.velocity.x}</li>
+			 			<li>y velocity: {this.state.velocity.y}</li>
 
 					</ul>
 					{config_button}
