@@ -54,7 +54,6 @@ define([], () => {
 				}
 
 				this.setState({
-					
 					ovec: {
 						alpha: readjusted_alpha, 
 						beta: event.beta, 
@@ -166,17 +165,16 @@ define([], () => {
 							});
 						}
 					});
-				}, 5000)
-			
-			);
 
+				}, 5000)
+			);
 		}
 
 		render() {
 
-			const config_button = this.state.connected && (
+			const calibrate_button = this.state.connected && (
 				<button onClick={this.configHandler}>
-					Configure
+					Calibrate
 				</button>
 			);
 			return (
@@ -194,7 +192,7 @@ define([], () => {
 			 			<li>y velocity: {this.state.velocity.y}</li>
 
 					</ul>
-					{config_button}
+					{calibrate_button}
 				</div>
 			);
 
