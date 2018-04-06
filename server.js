@@ -1,17 +1,18 @@
-const express       = require('express');
-const WebSocket     = require('ws');
-const SocketServer  = WebSocket.Server;
-const PORT          = process.env.PORT || 3000;
-const uuid          = require('uuid-v4');
+const express = require("express");
+const WebSocket = require("ws");
+const SocketServer = WebSocket.Server;
+const PORT = process.env.PORT || 3000;
+const uuid = require("uuid-v4");
 
-const server        = express()
-  .use(express.static('public'))
-  .use('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
-  // .use('/test', (req, res) => res.sendFile(__dirname + '/public/test.html'))
-  .listen(PORT, () => console.log(`WebSocket server listening on port: ${PORT}`));
+const server = express()
+  .use(express.static("dist"))
+  .use("/", (req, res) => res.sendFile(__dirname + "/dist/index.html"))
+  .listen(PORT, () =>
+    console.log(`WebSocket server listening on port: ${PORT}`)
+  );
 
-const wss           = new SocketServer({ server });
-const links         = [];
+const wss = new SocketServer({ server });
+const links = [];
 
 const handleDesktopMessage = (ws, message) => {
   const id = uuid();
@@ -27,50 +28,47 @@ const handleMobileMessage = (ws, message) => {
   let link;
 
   // console.log(message.subject);
-  switch(message.subject) {
-    case 'connect':
-      link = links.find(
-        l => l.code === message.code
-      );
-      if(link) {
+  switch (message.subject) {
+    case "connect":
+      link = links.find(l => l.code === message.code);
+      if (link) {
         link.mobileSocket = ws;
         ws.id = link.id;
         ws.send();
-      }
-      else {
-        console.log('No link found for requesting mobile device');
+      } else {
+        console.log("No link found for requesting mobile device");
       }
       break;
-    case 'push':
-      link = links.find(
-        l => l.id === ws.id
+    case "push":
+      link = links.find(l => l.id === ws.id);
+      link.desktopSocket.send(
+        JSON.stringify({
+          ovec: message.ovec
+          //acv: message.acv
+        })
       );
-      link.desktopSocket.send(JSON.stringify({
-        ovec: message.ovec
-        //acv: message.acv
-      }));
       break;
   }
 };
 
-wss.on('connection', ws => {
-  console.log('Client connected');
+wss.on("connection", ws => {
+  console.log("Client connected");
 
-  ws.on('message', data_string => {
+  ws.on("message", data_string => {
     const message = JSON.parse(data_string);
     // console.log('MESSAGE:', message);
 
-    switch(message.device) {
-      case 'desktop':
+    switch (message.device) {
+      case "desktop":
         handleDesktopMessage(ws, message);
         break;
-      case 'mobile':
+      case "mobile":
         handleMobileMessage(ws, message);
         break;
     }
   });
 
-  ws.on('close', () => {
-    console.log('Client disconnected');
+  ws.on("close", () => {
+    console.log("Client disconnected");
   });
 });
