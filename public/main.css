@@ -1,4 +1,4 @@
-.grid {
+/*.grid {
 	display: grid;
 	grid-template-columns: repeat(21, 65px);
 }
@@ -11,4 +11,19 @@
 
 #ship {
 	background-color: black;
+}*/
+
+body {
+  background-color: black;
+}
+
+canvas{
+    display:block;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: auto;
+    transform: translate(-50%, -50%);
 }
