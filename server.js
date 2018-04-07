@@ -27,7 +27,6 @@ const handleDesktopMessage = (ws, message) => {
 const handleMobileMessage = (ws, message) => {
   let link;
 
-  // console.log(message.subject);
   switch (message.subject) {
     case "connect":
       link = links.find(l => l.code === message.code);
@@ -43,8 +42,7 @@ const handleMobileMessage = (ws, message) => {
       link = links.find(l => l.id === ws.id);
       link.desktopSocket.send(
         JSON.stringify({
-          ovec: message.ovec
-          //acv: message.acv
+          velocity: message.velocity
         })
       );
       break;
@@ -56,7 +54,7 @@ wss.on("connection", ws => {
 
   ws.on("message", data_string => {
     const message = JSON.parse(data_string);
-    // console.log('MESSAGE:', message);
+    // console.log("MESSAGE:", message);
 
     switch (message.device) {
       case "desktop":

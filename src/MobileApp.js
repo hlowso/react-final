@@ -88,14 +88,15 @@ class MobileApp extends React.Component {
 	}
 
 	configHandler(event) {
-		this.setState(
-			{
-				message2: "you clicked",
-				useOrientaion: () => {
-					initial_alphas.push(this.state.ovec.alpha);
-					initial_gammas.push(this.state.ovec.gamma);
-				}
-			},
+		this.setState({ 
+			message2: "lol!",
+			useOrientaion: () => {
+				initial_alphas.push(this.state.ovec.alpha);
+				initial_gammas.push(this.state.ovec.gamma);
+			}
+
+		}, () => {
+
 			setTimeout(() => {
 				const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
 				const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
@@ -104,8 +105,8 @@ class MobileApp extends React.Component {
 				const gamma_offset = alpha_sum / initial_gammas.length;
 
 				const y_zero =
-					gamma_offset > 0.0
-						? -1.0(gamma_offset - 90.0)
+					(gamma_offset > 0.0)
+						? -1.0 * (gamma_offset - 90.0)
 						: -1.0 * (gamma_offset + 90.0);
 
 				this.setState({
@@ -149,14 +150,19 @@ class MobileApp extends React.Component {
 
 						this.setState({
 							velocity: {
-								x,
-								y
+								x: x / 90.0,
+								y: y / 90.0 
 							}
+						}, () => {
+							this.send({
+								subject: "push",
+								velocity: this.state.velocity
+							});
 						});
 					}
 				});
 			}, 5000)
-		);
+		});
 	}
 
 	render() {

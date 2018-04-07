@@ -1,24 +1,24 @@
 /*.grid {
-	display: grid;
-	grid-template-columns: repeat(21, 65px);
+    display: grid;
+    grid-template-columns: repeat(21, 65px);
 }
 
 .cell {
-	height: 30px;
-	border: 1px solid black;
-	background-color: grey;
+    height: 30px;
+    border: 1px solid black;
+    background-color: grey;
 }
 
 #ship {
-	background-color: black;
+    background-color: black;
 }*/
 
 body {
-  background-color: black;
+    background-color: white;
 }
 
-canvas{
-    display:block;
+canvas {
+    display: block;
     margin: 0;
     position: absolute;
     top: 50%;
