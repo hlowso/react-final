@@ -139,7 +139,21 @@
             let enemySpawn ;
 
             if (score % 100 === 0) {
-              enemySpawn = enemies.create(110, 100, 'falcon')
+              xOrY = Math.floor(Math.random() * Math.floor(2));
+              if (xOrY === 0) {
+                xCoord = Math.floor(Math.random() * Math.floor(1920))
+                yCoord = 0
+              } else {
+                yCoord = Math.floor(Math.random() * Math.floor(1080))
+                leftOrRight = Math.floor(Math.random() * Math.floor(2))
+                if (leftOrRight === 0) {
+                  xCoord = 0
+                } else {
+                  xCoord = 1920
+                }
+              }
+              debugger;
+              enemySpawn = enemies.create(xCoord, yCoord, 'falcon')
             }
 
              score += 1
