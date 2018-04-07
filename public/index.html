@@ -2,114 +2,350 @@
 <html>
   <head>
   	<link rel="stylesheet" type="text/css" href="main.css">
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.3.0/dist/phaser.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/phaser-ce@2.10.3"></script>
   </head>
   <body>
 
     <script>
 
-      const gameOptions = {
-        spriteSize: 40,
-        gameWidth: window.innerWidth * window.devicePixelRatio,
-        gameHeight: window.innerHeight * window.devicePixelRatio,
-        gameSpeed: 100
-      };
 
-      window.onload = function () {
-        const gameConfig = {
-          type: Phaser.AUTO,
-          width: gameOptions.gameWidth,
-          height: gameOptions.gameHeight,
-          physics: {
-              default: 'arcade',
-              arcade: {
-                  // gravity: { y: 20 }
-              }
-          },
-          scene: [playGame]
-        };
+//       const gameOptions = {
+//         spriteSize: 40,
+//         gameWidth: window.innerWidth * window.devicePixelRatio,
+//         gameHeight: window.innerHeight * window.devicePixelRatio,
+//         gameSpeed: 100
+//       };
 
-        const game = new Phaser.Game(gameConfig);
-        // resize();
-        // window.addEventListener("resize", resize, false);
-      };
+//       window.onload = function () {
+//         const gameConfig = {
+//           type: Phaser.AUTO,
+//           width: gameOptions.gameWidth,
+//           height: gameOptions.gameHeight,
+//           physics: {
+//               default: 'matter'
+//               // matter: {
+//               //   debug: true
+//                   // gravity: { y: 20 }
+//               // }
+//           },
+//           scene: [playGame]
+//         };
 
-      let player;
+//         const game = new Phaser.Game(gameConfig);
+//         // resize();
+//         // window.addEventListener("resize", resize, false);
+//       };
 
-      const playGame = new Phaser.Class({
-        Extends: Phaser.Scene,
-        initialize:
-          function playGame(){
-            Phaser.Scene.call(this, {key: "PlayGame"});
-          },
+//       // let player;
+//       let laserGun;
+//       let greenLaser;
+//       let lastFired = 0;
 
-          preload: function () {
-            this.load.image(
-              "background",
-              "assets/sky.png"
-              );
-            this.load.image(
-              "pigeon",
-              "assets/pigeon_ph.png",
-                129,
-                84
-              );
-          },
+//       const playGame = new Phaser.Class({
+//         Extends: Phaser.Scene,
+//         initialize:
+//           function playGame(){
+//             Phaser.Scene.call(this, {key: "PlayGame"});
+//           },
 
-          create: function () {
-            background = this.add.image(
-              gameOptions.gameWidth / 2,
-              gameOptions.gameHeight / 2,
-              "background"
-              );
+//           preload: function () {
+//             this.load.image(
+//               "background",
+//               "assets/sky.png"
+//               );
+//             this.load.image(
+//               "pigeon",
+//               "assets/arrow_up.png",
+//                 129,
+//                 84
+//               );
+//             this.load.image("green_laser",
+//               "assets/green_laser.png",
+//               66,
+//               14);
+//           },
 
-            background.setScale(window.devicePixelRatio * 2);
+//           create: function () {
+//             background = this.add.image(
+//               gameOptions.gameWidth / 2,
+//               gameOptions.gameHeight / 2,
+//               "background"
+//               );
 
-            player = this.physics.add.sprite(
-              gameOptions.gameWidth / 2,
-              gameOptions.gameHeight / 2,
-              "pigeon"
-              );
-             // let fly = player.animations.add('right', [0,1,2,3,4,5]);
-            player.setBounce(0.4);
-            player.setCollideWorldBounds(true);
 
-            cursors = this.input.keyboard.createCursorKeys();
-          },
 
-          update: function () {
-            if (cursors.left.isDown) {
-              player.setVelocityX(-800);
-            } else if (cursors.right.isDown) {
-              player.setVelocityX(800);
-            // } else {
-            //   player.setVelocityX(0);
-            }
-            if (cursors.up.isDown) {
-              player.setVelocityY(-800);
-            } else if (cursors.down.isDown) {
-              player.setVelocityY(800);
-            // } else {
-            //   player.setVelocityY(0);
-              // player.body.setGravity(100);
-            }
-          }
-        });
+//             background.setScale(window.devicePixelRatio * 2);
 
-      // function resize() {
-      //   const canvas = document.querySelector("canvas");
-      //   const windowWidth = window.innerWidth;
-      //   const windowHeight = window.innerHeight;
-      //   const windowRatio = windowWidth / windowHeight;
-      //   const gameRatio = game.config.width / game.config.height;
-      //   if (windowRatio < gameRatio) {
-      //       canvas.style.width = windowWidth + "px";
-      //       canvas.style.height = (windowWidth / gameRatio) + "px";
-      //   } else {
-      //       canvas.style.width = (windowHeight * gameRatio) + "px";
-      //       canvas.style.height = windowHeight + "px";
-      //   }
-      // }
+//             this.player = this.matter.add.sprite(
+//               playGame,
+//               gameOptions.gameWidth / 2,
+//               gameOptions.gameHeight / 2,
+//               "pigeon"
+//               );
+//             this.player.setBounce(0.4);
+//             // this.player.setCollideWorldBounds(true);
+
+//             cursors = this.input.keyboard.createCursorKeys();
+
+
+//             // player_lasers = this.matter.add.group({
+//             //   key: "green_laser",
+//             //   repeat: 30
+//             // });
+
+
+//             // greenLaser = this.add.group();
+//             // debugger;
+//             // this.weapon = this.add.weapon(30, "green_laser", 0, this.greenLaser);
+//             // this.laserGun.trackSprite(this.player, 0, 0, true);
+
+
+// ///////////////////////
+
+//             const PlayerLaser = new Phaser.Class({
+
+//               Extends: Phaser.GameObjects.Image,
+
+//               initialize:
+
+//               function PlayerLaser (scene) {
+//                 Phaser.GameObjects.Image.call(this, scene, 0, 0, 'green_laser');
+
+//                 // this.speed = Phaser.Math.GetSpeed(1000, 1);
+//                 this.speed = player.velocityX
+//               },
+
+//               fire: function (x, y, velocityX, velocityY) {
+//                 this.setActive(true);
+//                 this.setVisible(true);
+
+//                 this.setPosition(x, y);
+//                 // this.setVelocityX(velocityX).setVelocityY(velocityY);
+
+//                 var angle = Phaser.Math.Angle.Between(this.x, this.y, velocityX, velocityY);
+//                 this.setRotation(angle);
+
+//                 this.incX = Math.cos(angle);
+//                 this.incY = Math.sin(angle);
+
+//               },
+
+//               update: function (time, delta) {
+//                 // this.y -= this.speed * delta;
+
+//                 this.setVelocityX(this.speed);
+//                 this.setVelocityY(velocityY);
+//                 if (this.y < -50) {
+//                   this.setActive(false);
+//                   this.setVisible(false);
+//                 }
+//               }
+
+//             });
+
+// // /////////////////////
+
+
+
+//             player_lasers = this.add.group({
+//               classType: PlayerLaser,
+//               runChildUpdate: true
+//             });
+
+
+//             fireButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+//           },
+
+//           update: function (time, delta) {
+//             if (cursors.left.isDown) {
+//               this.player.setVelocityX(-800);
+//             } else if (cursors.right.isDown) {
+//               this.player.setVelocityX(800);
+//             // } else {
+//             //   this.player.setVelocityX(0);
+//             }
+//             if (cursors.up.isDown) {
+//               this.player.setVelocityY(-800);
+//             } else if (cursors.down.isDown) {
+//               this.player.setVelocityY(800);
+//             // } else {
+//             //   this.player.setVelocityY(0);
+//               // this.player.body.setGravity(100);
+//             }
+//             // this.player.rotateTo(this.player.body.velocity.x, this.player.body.velocity.y);
+
+//             if (fireButton.isDown && time > lastFired) {
+//               const player_laser = player_lasers.get();
+//               if (player_laser) {
+//                 player_laser.fire(this.player.x, this.player.y, this.player.body.velocity.x, this.player.body.velocity.y);
+//                 lastFired = time + 50;
+//               }
+//               // fireLaser();
+//             }
+//           },
+
+//         });
+
+
+
+//       const fireLaser = () => {
+//         // debugger;
+//         // laser = player_lasers.getFirstExists(false);
+
+//         // if (laser) {
+//         //   laser.reset(player.x, player.y);
+//           // bullet.body.velocity.x
+//         // }
+//       };
+
+//       // function resize() {
+//       //   const canvas = document.querySelector("canvas");
+//       //   const windowWidth = window.innerWidth;
+//       //   const windowHeight = window.innerHeight;
+//       //   const windowRatio = windowWidth / windowHeight;
+//       //   const gameRatio = game.config.width / game.config.height;
+//       //   if (windowRatio < gameRatio) {
+//       //       canvas.style.width = windowWidth + "px";
+//       //       canvas.style.height = (windowWidth / gameRatio) + "px";
+//       //   } else {
+//       //       canvas.style.width = (windowHeight * gameRatio) + "px";
+//       //       canvas.style.height = windowHeight + "px";
+//       //   }
+//       // }
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+function preload() {
+
+    game.load.image('space', 'assets/sky.png');
+    game.load.image('bullet', 'assets/green_laser.png');
+    game.load.image('ship', 'assets/pigeon_ph.png');
+
+}
+
+var sprite;
+var cursors;
+
+var bullet;
+var bullets;
+var bulletTime = 0;
+
+function create() {
+
+    //  This will run in Canvas mode, so let's gain a little speed and display
+    game.renderer.clearBeforeRender = false;
+    game.renderer.roundPixels = true;
+
+    //  We need arcade physics
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    //  A spacey background
+    game.add.tileSprite(0, 0, game.width, game.height, 'space');
+
+    //  Our ships bullets
+    bullets = game.add.group();
+    bullets.enableBody = true;
+    bullets.physicsBodyType = Phaser.Physics.ARCADE;
+
+    //  All 40 of them
+    bullets.createMultiple(40, 'bullet');
+    bullets.setAll('anchor.x', 0.5);
+    bullets.setAll('anchor.y', 0.5);
+
+    //  Our player ship
+    sprite = game.add.sprite(300, 300, 'ship');
+    sprite.anchor.set(0.5);
+
+    //  and its physics settings
+    game.physics.enable(sprite, Phaser.Physics.ARCADE);
+
+    sprite.body.drag.set(100);
+    sprite.body.maxVelocity.set(200);
+
+    //  Game input
+    cursors = game.input.keyboard.createCursorKeys();
+    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+
+}
+
+function update() {
+  debugger;
+
+    if (cursors.up.isDown)
+    {
+        game.physics.arcade.accelerationFromRotation(sprite.rotation, 200, sprite.body.acceleration);
+    }
+    else
+    {
+        sprite.body.acceleration.set(0);
+    }
+    console.log(sprite.rotation);
+    if (cursors.left.isDown)
+    {
+        sprite.body.angularVelocity = -300;
+    }
+    else if (cursors.right.isDown)
+    {
+        sprite.body.angularVelocity = 300;
+    }
+    else
+    {
+        sprite.body.angularVelocity = 0;
+    }
+
+    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+    {
+        fireBullet();
+    }
+
+    screenWrap(sprite);
+
+    bullets.forEachExists(screenWrap, this);
+
+}
+
+function fireBullet () {
+
+    if (game.time.now > bulletTime)
+    {
+        bullet = bullets.getFirstExists(false);
+
+        if (bullet)
+        {
+            bullet.reset(sprite.body.x + 16, sprite.body.y + 16);
+            bullet.lifespan = 2000;
+            bullet.rotation = sprite.rotation;
+            game.physics.arcade.velocityFromRotation(sprite.rotation, 400, bullet.body.velocity);
+            bulletTime = game.time.now + 50;
+        }
+    }
+
+}
+
+function screenWrap (sprite) {
+
+    if (sprite.x < 0)
+    {
+        sprite.x = game.width;
+    }
+    else if (sprite.x > game.width)
+    {
+        sprite.x = 0;
+    }
+
+    if (sprite.y < 0)
+    {
+        sprite.y = game.height;
+    }
+    else if (sprite.y > game.height)
+    {
+        sprite.y = 0;
+    }
+
+}
+
+function render() {
+}
+
     </script>
 
   </body>
