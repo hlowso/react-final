@@ -145,16 +145,21 @@
              score += 1
              playerScore.setText('score: ' + score)
 
+
             if (cursors.left.isDown) {
+              player.rotation = Math.PI;
               player.setVelocityX(-800);
             } else if (cursors.right.isDown) {
+              player.rotation = 0.0;
               player.setVelocityX(800);
             // } else {
             //   player.setVelocityX(0);
             }
             if (cursors.up.isDown) {
+              player.rotation = 1.5 * Math.PI;
               player.setVelocityY(-800);
             } else if (cursors.down.isDown) {
+              player.rotation = 0.5 * Math.PI;
               player.setVelocityY(800);
             // } else {
             //   player.setVelocityY(0);
