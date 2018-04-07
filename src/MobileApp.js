@@ -172,9 +172,7 @@ class MobileApp extends React.Component {
 	render() {
 		// const CodeFormView = <div />;
 		// const CalibrationView = <div />;
-		// const GameView =
-
-		return (
+		const GameView = (
 			<div>
 				<h1>{this.state.message}</h1>
 				<h1>{this.state.message2}</h1>
@@ -191,6 +189,8 @@ class MobileApp extends React.Component {
 				<button onClick={this.configHandler}>Calibrate</button>
 			</div>
 		);
+
+		return GameView;
 
 		// if (!this.state.connected) {
 		// 	return CodeFormView;
