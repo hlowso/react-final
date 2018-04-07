@@ -88,87 +88,92 @@ class MobileApp extends React.Component {
 	}
 
 	configHandler(event) {
-		this.setState({ 
-			message2: "lol!",
-			useOrientaion: () => {
-				initial_alphas.push(this.state.ovec.alpha);
-				initial_gammas.push(this.state.ovec.gamma);
-			}
+		this.setState(
+			{
+				message2: "lol!",
+				useOrientaion: () => {
+					initial_alphas.push(this.state.ovec.alpha);
+					initial_gammas.push(this.state.ovec.gamma);
+				}
+			},
+			() => {
+				setTimeout(() => {
+					const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
+					const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
 
-		}, () => {
+					const alpha_offset = alpha_sum / initial_alphas.length;
+					const gamma_offset = alpha_sum / initial_gammas.length;
 
-			setTimeout(() => {
-				const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
-				const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
+					const y_zero =
+						gamma_offset > 0.0
+							? -1.0 * (gamma_offset - 90.0)
+							: -1.0 * (gamma_offset + 90.0);
 
-				const alpha_offset = alpha_sum / initial_alphas.length;
-				const gamma_offset = alpha_sum / initial_gammas.length;
+					this.setState({
+						alpha_offset,
+						y_zero,
+						// message: `Configuring is done! The length of that array is ${initial_alphas.length}, also alpha_sum is ${alpha_sum}, and alpha_offset is ${alpha_offset}`,
+						message2: `configuring is done, here is gamma ${gamma_offset}, and the length ${
+							initial_gammas.length
+						}, y_zero is ${y_zero}`,
 
-				const y_zero =
-					(gamma_offset > 0.0)
-						? -1.0 * (gamma_offset - 90.0)
-						: -1.0 * (gamma_offset + 90.0);
+						useOrientaion: () => {
+							const a = this.state.ovec.alpha;
+							const b = this.state.ovec.beta;
+							const g = this.state.ovec.gamma;
+							const C = Math.abs(g) / 90.0;
 
-				this.setState({
-					alpha_offset,
-					y_zero,
-					// message: `Configuring is done! The length of that array is ${initial_alphas.length}, also alpha_sum is ${alpha_sum}, and alpha_offset is ${alpha_offset}`,
-					message2: `configuring is done, here is gamma ${gamma_offset}, and the length ${
-						initial_gammas.length
-					}, y_zero is ${y_zero}`,
+							let beta_component_for_x, alpha_component_for_x, x, y;
 
-					useOrientaion: () => {
-						const a = this.state.ovec.alpha;
-						const b = this.state.ovec.beta;
-						const g = this.state.ovec.gamma;
-						const C = Math.abs(g) / 90.0;
-
-						let beta_component_for_x, alpha_component_for_x, x, y;
-
-						if (g > 0.0) {
-							if (b > 0.0) {
-								beta_component_for_x = b - 180.0;
+							if (g > 0.0) {
+								if (b > 0.0) {
+									beta_component_for_x = b - 180.0;
+								} else {
+									beta_component_for_x = b + 180.0;
+								}
+								if (a > 0.0) {
+									alpha_component_for_x = a - 180.0;
+								} else {
+									alpha_component_for_x = a + 180.0;
+								}
+								y = -1.0 * (g - 90.0);
 							} else {
-								beta_component_for_x = b + 180.0;
+								beta_component_for_x = b;
+								alpha_component_for_x = a;
+								y = -1.0 * (g + 90.0);
 							}
-							if (a > 0.0) {
-								alpha_component_for_x = a - 180.0;
-							} else {
-								alpha_component_for_x = a + 180.0;
-							}
-							y = -1.0 * (g - 90.0);
-						} else {
-							beta_component_for_x = b;
-							alpha_component_for_x = a;
-							y = -1.0 * (g + 90.0);
+
+							x =
+								-1.0 *
+								((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
+							y = y - this.state.y_zero;
+
+							this.setState(
+								{
+									velocity: {
+										x: x / 90.0,
+										y: y / 90.0
+									}
+								},
+								() => {
+									this.send({
+										subject: "push",
+										velocity: this.state.velocity
+									});
+								}
+							);
 						}
-
-						x =
-							-1.0 *
-							((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
-						y = y - this.state.y_zero;
-
-						this.setState({
-							velocity: {
-								x: x / 90.0,
-								y: y / 90.0 
-							}
-						}, () => {
-							this.send({
-								subject: "push",
-								velocity: this.state.velocity
-							});
-						});
-					}
-				});
-			}, 5000)
-		});
+					});
+				}, 5000);
+			}
+		);
 	}
 
 	render() {
-		const calibrate_button = this.state.connected && (
-			<button onClick={this.configHandler}>Calibrate</button>
-		);
+		// const CodeFormView = <div />;
+		// const CalibrationView = <div />;
+		// const GameView =
+
 		return (
 			<div>
 				<h1>{this.state.message}</h1>
@@ -183,9 +188,19 @@ class MobileApp extends React.Component {
 					<li>x velocity: {this.state.velocity.x}</li>
 					<li>y velocity: {this.state.velocity.y}</li>
 				</ul>
-				{calibrate_button}
+				<button onClick={this.configHandler}>Calibrate</button>
 			</div>
 		);
+
+		// if (!this.state.connected) {
+		// 	return CodeFormView;
+		// } else {
+		// 	if (this.state.calibrating) {
+		// 		return CalibratingView;
+		// 	} else {
+		// 		return GameView;
+		// 	}
+		// }
 	}
 }
 

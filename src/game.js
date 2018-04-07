@@ -1,9 +1,10 @@
-// const path = require("path");
+import generateCode from "./code-generator.js";
 import PidgeonIcon from "./assets/pigeon_ph.png";
 import SkyBackground from "./assets/sky.png";
 
 function start() {
-  const gameOptions = {
+  const gameAttributes = {
+    code: generateCode(),
     spriteSize: 40,
     gameWidth: window.innerWidth * window.devicePixelRatio,
     gameHeight: window.innerHeight * window.devicePixelRatio,
@@ -13,8 +14,8 @@ function start() {
   window.onload = function() {
     const gameConfig = {
       type: Phaser.AUTO,
-      width: gameOptions.gameWidth,
-      height: gameOptions.gameHeight,
+      width: gameAttributes.gameWidth,
+      height: gameAttributes.gameHeight,
       physics: {
         default: "arcade",
         arcade: {
@@ -52,7 +53,7 @@ function start() {
         ws.send(
           JSON.stringify({
             device: "desktop",
-            code: "buster"
+            code: "buster" //gameAttributes.code
           })
         );
       };
@@ -64,16 +65,16 @@ function start() {
       // ---------------
 
       const background = this.add.image(
-        gameOptions.gameWidth / 2,
-        gameOptions.gameHeight / 2,
+        gameAttributes.gameWidth / 2,
+        gameAttributes.gameHeight / 2,
         "background"
       );
 
       background.setScale(window.devicePixelRatio * 2);
 
       player = this.physics.add.sprite(
-        gameOptions.gameWidth / 2,
-        gameOptions.gameHeight / 2,
+        gameAttributes.gameWidth / 2,
+        gameAttributes.gameHeight / 2,
         "pigeon"
       );
       // let fly = player.animations.add('right', [0,1,2,3,4,5]);
@@ -84,6 +85,17 @@ function start() {
     },
 
     update: function() {
+      if (y_velocity > 0) {
+        player.rotation = Math.atan(x_velocity / y_velocity);
+      } else if (y_velocity === 0.0) {
+        if (x_velocity < 0) {
+          player.rotation = 0.5 * Math.PI;
+        } else {
+          player.rotation = 1.5 * Math.PI;
+        }
+      } else {
+        player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
+      }
       player.setVelocityX(2000.0 * x_velocity);
       player.setVelocityY(-2000.0 * y_velocity);
 
