@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="main.css">
     <script src="//cdn.jsdelivr.net/npm/phaser@3.3.0/dist/phaser.min.js"></script>
   </head>
   <body>
@@ -23,6 +23,7 @@
           physics: {
               default: 'arcade',
               arcade: {
+                debug: true
                   // gravity: { y: 20 }
               }
           },
@@ -35,6 +36,9 @@
       };
 
       let player;
+      let enemy;
+      let score = 0;
+      let group;
 
       const playGame = new Phaser.Class({
         Extends: Phaser.Scene,
@@ -42,6 +46,7 @@
           function playGame(){
             Phaser.Scene.call(this, {key: "PlayGame"});
           },
+
 
           preload: function () {
             this.load.image(
@@ -54,7 +59,15 @@
                 129,
                 84
               );
+            this.load.image(
+              "falcon",
+              "assets/images/falcon_ph.png",
+                85,
+                56
+              );
           },
+
+
 
           create: function () {
             background = this.add.image(
@@ -70,14 +83,68 @@
               gameOptions.gameHeight / 2,
               "pigeon"
               );
-             // let fly = player.animations.add('right', [0,1,2,3,4,5]);
+
             player.setBounce(0.4);
             player.setCollideWorldBounds(true);
 
+            playerScore = this.add.text(100, 100, `${score}`)
+
+            enemy = this.physics.add.sprite(
+              "falcon"
+              );
+
+            enemies = this.physics.add.group({
+                key: 'falcon',
+                repeat: 5,
+                //setcollideWorldBounds: true,
+                  setXY: {
+                    x: 110,
+                    y: 100,
+                    stepX: 600,
+                    stepY: 60
+                  }
+                })
+
             cursors = this.input.keyboard.createCursorKeys();
+
+            // this.enemies = this.add.group({
+            //   key: 'falcon',
+            //   repeat: 5,
+            //   setXY: {
+            //     x: 110,
+            //     y: 100,
+            //     stepX: 80,
+            //     stepY: 20
+            //   }
+
+          // });
+
+            // group = this.physics.add.group({
+            //   bounceX: 1,
+            //   bounceY: 1,
+            //   collideWorldBounds: true
+            // });
+
+            // let enemy1 = group.create(100, 200, 'falcon').setVelocity(100, 200);
+            // let enemy2 = group.create(500, 200, 'falcon').setVelocity(-100, -100);
+            // let enemy3 = group.create(300, 400, 'falcon').setVelocity(60, 100);
+            // let enemy4 = group.create(600, 300, 'falcon').setVelocity(-30, -50);
+
+             // let fly = player.animations.add('right', [0,1,2,3,4,5]);
+
+
           },
 
           update: function () {
+            let enemySpawn ;
+
+            if (score % 100 === 0) {
+              enemySpawn = enemies.create(110, 100, 'falcon')
+            }
+
+             score += 1
+             playerScore.setText('score: ' + score)
+
             if (cursors.left.isDown) {
               player.setVelocityX(-800);
             } else if (cursors.right.isDown) {
@@ -93,8 +160,31 @@
             //   player.setVelocityY(0);
               // player.body.setGravity(100);
             }
+
+            enemies.setVelocityY(300)
+            enemies.setVelocityX(300)
+            //enemies.speed = Math.random() * 2 + 1;
+
+
+
+
+
+            // let group = this.group.getChildren();
+            // let numEnemies = group.length;
+
+            // for (let i = 0; i < numEnemies; i++) {
+            //   group[i].y += group[i].speed;
+            //   if (group[i].y >= this.groupMaxY && group[i].speed > 0) {
+            //   } else if (group[i].y <= this.groupMinY && group[i].speed < 0) {
+            //     group[i].speed *= -1;
+            //   }
+            // }
+
+            // x
           }
+
         });
+
 
       // function resize() {
       //   const canvas = document.querySelector("canvas");
