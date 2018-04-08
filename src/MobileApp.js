@@ -154,14 +154,14 @@ class MobileApp extends React.Component {
 								((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
 							y = y - this.state.y_zero;
 
-							const x_normalized = Math.pow(10.0 * (x / 90.0), 2);
-							const y_normalized = Math.pow(10.0 * (y / 90.0), 2);
+							// const x_normalized = Math.pow(10.0 * (x / 90.0), 2);
+							// const y_normalized = Math.pow(10.0 * (y / 90.0), 2);
 
 							this.setState(
 								{
 									velocity: {
-										x: x < 0.0 ? -1.0 * x_normalized : x_normalized,
-										y: y < 0.0 ? -1.0 * y_normalized : y_normalized
+										x: x / 90.0, //x < 0.0 ? -1.0 * x_normalized : x_normalized,
+										y: y / 90.0 //y < 0.0 ? -1.0 * y_normalized : y_normalized
 									}
 								},
 								() => {

@@ -1,10 +1,10 @@
 import generateCode from "./code-generator.js";
-// import PidgeonIcon from "./assets/pigeon_ph.png";
-// import SkyBackground from "./assets/sky.png";
+import PidgeonIcon from "./assets/pigeon_ph.png";
+import SkyBackground from "./assets/sky.png";
 
 function start() {
   const gameAttributes = {
-    code: "buster", //generateCode(),
+    code: generateCode(),
     spriteSize: 40,
     gameWidth: window.innerWidth * window.devicePixelRatio,
     gameHeight: window.innerHeight * window.devicePixelRatio,
@@ -45,13 +45,8 @@ function start() {
     },
 
     preload: function() {
-      this.load.image("background", "cb8fe21064e648d4fd4aa71e2a5d339d.png"); //SkyBackground);
-      this.load.image(
-        "pigeon",
-        "./684f058312efc4690e0eac66c3b3930e.png",
-        129,
-        84
-      ); //PidgeonIcon, 129, 84);
+      this.load.image("background", SkyBackground);
+      this.load.image("pigeon", PidgeonIcon, 129, 84);
     },
 
     create: function() {
@@ -70,8 +65,8 @@ function start() {
         const message = JSON.parse(incoming_message.data);
         switch (message.subject) {
           case "push":
-            x_velocity = velocity.x;
-            y_velocity = velocity.y;
+            x_velocity = message.velocity.x;
+            y_velocity = message.velocity.y;
             break;
           case "shoot":
             shooting = message.shooting;
@@ -98,7 +93,7 @@ function start() {
       player.setCollideWorldBounds(true);
 
       playerScore = this.add.text(100, 100, `${score}`);
-      this.add.text(200, 200, `Code: ${gameAttributes.code}`);
+      this.add.text(400, 400, `Code: ${gameAttributes.code}`);
 
       cursors = this.input.keyboard.createCursorKeys();
     },
@@ -117,8 +112,8 @@ function start() {
       } else {
         player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
       }
-      player.setVelocityX(250.0 * x_velocity);
-      player.setVelocityY(-250.0 * y_velocity);
+      player.setVelocityX(2500.0 * x_velocity);
+      player.setVelocityY(-2500.0 * y_velocity);
 
       if (shooting) {
         console.log("I'm SHOOTING!");
