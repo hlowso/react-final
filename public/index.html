@@ -89,17 +89,17 @@
 
             playerScore = this.add.text(100, 100, `${score}`)
 
-            enemy = this.physics.add.sprite(
-              "falcon"
-              );
+            // enemy = this.physics.add.sprite(
+            //   "falcon"
+            //   );
 
             enemies = this.physics.add.group({
                 key: 'falcon',
                 repeat: 5,
                 //setcollideWorldBounds: true,
                   setXY: {
-                    x: 110,
-                    y: 100,
+                    x: Math.floor(Math.random() * Math.floor(2)),
+                    y: Math.floor(Math.random() * Math.floor(2)),
                     stepX: 600,
                     stepY: 60
                   }
@@ -149,10 +149,9 @@
                 if (leftOrRight === 0) {
                   xCoord = 0
                 } else {
-                  xCoord = 1920
+                  xCoord = 1
                 }
               }
-              debugger;
               enemySpawn = enemies.create(xCoord, yCoord, 'falcon')
             }
 
