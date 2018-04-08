@@ -71,7 +71,6 @@ function start() {
         const message = JSON.parse(incoming_message.data);
         switch (message.subject) {
           case "push":
-            const velocity = message.velocity;
             x_velocity = velocity.x;
             y_velocity = velocity.y;
             break;
