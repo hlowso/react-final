@@ -34,6 +34,8 @@ function start() {
   let cursors;
   let x_velocity = 0.0;
   let y_velocity = 0.0;
+  let shooting = false;
+  let code_message;
 
   const playGame = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -48,19 +50,35 @@ function start() {
 
     create: function() {
       // TEMPORARY PLACEMENT FOR WS
+      console.log(gameAttributes.code);
+      console.log(this.add.text);
+      code_message = this.add.text(
+        gameAttributes.gameWidth / 2,
+        gameAttributes.gameHeight / 2,
+        "CODE!"
+      ); //`Code: ${gameAttributes.code}`);
+
       const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
       ws.onopen = () => {
         ws.send(
           JSON.stringify({
             device: "desktop",
-            code: "buster" //gameAttributes.code
+            code: gameAttributes.code
           })
         );
       };
-      ws.onmessage = message => {
-        const velocity = JSON.parse(message.data).velocity;
-        x_velocity = velocity.x;
-        y_velocity = velocity.y;
+      ws.onmessage = incoming_message => {
+        const message = JSON.parse(incoming_message.data);
+        switch (message.subject) {
+          case "push":
+            const velocity = message.velocity;
+            x_velocity = velocity.x;
+            y_velocity = velocity.y;
+            break;
+          case "shoot":
+            shooting = message.shooting;
+            break;
+        }
       };
       // ---------------
 
@@ -85,6 +103,8 @@ function start() {
     },
 
     update: function() {
+      // code_message.setText(`Code: ${gameAttributes.code}`);
+
       if (y_velocity > 0) {
         player.rotation = Math.atan(x_velocity / y_velocity);
       } else if (y_velocity === 0.0) {
@@ -96,24 +116,12 @@ function start() {
       } else {
         player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
       }
-      player.setVelocityX(2000.0 * x_velocity);
-      player.setVelocityY(-2000.0 * y_velocity);
+      player.setVelocityX(250.0 * x_velocity);
+      player.setVelocityY(-250.0 * y_velocity);
 
-      // if (cursors.left.isDown) {
-      //   player.setVelocityX(-800);
-      // } else if (cursors.right.isDown) {
-      //   player.setVelocityX(800);
-      // } else {
-      //   player.setVelocityX(0);
-      // }
-      // if (cursors.up.isDown) {
-      //   player.setVelocityY(-800);
-      // } else if (cursors.down.isDown) {
-      //   player.setVelocityY(800);
-      // } else {
-      //   player.setVelocityY(0);
-      // player.body.setGravity(100);
-      // }
+      if (shooting) {
+        console.log("I'm SHOOTING!");
+      }
     }
   });
 

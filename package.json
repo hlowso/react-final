@@ -15,9 +15,11 @@
     "path": "^0.12.7",
     "phaser": "^3.3.0",
     "react": "^16.3.1",
+    "react-click-n-hold": "^1.0.6",
     "react-device-detect": "^1.0.1",
     "react-dom": "^16.3.1",
     "react-tools": "^0.13.3",
+    "react-touch": "^0.4.3",
     "requirejs-babel-jsx": "^1.0.0",
     "uuid-v4": "^0.1.0",
     "ws": "^5.1.0"
