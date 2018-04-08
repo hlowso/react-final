@@ -12,13 +12,24 @@
   "dependencies": {
     "babel-eslint": "^8.2.2",
     "express": "^4.16.3",
+    "path": "^0.12.7",
+    "phaser": "^3.3.0",
+    "react": "^16.3.1",
     "react-device-detect": "^1.0.1",
+    "react-dom": "^16.3.1",
     "react-tools": "^0.13.3",
     "requirejs-babel-jsx": "^1.0.0",
     "uuid-v4": "^0.1.0",
     "ws": "^5.1.0"
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.7.0"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint-plugin-react": "^7.7.0",
+    "file-loader": "^1.1.11",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   }
 }
