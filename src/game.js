@@ -99,7 +99,7 @@ function start() {
       player.setVelocityY(0);
 
       enemies = this.physics.add.group({
-                key: 'falcon',
+                key: "falcon",
                 repeat: 5,
                   setXY: {
                     x: Math.floor(Math.random() * Math.floor(2)),
@@ -146,6 +146,14 @@ function start() {
           }
       }
 
+    },
+
+    bulletEnemyCollision: function (bullet, enemy) {
+      bullet.disableBody(true, true)
+      enemy.disableBody(true, true)
+      enemy.destroy();
+      bullet.destroy();
+      score += 1000;
     },
 
 
@@ -196,6 +204,8 @@ function start() {
       if (fireButton.isDown === true) {
         this.fireBullet();
       }
+
+      this.physics.collide(enemies, bullets, this.bulletEnemyCollision, null, this);
 
 
 
