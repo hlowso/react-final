@@ -28,7 +28,7 @@ function start() {
       scene: [playGame]
     };
 
-    const game = new Phaser.Game(gameConfig);
+  const game = new Phaser.Game(gameConfig);
     // resize();
     // window.addEventListener("resize", resize, false);
   };
@@ -46,6 +46,9 @@ function start() {
   let fireBullets = true;
   let x_velocity = 0.0;
   let y_velocity = 0.0;
+  let health = 3;
+  let healthText;
+  let playerDisabled = false;
 
   const playGame = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -111,6 +114,9 @@ function start() {
 
       playerScore = this.add.text(100, 100, `${score}`);
 
+      //health = this.add.group();
+      healthText = this.add.text(100, 120, 'Health: ' + health);
+
       cursors = this.input.keyboard.createCursorKeys();
 
       //////////////////////////////////
@@ -126,6 +132,9 @@ function start() {
       // bullets.createMultiple(40, 'laser')
 
       fireButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+      this.physics.add.collider(enemies, bullets, this.bulletEnemyCollision, null, this);
+      this.physics.add.collider(enemies, player, this.playerEnemyCollision, null, this);
     },
 
     fireBullet: function () {
@@ -155,6 +164,59 @@ function start() {
       bullet.destroy();
       score += 1000;
     },
+
+    playerEnemyCollision: function (player, enemy) {
+      // player.disableBody(true, false);
+      enemy.setBounce(0.4);
+      player.setTint(0xff0000)
+      // setTimeout(function() {
+        // player.enableBody(false, player.x, player.y, true, true), 2000
+      // })
+      setTimeout(function() {
+        playerDisabled = false;
+        console.log("disabled: ", playerDisabled)
+      }, 2000)
+
+      console.log("health: ", health);
+      console.log("playerDisabled:  ", playerDisabled);
+
+      if (!playerDisabled) {
+
+        playerDisabled = true
+        health -= 1
+        healthText.setText('Health: ' + health)
+        // player.enableBody(false, player.x, player.y, true, true);
+        if (health <= 0) {
+          player.destroy();
+        }
+      }
+    },
+
+
+
+    // onHit: function(damage) {
+    //   if (!player.invincible) {
+    //     player.health -= damage;
+    //     this.toggleInvincible();
+    //     game.time.events.add(2000, this.toggleInvincible, this);
+    //   }
+    // },
+
+  //   playerInvincible: function() {
+  //     this.invincibility = true;
+  //     if (this.player.key === 'pigeon') {
+  //         this.player.loadTexture('falcon', 0, false);
+  //           this.game.time.events.add(2000, this.toggleInvincible, this);
+  //   }
+  // },
+
+  //   toggleInvincible: function() {
+  //     player.invincibility = false;
+  //     if (!player.invinciblity) {
+  //       console.log("TEST")
+  //       //this.player.loadTexture('pigeon', 0, false);
+  //   }
+  // },
 
 
     update: function() {
@@ -205,7 +267,7 @@ function start() {
         this.fireBullet();
       }
 
-      this.physics.collide(enemies, bullets, this.bulletEnemyCollision, null, this);
+
 
 
 
