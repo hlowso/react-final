@@ -100,14 +100,14 @@ function start() {
 
       enemies = this.physics.add.group({
                 key: 'falcon',
-                repeat: 5,
+                // repeat: 5,
                   setXY: {
-                    x: Math.floor(Math.random() * Math.floor(2)),
-                    y: Math.floor(Math.random() * Math.floor(2)),
-                    stepX: 600,
-                    stepY: 60
+                    x: -50,
+                    y: -50
+                    // stepX: 600,
+                    // stepY: 60
                   }
-                })
+                });
 
       playerScore = this.add.text(100, 100, `${score}`);
 
@@ -148,11 +148,111 @@ function start() {
 
     },
 
+    enemySpawn: function () {
+      let path;
+      let curve;
+      let points;
+      let xOrY;
+      let enemyPath;
+      let xCoord;
+      let yCoord;
+      let leftOrRight;
+
+      const createPath = (x, y) => {
+        // console.log(x, y);
+        path = { t: 0, vec: new Phaser.Math.Vector2() };
+
+        points = [x, y];
+
+        for (let point = 0; point < Math.floor(Math.random() * ( 12 - 6 ) + 6); point++) {
+          points.push(Math.random() * gameAttributes.gameWidth);
+          points.push(Math.random() * gameAttributes.gameHeight);
+        }
+
+        points.push(gameAttributes.gameWidth);
+        points.push(Math.random() * gameAttributes.gameHeight);
+
+        // console.log(points.length / 2);
+
+        curve = new Phaser.Curves.Spline(points);
+        // console.log(curve);
+        // console.log(curve.points);
+        return curve;
+      };
+
+
+      xOrY = Math.floor(Math.random() * Math.floor(2));
+        if (xOrY === 0) {
+          xCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameWidth));
+          yCoord = 0;
+          enemyPath = createPath(xCoord, yCoord);
+          // console.log('top');
+        } else {
+          yCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameHeight));
+          leftOrRight = Math.floor(Math.random() * Math.floor(2));
+          if (leftOrRight === 0) {
+            xCoord = 0;
+            enemyPath = createPath(xCoord, yCoord);
+            // console.log('left');
+          } else {
+            xCoord = gameAttributes.gameWidth;
+            enemyPath = createPath(xCoord, yCoord);
+            // console.log('right');
+          }
+        }
+        let enemy = enemies.create(enemyPath.points[0].x, enemyPath.points[0].y, 'falcon');
+        // enemy.lifespan = enemyPath.points.length * 1000;
+
+        // console.log(enemyPath.points[0]);
+
+        enemy.setCollideWorldBounds(true);
+
+
+        let enemyTimeline = this.tweens.createTimeline({
+          // onComplete: onCompleteHandler,
+          // onCompleteParams: [enemy]
+        });
+
+        // function onCompleteHandler (tween, targets, enemy) {
+        //   console.log(enemy);
+        //   enemy.destroy();
+        // }
+
+        for (let i = 1; i < enemyPath.points.length; i++) {
+          enemyTimeline.add({
+            targets: enemy,
+            x: enemyPath.points[i].x,
+            ease: 'Sine.easeInOut',
+            duration: 1000
+          });
+          enemyTimeline.add({
+            targets: enemy,
+            y: enemyPath.points[i].y,
+            ease: 'Sine.easeInOut',
+            duration: 1000
+          });
+        }
+        console.log(enemyTimeline);
+        // enemyTimeline.setCallback('onComplete', onCompleteHandler, [enemy]);
+        enemyTimeline.play();
+        // if (enemyTimeline.elapsed ===  enemyTimeline.duration) {
+        //   console.log("hihih");
+        //   enemy.destroy();
+        // }
+
+
+        // curve.getPoint(path.t, path.vec);
+
+
+
+        // graphics.fillCircle(path.vec.x, path.vec.y, 8);
+    },
+
 
     update: function() {
 
-      score += 1
-      playerScore.setText('score: ' + score)
+      score += 1;
+      playerScore.setText('score: ' + score);
 
       if (y_velocity > 0) {
         player.rotation = Math.atan(x_velocity / y_velocity);
@@ -168,28 +268,29 @@ function start() {
       player.setVelocityX(2000.0 * x_velocity);
       player.setVelocityY(-2000.0 * y_velocity);
 
-      let enemySpawn ;
-      let xCoord, yCoord, xOrY, leftOrRight
+      // let enemySpawn ;
+      // let xCoord, yCoord, xOrY, leftOrRight;
 
       if (score % 100 === 0) {
-        xOrY = Math.floor(Math.random() * Math.floor(2));
-        if (xOrY === 0) {
-          xCoord = Math.floor(Math.random() * Math.floor(1920))
-          yCoord = 0
-        } else {
-          yCoord = Math.floor(Math.random() * Math.floor(1080))
-          leftOrRight = Math.floor(Math.random() * Math.floor(2))
-          if (leftOrRight === 0) {
-            xCoord = 0
-          } else {
-            xCoord = 1
-          }
-        }
-        enemySpawn = enemies.create(xCoord, yCoord, 'falcon')
+        // xOrY = Math.floor(Math.random() * Math.floor(2));
+        // if (xOrY === 0) {
+        //   xCoord = Math.floor(Math.random() * Math.floor(1920));
+        //   yCoord = 0;
+        // } else {
+        //   yCoord = Math.floor(Math.random() * Math.floor(1080));
+        //   leftOrRight = Math.floor(Math.random() * Math.floor(2));
+        //   if (leftOrRight === 0) {
+        //     xCoord = 0;
+        //   } else {
+        //     xCoord = 1;
+        //   }
+        // }
+        // enemySpawn = enemies.create(xCoord, yCoord, 'falcon');
+        this.enemySpawn();
       }
 
-      enemies.setVelocityY(300);
-      enemies.setVelocityX(300);
+      // enemies.setVelocityY(300);
+      // enemies.setVelocityX(300);
 
       // console.log(fireButton)
 
