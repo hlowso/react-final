@@ -99,13 +99,8 @@ function start() {
       player.setVelocityY(0);
 
       enemies = this.physics.add.group({
-<<<<<<< HEAD
-                key: "falcon",
-                repeat: 5,
-=======
                 key: 'falcon',
                 // repeat: 5,
->>>>>>> feature/enemy-tweens
                   setXY: {
                     x: -50,
                     y: -50
@@ -153,14 +148,14 @@ function start() {
 
     },
 
-<<<<<<< HEAD
     bulletEnemyCollision: function (bullet, enemy) {
-      bullet.disableBody(true, true)
-      enemy.disableBody(true, true)
+      bullet.disableBody(true, true);
+      enemy.disableBody(true, true);
       enemy.destroy();
       bullet.destroy();
       score += 1000;
-=======
+    },
+
     enemySpawn: function () {
       let path;
       let curve;
@@ -259,7 +254,6 @@ function start() {
 
 
         // graphics.fillCircle(path.vec.x, path.vec.y, 8);
->>>>>>> feature/enemy-tweens
     },
 
 
@@ -306,7 +300,6 @@ function start() {
       // enemies.setVelocityY(300);
       // enemies.setVelocityX(300);
 
-      // console.log(fireButton)
 
       if (fireButton.isDown === true) {
         this.fireBullet();
@@ -314,27 +307,6 @@ function start() {
 
       this.physics.collide(enemies, bullets, this.bulletEnemyCollision, null, this);
 
-
-
-      // if (cursors.left.isDown) {
-      //   player.rotation = Math.PI;
-      //   player.setVelocityX(-800);
-      // } else if (cursors.right.isDown) {
-      //   player.rotation = 0.0;
-      //   player.setVelocityX(800);
-      //  } else {
-      //    player.setVelocityX(0);
-      // }
-      // if (cursors.up.isDown) {
-      //   player.rotation = 1.5 * Math.PI;
-      //   player.setVelocityY(-800);
-      // } else if (cursors.down.isDown) {
-      //   player.rotation = 0.5 * Math.PI;
-      //   player.setVelocityY(800);
-      //  } else {
-      //    player.setVelocityY(0);
-      //    player.body.setGravity(100);
-      // }
     }
   });
 
