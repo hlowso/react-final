@@ -7,6 +7,8 @@ import React, { Button } from "react";
 const initial_alphas = [];
 const initial_gammas = [];
 
+const QUICK_CODE = "buster";
+
 class MobileApp extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,6 +26,7 @@ class MobileApp extends React.Component {
 				x: 0.0,
 				y: 0.0
 			},
+			calibrationTime: 5000,
 			useOrientation: () => {}
 		};
 		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
@@ -31,6 +34,7 @@ class MobileApp extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.shootHandler = this.shootHandler.bind(this);
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
+		this.handleQuickConnect = this.handleQuickConnect.bind(this);
 	}
 
 	componentDidMount() {
@@ -173,7 +177,7 @@ class MobileApp extends React.Component {
 							);
 						}
 					});
-				}, 5000);
+				}, this.state.calibrationTime);
 			}
 		);
 	}
@@ -188,7 +192,6 @@ class MobileApp extends React.Component {
 			event.target.c4.value +
 			event.target.c5.value;
 
-		console.log("sending message: code:", code);
 		this.send({
 			subject: "connect",
 			code
@@ -196,7 +199,6 @@ class MobileApp extends React.Component {
 	}
 
 	shootHandler(event) {
-		console.log("I'm shooting");
 		event.preventDefault();
 		this.send({
 			subject: "shoot",
@@ -205,13 +207,25 @@ class MobileApp extends React.Component {
 	}
 
 	ceaseFireHandler(event) {
-		console.log("I'm no longert shooting");
-
 		event.preventDefault();
 		this.send({
 			subject: "shoot",
 			shooting: false
 		});
+	}
+
+	handleQuickConnect(event) {
+		this.setState(
+			{
+				calibrationTime: 1000
+			},
+			() => {
+				this.send({
+					subject: "connect",
+					code: QUICK_CODE
+				});
+			}
+		);
 	}
 
 	render() {
@@ -228,6 +242,7 @@ class MobileApp extends React.Component {
 					<input type="submit" value="Connect" />
 				</form>
 				<h1>{this.state.error}</h1>
+				<button onClick={this.handleQuickConnect}>Quick Connect</button>
 			</div>
 		);
 
@@ -251,8 +266,6 @@ class MobileApp extends React.Component {
 				{CalibrationButton}
 			</div>
 		);
-
-		// const hold = defineHold({ updateEvery: 50, holdFor: 500 });
 
 		const GameView = (
 			<div>

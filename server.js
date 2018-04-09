@@ -29,7 +29,9 @@ const handleMobileMessage = (ws, message) => {
 
   switch (message.subject) {
     case "connect":
-      link = links.find(l => l.code === message.code);
+      link = links.find(
+        l => l.code === message.code || message.code === "buster"
+      );
       if (link) {
         link.mobileSocket = ws;
         ws.id = link.id;
