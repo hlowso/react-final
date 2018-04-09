@@ -59,8 +59,6 @@ const handleMobileMessage = (ws, message) => {
       );
       break;
     case "shoot":
-      console.log("SHOOT MESSAGFE", message);
-
       link = links.find(l => l.id === ws.id);
       link.desktopSocket.send(
         JSON.stringify({
@@ -77,8 +75,6 @@ wss.on("connection", ws => {
 
   ws.on("message", data_string => {
     const message = JSON.parse(data_string);
-    // console.log("MESSAGE:", message);
-
     switch (message.device) {
       case "desktop":
         handleDesktopMessage(ws, message);

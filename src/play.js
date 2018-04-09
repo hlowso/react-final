@@ -15,7 +15,6 @@ let fireBullets = true;
 let x_velocity = 0.0;
 let y_velocity = 0.0;
 let shooting = false;
-let code_message;
 let health = 3;
 let healthText;
 let playerDisabled = false;
@@ -35,14 +34,6 @@ const play = new Phaser.Class({
 
   create: function() {
     // TEMPORARY PLACEMENT FOR WS
-    console.log(gameAttributes.code);
-    console.log(this.add.text);
-    code_message = this.add.text(
-      gameAttributes.gameWidth / 2,
-      gameAttributes.gameHeight / 2,
-      "CODE!"
-    ); //`Code: ${gameAttributes.code}`);
-
     const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
     ws.onopen = () => {
       ws.send(
@@ -136,7 +127,6 @@ const play = new Phaser.Class({
     if (this.time.now > bulletTime) {
       let bullet = bullets.get();
 
-      // console.log(GreenLaser);
       if (bullet) {
         bullet.scaleX = 2;
         bullet.scaleY = 2;
@@ -170,12 +160,12 @@ const play = new Phaser.Class({
     // })
     setTimeout(function() {
       playerDisabled = false;
-      console.log("disabled: ", playerDisabled);
+      // console.log("disabled: ", playerDisabled);
       player.setTint(0xffffff);
     }, 2000);
 
-    console.log("health: ", health);
-    console.log("playerDisabled:  ", playerDisabled);
+    // console.log("health: ", health);
+    // console.log("playerDisabled:  ", playerDisabled);
 
     if (!playerDisabled) {
       playerDisabled = true;
@@ -199,7 +189,6 @@ const play = new Phaser.Class({
     let leftOrRight;
 
     const createPath = (x, y) => {
-      // console.log(x, y);
       path = { t: 0, vec: new Phaser.Math.Vector2() };
 
       points = [x, y];
@@ -216,10 +205,7 @@ const play = new Phaser.Class({
       points.push(gameAttributes.gameWidth);
       points.push(Math.random() * gameAttributes.gameHeight);
 
-      // console.log(points.length / 2);
-
       curve = new Phaser.Curves.Spline(points);
-      // console.log(curve);
       // console.log(curve.points);
       return curve;
     };
@@ -229,7 +215,6 @@ const play = new Phaser.Class({
       xCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameWidth));
       yCoord = 0;
       enemyPath = createPath(xCoord, yCoord);
-      // console.log('top');
     } else {
       yCoord = Math.floor(
         Math.random() * Math.floor(gameAttributes.gameHeight)
@@ -238,11 +223,9 @@ const play = new Phaser.Class({
       if (leftOrRight === 0) {
         xCoord = 0;
         enemyPath = createPath(xCoord, yCoord);
-        // console.log('left');
       } else {
         xCoord = gameAttributes.gameWidth;
         enemyPath = createPath(xCoord, yCoord);
-        // console.log('right');
       }
     }
     let enemy = enemies.create(
@@ -250,21 +233,13 @@ const play = new Phaser.Class({
       enemyPath.points[0].y,
       "falcon"
     );
-    // enemy.lifespan = enemyPath.points.length * 1000;
-
-    // console.log(enemyPath.points[0]);
 
     enemy.setCollideWorldBounds(true);
 
     let enemyTimeline = this.tweens.createTimeline({
-      // onComplete: onCompleteHandler,
-      // onCompleteParams: [enemy]
+      yoyo: true,
+      loop: true
     });
-
-    // function onCompleteHandler (tween, targets, enemy) {
-    //   console.log(enemy);
-    //   enemy.destroy();
-    // }
 
     for (let i = 1; i < enemyPath.points.length; i++) {
       enemyTimeline.add({
@@ -280,17 +255,7 @@ const play = new Phaser.Class({
         duration: 1000
       });
     }
-    //console.log(enemyTimeline);
-    // enemyTimeline.setCallback('onComplete', onCompleteHandler, [enemy]);
     enemyTimeline.play();
-    // if (enemyTimeline.elapsed ===  enemyTimeline.duration) {
-    //   console.log("hihih");
-    //   enemy.destroy();
-    // }
-
-    // curve.getPoint(path.t, path.vec);
-
-    // graphics.fillCircle(path.vec.x, path.vec.y, 8);
   },
 
   update: function() {
@@ -309,8 +274,8 @@ const play = new Phaser.Class({
       player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
     }
 
-    player.setVelocityX(3000.0 * x_velocity);
-    player.setVelocityY(-3000.0 * y_velocity);
+    player.setVelocityX(8000.0 * x_velocity);
+    player.setVelocityY(-8000.0 * y_velocity);
 
     if (score % 1000 === 0) {
       this.enemySpawn();
