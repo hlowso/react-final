@@ -93,7 +93,7 @@ function start() {
       player.setCollideWorldBounds(true);
 
       playerScore = this.add.text(100, 100, `${score}`);
-      this.add.text(400, 400, `Code: ${gameAttributes.code}`);
+      this.add.text(100, 200, `Code: ${gameAttributes.code}`);
 
       cursors = this.input.keyboard.createCursorKeys();
     },
