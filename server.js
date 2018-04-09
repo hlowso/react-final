@@ -29,12 +29,23 @@ const handleMobileMessage = (ws, message) => {
 
   switch (message.subject) {
     case "connect":
-      link = links.find(l => l.code === message.code);
+      link = links.find(
+        l => l.code === message.code || message.code === "buster"
+      );
       if (link) {
         link.mobileSocket = ws;
         ws.id = link.id;
-        ws.send();
+        ws.send(
+          JSON.stringify({
+            success: true
+          })
+        );
       } else {
+        ws.send(
+          JSON.stringify({
+            error: "Invalid code, please try again"
+          })
+        );
         console.log("No link found for requesting mobile device");
       }
       break;
@@ -42,7 +53,19 @@ const handleMobileMessage = (ws, message) => {
       link = links.find(l => l.id === ws.id);
       link.desktopSocket.send(
         JSON.stringify({
+          subject: message.subject,
           velocity: message.velocity
+        })
+      );
+      break;
+    case "shoot":
+      console.log("SHOOT MESSAGFE", message);
+
+      link = links.find(l => l.id === ws.id);
+      link.desktopSocket.send(
+        JSON.stringify({
+          subject: message.subject,
+          shooting: message.shooting
         })
       );
       break;

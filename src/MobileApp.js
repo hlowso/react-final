@@ -1,17 +1,21 @@
 // TODO ensure that while the user is configuring, if they're straddling the line between -180 and 180, then that's taken into account
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
-import React from "react";
+// TODO click n hold is for mouse click events! You've got to find the equivalent for touch events.
+import React, { Button } from "react";
+// import { Holdable, defineHold, holdProgress } from "react-touch";
 
 const initial_alphas = [];
 const initial_gammas = [];
+
+const QUICK_CODE = "buster";
 
 class MobileApp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			connected: false,
-			message: "This is the Mobile App",
-			message2: "this will change",
+			step: 1,
+			instruction:
+				"Enter the code on your desktop's screen to connect this phone.",
 			ovec: {
 				alpha: 0.0,
 				beta: 0.0,
@@ -22,10 +26,15 @@ class MobileApp extends React.Component {
 				x: 0.0,
 				y: 0.0
 			},
-			useOrientaion: () => {}
+			calibrationTime: 5000,
+			useOrientation: () => {}
 		};
 		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-		this.configHandler = this.configHandler.bind(this);
+		this.calibrationHandler = this.calibrationHandler.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.shootHandler = this.shootHandler.bind(this);
+		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
+		this.handleQuickConnect = this.handleQuickConnect.bind(this);
 	}
 
 	componentDidMount() {
@@ -53,27 +62,31 @@ class MobileApp extends React.Component {
 						gamma: event.gamma
 					}
 				},
-				this.state.useOrientaion()
+				this.state.useOrientation()
 			);
 		};
 
 		this.ws.onopen = () => {
-			this.send({
-				subject: "connect",
-				code: "buster"
-			});
-		};
-
-		this.ws.onmessage = () => {
-			this.setState({
-				connected: true,
-				useOrientaion: () => {
+			this.ws.onmessage = incoming_message => {
+				const message = JSON.parse(incoming_message.data);
+				if (message.success) {
 					this.setState({
-						message: `Found your laptop: ${this.state.ovec}`
+						step: 2,
+						instruction:
+							"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
+						error: ""
+					});
+					window.addEventListener(
+						"deviceorientation",
+						orientationHandler,
+						true
+					);
+				} else {
+					this.setState({
+						error: message.error
 					});
 				}
-			});
-			window.addEventListener("deviceorientation", orientationHandler, true);
+			};
 		};
 	}
 
@@ -87,11 +100,12 @@ class MobileApp extends React.Component {
 		this.ws.send(JSON.stringify(message));
 	}
 
-	configHandler(event) {
+	calibrationHandler(event) {
 		this.setState(
 			{
-				message2: "lol!",
-				useOrientaion: () => {
+				step: 3,
+				instruction: "Now hold still!",
+				useOrientation: () => {
 					initial_alphas.push(this.state.ovec.alpha);
 					initial_gammas.push(this.state.ovec.gamma);
 				}
@@ -110,14 +124,10 @@ class MobileApp extends React.Component {
 							: -1.0 * (gamma_offset + 90.0);
 
 					this.setState({
+						step: 4,
 						alpha_offset,
 						y_zero,
-						// message: `Configuring is done! The length of that array is ${initial_alphas.length}, also alpha_sum is ${alpha_sum}, and alpha_offset is ${alpha_offset}`,
-						message2: `configuring is done, here is gamma ${gamma_offset}, and the length ${
-							initial_gammas.length
-						}, y_zero is ${y_zero}`,
-
-						useOrientaion: () => {
+						useOrientation: () => {
 							const a = this.state.ovec.alpha;
 							const b = this.state.ovec.beta;
 							const g = this.state.ovec.gamma;
@@ -148,11 +158,14 @@ class MobileApp extends React.Component {
 								((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
 							y = y - this.state.y_zero;
 
+							// const x_normalized = Math.pow(10.0 * (x / 90.0), 2);
+							// const y_normalized = Math.pow(10.0 * (y / 90.0), 2);
+
 							this.setState(
 								{
 									velocity: {
-										x: x / 90.0,
-										y: y / 90.0
+										x: x / 90.0, //x < 0.0 ? -1.0 * x_normalized : x_normalized,
+										y: y / 90.0 //y < 0.0 ? -1.0 * y_normalized : y_normalized
 									}
 								},
 								() => {
@@ -164,20 +177,82 @@ class MobileApp extends React.Component {
 							);
 						}
 					});
-				}, 5000);
+				}, this.state.calibrationTime);
+			}
+		);
+	}
+
+	handleSubmit(event) {
+		event.preventDefault();
+		const code =
+			event.target.c0.value +
+			event.target.c1.value +
+			event.target.c2.value +
+			event.target.c3.value +
+			event.target.c4.value +
+			event.target.c5.value;
+
+		this.send({
+			subject: "connect",
+			code
+		});
+	}
+
+	shootHandler(event) {
+		event.preventDefault();
+		this.send({
+			subject: "shoot",
+			shooting: true
+		});
+	}
+
+	ceaseFireHandler(event) {
+		event.preventDefault();
+		this.send({
+			subject: "shoot",
+			shooting: false
+		});
+	}
+
+	handleQuickConnect(event) {
+		this.setState(
+			{
+				calibrationTime: 1000
+			},
+			() => {
+				this.send({
+					subject: "connect",
+					code: QUICK_CODE
+				});
 			}
 		);
 	}
 
 	render() {
-		// const CodeFormView = <div />;
-		// const CalibrationView = <div />;
-		// const GameView =
-
-		return (
+		const CodeFormView = (
 			<div>
-				<h1>{this.state.message}</h1>
-				<h1>{this.state.message2}</h1>
+				<h1>{this.state.instruction}</h1>
+				<form onSubmit={this.handleSubmit}>
+					<input type="text" name="c0" maxlength="1" />
+					<input type="text" name="c1" maxlength="1" />
+					<input type="text" name="c2" maxlength="1" />
+					<input type="text" name="c3" maxlength="1" />
+					<input type="text" name="c4" maxlength="1" />
+					<input type="text" name="c5" maxlength="1" />
+					<input type="submit" value="Connect" />
+				</form>
+				<h1>{this.state.error}</h1>
+				<button onClick={this.handleQuickConnect}>Quick Connect</button>
+			</div>
+		);
+
+		const CalibrationButton = this.state.step === 2 && (
+			<button onClick={this.calibrationHandler}>Calibrate</button>
+		);
+
+		const CalibrationView = (
+			<div>
+				<h1>{this.state.instruction}</h1>
 				<ul>
 					<li>alpha: {this.state.ovec.alpha}</li>
 					<li>beta: {this.state.ovec.beta}</li>
@@ -188,19 +263,31 @@ class MobileApp extends React.Component {
 					<li>x velocity: {this.state.velocity.x}</li>
 					<li>y velocity: {this.state.velocity.y}</li>
 				</ul>
-				<button onClick={this.configHandler}>Calibrate</button>
+				{CalibrationButton}
 			</div>
 		);
 
-		// if (!this.state.connected) {
-		// 	return CodeFormView;
-		// } else {
-		// 	if (this.state.calibrating) {
-		// 		return CalibratingView;
-		// 	} else {
-		// 		return GameView;
-		// 	}
-		// }
+		const GameView = (
+			<div>
+				<h1>{this.state.instruction}</h1>
+				<div
+					style={{ width: "100px", height: "100px", backgroundColor: "blue" }}
+					onTouchStart={this.shootHandler}
+					onTouchEnd={this.ceaseFireHandler}
+				/>
+			</div>
+		);
+
+		switch (this.state.step) {
+			case 1:
+				return CodeFormView;
+			case 2:
+				return CalibrationView;
+			case 3:
+				return CalibrationView;
+			case 4:
+				return GameView;
+		}
 	}
 }
 
