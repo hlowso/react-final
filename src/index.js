@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 // import start from "./game-test.js";
-import start from "./game.js";
+import start from "./startGame.js";
 import App from "./App.js";
 import MobileApp from "./MobileApp.js";
 
@@ -14,5 +14,5 @@ const isMobile = () => {
 if (isMobile()) {
 	ReactDOM.render(<MobileApp />, document.getElementById("root"));
 } else {
-	start();
+	window.onload = start();
 }
