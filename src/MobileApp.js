@@ -87,6 +87,24 @@ class MobileApp extends React.Component {
 					});
 				}
 			};
+			this.ws.onclose = () => {
+				this.setState({
+					step: 1,
+					instruction: "Connection closed. Enter in a new code to play again.",
+					ovec: {
+						alpha: 0.0,
+						beta: 0.0,
+						gamma: 0.0
+					},
+					alpha_offset: 0.0,
+					velocity: {
+						x: 0.0,
+						y: 0.0
+					},
+					calibrationTime: 5000,
+					useOrientation: () => {}
+				});
+			};
 		};
 	}
 
@@ -123,60 +141,72 @@ class MobileApp extends React.Component {
 							? -1.0 * (gamma_offset - 90.0)
 							: -1.0 * (gamma_offset + 90.0);
 
-					this.setState({
-						step: 4,
-						alpha_offset,
-						y_zero,
-						useOrientation: () => {
-							const a = this.state.ovec.alpha;
-							const b = this.state.ovec.beta;
-							const g = this.state.ovec.gamma;
-							const C = Math.abs(g) / 90.0;
+					// TODO make calibration successful meaningful
+					const calibration_successful = true;
+					if (calibration_successful) {
+						this.send({
+							subject: "calibrated"
+						});
 
-							let beta_component_for_x, alpha_component_for_x, x, y;
+						this.setState({
+							step: 4,
+							alpha_offset,
+							y_zero,
+							useOrientation: () => {
+								const a = this.state.ovec.alpha;
+								const b = this.state.ovec.beta;
+								const g = this.state.ovec.gamma;
+								const C = Math.abs(g) / 90.0;
 
-							if (g > 0.0) {
-								if (b > 0.0) {
-									beta_component_for_x = b - 180.0;
-								} else {
-									beta_component_for_x = b + 180.0;
-								}
-								if (a > 0.0) {
-									alpha_component_for_x = a - 180.0;
-								} else {
-									alpha_component_for_x = a + 180.0;
-								}
-								y = -1.0 * (g - 90.0);
-							} else {
-								beta_component_for_x = b;
-								alpha_component_for_x = a;
-								y = -1.0 * (g + 90.0);
-							}
+								let beta_component_for_x, alpha_component_for_x, x, y;
 
-							x =
-								-1.0 *
-								((1.0 - C) * beta_component_for_x + C * alpha_component_for_x);
-							y = y - this.state.y_zero;
-
-							// const x_normalized = Math.pow(10.0 * (x / 90.0), 2);
-							// const y_normalized = Math.pow(10.0 * (y / 90.0), 2);
-
-							this.setState(
-								{
-									velocity: {
-										x: x / 90.0, //x < 0.0 ? -1.0 * x_normalized : x_normalized,
-										y: y / 90.0 //y < 0.0 ? -1.0 * y_normalized : y_normalized
+								if (g > 0.0) {
+									if (b > 0.0) {
+										beta_component_for_x = b - 180.0;
+									} else {
+										beta_component_for_x = b + 180.0;
 									}
-								},
-								() => {
-									this.send({
-										subject: "push",
-										velocity: this.state.velocity
-									});
+									if (a > 0.0) {
+										alpha_component_for_x = a - 180.0;
+									} else {
+										alpha_component_for_x = a + 180.0;
+									}
+									y = -1.0 * (g - 90.0);
+								} else {
+									beta_component_for_x = b;
+									alpha_component_for_x = a;
+									y = -1.0 * (g + 90.0);
 								}
-							);
-						}
-					});
+
+								x =
+									-1.0 *
+									((1.0 - C) * beta_component_for_x +
+										C * alpha_component_for_x);
+								y = y - this.state.y_zero;
+
+								this.setState(
+									{
+										velocity: {
+											x: x / 90.0, //x < 0.0 ? -1.0 * x_normalized : x_normalized,
+											y: y / 90.0
+										}
+									},
+									() => {
+										this.send({
+											subject: "push",
+											velocity: this.state.velocity
+										});
+									}
+								);
+							}
+						});
+					} else {
+						this.setState({
+							step: 2,
+							instruction: "Your calibration was unsuccessful. Try again.",
+							useOrientation: () => {}
+						});
+					}
 				}, this.state.calibrationTime);
 			}
 		);

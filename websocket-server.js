@@ -4,14 +4,16 @@ const uuid = require("uuid-v4");
 const MAX_PLAYER_COUNT = 3;
 
 const handleDesktopMessage = (ws, message) => {
-	const id = uuid();
+	const link_id = uuid();
 	links.push({
-		id,
+		id: link_id,
 		code: message.code,
 		desktopSocket: ws,
-		mobileSockets: []
+		mobileSockets: [],
+		open: true
 	});
-	ws.link_id = id;
+	ws.link_id = link_id;
+	ws.is_desktop = true;
 };
 
 const handleMobileMessage = (ws, message) => {
@@ -57,24 +59,44 @@ const handleMobileMessage = (ws, message) => {
 			break;
 		case "push":
 			link = links.find(l => l.id === ws.link_id);
-			link.desktopSocket.send(
-				JSON.stringify({
-					subject: message.subject,
-					player_id: ws.player_id,
-					velocity: message.velocity
-				})
-			);
+			if (link) {
+				link.desktopSocket.send(
+					JSON.stringify({
+						subject: message.subject,
+						player_id: ws.player_id,
+						velocity: message.velocity
+					})
+				);
+			} else {
+				ws.close();
+			}
 			break;
 		case "shoot":
 			link = links.find(l => l.id === ws.link_id);
-			link.desktopSocket.send(
-				JSON.stringify({
-					subject: message.subject,
-					player_id: ws.player_id,
-					shooting: message.shooting
-				})
-			);
+			if (link) {
+				link.desktopSocket.send(
+					JSON.stringify({
+						subject: message.subject,
+						player_id: ws.player_id,
+						shooting: message.shooting
+					})
+				);
+			} else {
+				ws.close();
+			}
 			break;
+		case "calibrated":
+			link = links.find(l => l.id === ws.link_id);
+			if (link) {
+				link.desktopSocket.send(
+					JSON.stringify({
+						subject: message.subject,
+						player_id: ws.player_id
+					})
+				);
+			} else {
+				ws.close();
+			}
 	}
 };
 
@@ -98,7 +120,29 @@ module.exports = server => {
 		});
 
 		ws.on("close", () => {
-			console.log("Client disconnected");
+			if (ws.is_desktop) {
+				const index = links.findIndex(l => l.id === ws.link_id);
+				const link = links[index];
+				link.open = false;
+				for (let ms of link.mobileSockets) {
+					ms.close();
+				}
+				links.splice(index, 1);
+				console.log("Desktop disconnected");
+			} else {
+				const link = links.find(l => l.id === ws.link_id);
+				if (link && link.open) {
+					// console.log("Sending the disconnect messgae");
+					console.log(link.desktopSocket);
+					link.desktopSocket.send(
+						JSON.stringify({
+							subject: "disconnect",
+							player_id: ws.player_id
+						})
+					);
+				}
+				console.log("Mobile disconnected");
+			}
 		});
 	});
 };
