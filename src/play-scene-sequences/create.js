@@ -1,6 +1,8 @@
 import gameAttributes from "../game-attributes.js";
 
-export default function() {
+export default function(data) {
+	console.log(data);
+
 	// TEMPORARY PLACEMENT FOR WS
 	const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
 	ws.onopen = () => {

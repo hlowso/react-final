@@ -1,22 +1,25 @@
 import gameAttributes from "./game-attributes.js";
-import play from "./play.js";
-
-const gameConfig = {
-  type: Phaser.AUTO,
-  width: gameAttributes.gameWidth,
-  height: gameAttributes.gameHeight,
-  physics: {
-    default: "arcade",
-    arcade: {
-      debug: true
-      // gravity: { y: 20 }
-    }
-  },
-  scene: [play]
-};
+import playScene from "./play-scene.js";
+import getTitleScene from "./title-scene.js";
 
 const start = () => {
+  const gameConfig = {
+    type: Phaser.AUTO,
+    width: gameAttributes.gameWidth,
+    height: gameAttributes.gameHeight,
+    physics: {
+      default: "arcade",
+      arcade: {
+        debug: true
+        // gravity: { y: 20 }
+      }
+    },
+    scene: [getTitleScene(game), playScene]
+  };
+
   const game = new Phaser.Game(gameConfig);
+  // game.scene.start("Title", { data: "this is data" });
+
   // function resize() {
   //   const canvas = document.querySelector("canvas");
   //   const windowWidth = window.innerWidth;
