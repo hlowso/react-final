@@ -14,6 +14,9 @@ export default function() {
 	ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
 		switch (message.subject) {
+			case "connect":
+				console.log("player connecting with id:", message.player_id);
+				break;
 			case "push":
 				this.vars.x_velocity = message.velocity.x;
 				this.vars.y_velocity = message.velocity.y;

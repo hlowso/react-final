@@ -9,7 +9,7 @@ const handleDesktopMessage = (ws, message) => {
 		code: message.code,
 		desktopSocket: ws
 	});
-	ws.id = id;
+	ws.link_id = id;
 };
 
 const handleMobileMessage = (ws, message) => {
@@ -22,10 +22,17 @@ const handleMobileMessage = (ws, message) => {
 			);
 			if (link) {
 				link.mobileSocket = ws;
-				ws.id = link.id;
+				ws.id = uuid();
+				ws.link_id = link.id;
 				ws.send(
 					JSON.stringify({
 						success: true
+					})
+				);
+				link.desktopSocket.send(
+					JSON.stringify({
+						subject: message.subject,
+						player_id: ws.id
 					})
 				);
 			} else {
@@ -38,19 +45,21 @@ const handleMobileMessage = (ws, message) => {
 			}
 			break;
 		case "push":
-			link = links.find(l => l.id === ws.id);
+			link = links.find(l => l.id === ws.link_id);
 			link.desktopSocket.send(
 				JSON.stringify({
 					subject: message.subject,
+					player_id: ws.id,
 					velocity: message.velocity
 				})
 			);
 			break;
 		case "shoot":
-			link = links.find(l => l.id === ws.id);
+			link = links.find(l => l.id === ws.link_id);
 			link.desktopSocket.send(
 				JSON.stringify({
 					subject: message.subject,
+					player_id: ws.id,
 					shooting: message.shooting
 				})
 			);
