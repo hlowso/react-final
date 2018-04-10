@@ -1,4 +1,5 @@
 import initialize from "./play-scene-sequences/initialize.js";
+import init from "./play-scene-sequences/init.js";
 import preload from "./play-scene-sequences/preload.js";
 import create from "./play-scene-sequences/create.js";
 import update from "./play-scene-sequences/update.js";
@@ -24,6 +25,7 @@ const play = new Phaser.Class({
   Extends: Phaser.Scene,
 
   initialize,
+  init,
   preload,
   create,
   fireBullet,
