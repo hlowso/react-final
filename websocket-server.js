@@ -1,13 +1,15 @@
 const WebSocket = require("ws");
 const SocketServer = WebSocket.Server;
 const uuid = require("uuid-v4");
+const MAX_PLAYER_COUNT = 3;
 
 const handleDesktopMessage = (ws, message) => {
 	const id = uuid();
 	links.push({
 		id,
 		code: message.code,
-		desktopSocket: ws
+		desktopSocket: ws,
+		mobileSockets: []
 	});
 	ws.link_id = id;
 };
@@ -21,20 +23,29 @@ const handleMobileMessage = (ws, message) => {
 				l => l.code === message.code || message.code === "buster"
 			);
 			if (link) {
-				link.mobileSocket = ws;
-				ws.id = uuid();
-				ws.link_id = link.id;
-				ws.send(
-					JSON.stringify({
-						success: true
-					})
-				);
-				link.desktopSocket.send(
-					JSON.stringify({
-						subject: message.subject,
-						player_id: ws.id
-					})
-				);
+				if (link.mobileSockets.length < MAX_PLAYER_COUNT) {
+					link.mobileSockets.push(ws);
+					ws.player_id = uuid();
+					ws.link_id = link.id;
+					ws.send(
+						JSON.stringify({
+							success: true
+						})
+					);
+					link.desktopSocket.send(
+						JSON.stringify({
+							subject: message.subject,
+							player_id: ws.player_id
+						})
+					);
+				} else {
+					ws.send(
+						JSON.stringify({
+							error: "Cannot join game, too many users"
+						})
+					);
+					console.log("Link found for mobile, but game is full");
+				}
 			} else {
 				ws.send(
 					JSON.stringify({
@@ -49,7 +60,7 @@ const handleMobileMessage = (ws, message) => {
 			link.desktopSocket.send(
 				JSON.stringify({
 					subject: message.subject,
-					player_id: ws.id,
+					player_id: ws.player_id,
 					velocity: message.velocity
 				})
 			);
@@ -59,7 +70,7 @@ const handleMobileMessage = (ws, message) => {
 			link.desktopSocket.send(
 				JSON.stringify({
 					subject: message.subject,
-					player_id: ws.id,
+					player_id: ws.player_id,
 					shooting: message.shooting
 				})
 			);
