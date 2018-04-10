@@ -1,7 +1,7 @@
 import gameAttributes from "../game-attributes.js";
 
 export default function() {
-	console.log(this.mobileSockets);
+	console.log(this.player_ids);
 
 	// TEMPORARY PLACEMENT FOR WS
 
@@ -30,19 +30,37 @@ export default function() {
 
 	background.setScale(window.devicePixelRatio * 2);
 
-	this.entities.player = this.physics.add.sprite(
-		gameAttributes.gameWidth / 2,
-		gameAttributes.gameHeight / 2,
-		"pigeon"
-	);
+	this.entities.players = this.physics.group({
+		key: "pigeon",
+		setXY: {
+			x: gameAttributes.gameWidth / 2,
+			y: gameAttributes.gameHeight / 2,
+			stepX: 60
+		}
+	});
+	this.entities.players.setCollideWorldBounds(true);
+	this.entities.players.setBounce(0.4);
+	this.entities.players.setVelocityX(0);
+	this.entities.players.setVelocityY(0);
 
-	this.entities.player.alive = true;
+	this.player_ids.forEach(function(player_id) {
+		addPlayer(player_id);
+	});
 
-	this.entities.player.setBounce(0.4);
-	this.entities.player.setCollideWorldBounds(true);
+	addPlayer = (player_id) => {
+		let player = this.entities.players.create(
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2,
+			"pigeon"
+		);
+		player.id = player_id;
+		player.alive = true;
+		player.score = 0;
+		player.health = 3;
+		player.shooting = false;
+		player.disabled = false;
+	};
 
-	this.entities.player.setVelocityX(0);
-	this.entities.player.setVelocityY(0);
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -56,7 +74,7 @@ export default function() {
 	});
 
 	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
-	this.vars.playerScore = this.add.text(100, 100, `${this.vars.sscore}`);
+	this.vars.playerScore = this.add.text(100, 100, `${this.vars.score}`);
 
 	//health = this.add.group();
 	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
@@ -83,7 +101,7 @@ export default function() {
 	);
 	this.physics.add.collider(
 		this.entities.enemies,
-		this.entities.player,
+		this.entities.players,
 		this.playerEnemyCollision,
 		null,
 		this
