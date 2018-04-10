@@ -1,3 +1,4 @@
+.env
 journal
 .eslintrc
 node_modules
