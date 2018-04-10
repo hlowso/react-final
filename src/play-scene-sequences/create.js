@@ -5,7 +5,7 @@ export default function() {
 
 	// TEMPORARY PLACEMENT FOR WS
 
-	ws.onmessage = incoming_message => {
+	this.vars.ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
 		switch (message.subject) {
 			// case "connect":
