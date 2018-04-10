@@ -1,5 +1,5 @@
 export default function() {
-	if (this.entities.player.alive) {
+	if (this.entities.players.length > 0) {
 		this.vars.score += 1;
 		this.vars.playerScore.setText("score: " + this.vars.score);
 

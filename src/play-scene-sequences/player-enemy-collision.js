@@ -6,7 +6,7 @@ export default function(player, enemy) {
 	// player.enableBody(false, player.x, player.y, true, true), 2000
 	// })
 	setTimeout(() => {
-		this.vars.playerDisabled = false;
+		player.playerDisabled = false;
 		// console.log("disabled: ", playerDisabled);
 		player.setTint(0xffffff);
 	}, 2000);
@@ -14,14 +14,14 @@ export default function(player, enemy) {
 	// console.log("health: ", health);
 	// console.log("playerDisabled:  ", playerDisabled);
 
-	if (!this.vars.playerDisabled) {
-		this.vars.playerDisabled = true;
-		this.vars.health -= 1;
-		this.vars.healthText.setText("Health: " + this.vars.health);
+	if (!player.playerDisabled) {
+		player.playerDisabled = true;
+		player.health -= 1;
+		// player.healthText.setText("Health: " + player.health);
 		// player.enableBody(false, player.x, player.y, true, true);
-		if (this.vars.health <= 0) {
-			this.entities.player.alive = false;
-			this.entities.player.destroy();
+		if (player.health <= 0) {
+			player.alive = false;
+			player.destroy();
 		}
 	}
 }

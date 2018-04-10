@@ -1,7 +1,7 @@
 import gameAttributes from "../game-attributes.js";
 
 export default function() {
-	console.log(this.player_ids);
+	console.log(this.vars.player_ids);
 
 	// TEMPORARY PLACEMENT FOR WS
 
@@ -30,24 +30,18 @@ export default function() {
 
 	background.setScale(window.devicePixelRatio * 2);
 
-	this.entities.players = this.physics.group({
+	this.entities.players = this.physics.add.group({
 		key: "pigeon",
 		setXY: {
-			x: gameAttributes.gameWidth / 2,
-			y: gameAttributes.gameHeight / 2,
+			x: -50,
+			y: -50,
 			stepX: 60
 		}
 	});
-	this.entities.players.setCollideWorldBounds(true);
-	this.entities.players.setBounce(0.4);
-	this.entities.players.setVelocityX(0);
-	this.entities.players.setVelocityY(0);
+	// this.entities.players.setCollideWorldBounds(true);
+	// this.entities.players.setBounce(0.4);
 
-	this.player_ids.forEach(function(player_id) {
-		addPlayer(player_id);
-	});
-
-	addPlayer = (player_id) => {
+	const addPlayer = (player_id) => {
 		let player = this.entities.players.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
@@ -59,7 +53,17 @@ export default function() {
 		player.health = 3;
 		player.shooting = false;
 		player.disabled = false;
+		player.setCollideWorldBounds(true);
+		player.setVelocityX(0);
+		player.setVelocityY(0);
+		player.x = Math.random() * gameAttributes.gameWidth;
+		player.y = Math.random() * gameAttributes.gameHeight;
 	};
+
+	this.vars.player_ids.forEach(function(player_id) {
+		addPlayer(player_id);
+	});
+
 
 
 	this.entities.enemies = this.physics.add.group({
