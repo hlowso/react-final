@@ -27,7 +27,7 @@ const getTitleScene = game =>
 
 			console.log(this);
 			setTimeout(() => {
-				this.sys.game.scene.start("Play", {
+				this.scene.switch("Play", {
 					data: "THIS is arbitrary data..."
 				});
 			}, 3000);
