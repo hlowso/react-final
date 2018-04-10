@@ -1,6 +1,7 @@
 import gameAttributes from "./game-attributes.js";
 import playScene from "./play-scene.js";
-import getTitleScene from "./title-scene.js";
+import titleScene from "./title-scene.js";
+import lobbyScene from "./lobby-scene.js";
 
 const start = () => {
   const gameConfig = {
@@ -14,7 +15,7 @@ const start = () => {
         // gravity: { y: 20 }
       }
     },
-    scene: [getTitleScene(game), playScene]
+    scene: [titleScene, lobbyScene, playScene]
   };
 
   const game = new Phaser.Game(gameConfig);

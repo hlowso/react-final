@@ -1,24 +1,16 @@
 import gameAttributes from "../game-attributes.js";
 
-export default function(data) {
-	console.log(data);
+export default function() {
+	console.log(this.mobileSockets);
 
 	// TEMPORARY PLACEMENT FOR WS
-	const ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-	ws.onopen = () => {
-		ws.send(
-			JSON.stringify({
-				device: "desktop",
-				code: gameAttributes.code
-			})
-		);
-	};
+
 	ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
 		switch (message.subject) {
-			case "connect":
-				console.log("player connecting with id:", message.player_id);
-				break;
+			// case "connect":
+			// 	console.log("player connecting with id:", message.player_id);
+			// 	break;
 			case "push":
 				this.vars.x_velocity = message.velocity.x;
 				this.vars.y_velocity = message.velocity.y;
