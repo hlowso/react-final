@@ -1,17 +1,10 @@
 import gameAttributes from "../game-attributes.js";
 
 export default function() {
-	console.log(this.vars.player_ids);
-
-	// TEMPORARY PLACEMENT FOR WS
-
 	this.vars.ws.onmessage = incoming_message => {
 		let player;
 		const message = JSON.parse(incoming_message.data);
 		switch (message.subject) {
-			// case "connect":
-			// 	console.log("player connecting with id:", message.player_id);
-			// 	break;
 			case "push":
 				player = this.entities.players.individuals[message.player_id];
 				let x_velocity = message.velocity.x;
@@ -39,7 +32,6 @@ export default function() {
 				break;
 		}
 	};
-	// ---------------
 
 	const background = this.add.image(
 		gameAttributes.gameWidth / 2,
@@ -90,15 +82,18 @@ export default function() {
 		setXY: {
 			x: -50,
 			y: -50
-			// stepX: 600,
-			// stepY: 60
 		}
+	});
+
+	this.time.addEvent({
+		delay: 5000,
+		callback: this.enemySpawn,
+		callbackScope: this,
+		loop: true
 	});
 
 	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
 	this.vars.playerScore = this.add.text(100, 100, `${this.vars.score}`);
-
-	//health = this.add.group();
 
 	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 

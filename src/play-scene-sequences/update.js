@@ -2,9 +2,9 @@ export default function() {
 	this.vars.score += 1;
 	this.vars.playerScore.setText("score: " + this.vars.score);
 
-	if (this.vars.score % 300 === 0) {
-		this.enemySpawn();
-	}
+	// if (this.vars.score % 300 === 0) {
+	// 	this.enemySpawn();
+	// }
 
 	this.physics.collide(
 		this.entities.enemies,
