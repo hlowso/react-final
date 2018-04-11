@@ -2,11 +2,10 @@ import gameAttributes from "../game-attributes.js";
 
 export default function() {
 	this.vars.ws.onmessage = incoming_message => {
-		let player;
 		const message = JSON.parse(incoming_message.data);
+		const player = this.entities.players.individuals[message.player_id];
 		switch (message.subject) {
 			case "push":
-				player = this.entities.players.individuals[message.player_id];
 				let x_velocity = message.velocity.x;
 				let y_velocity = message.velocity.y;
 
@@ -26,9 +25,11 @@ export default function() {
 
 				break;
 			case "shoot":
-				player = this.entities.players.individuals[message.player_id];
 				player.shooting = message.shooting;
-				console.log(player);
+				break;
+			case "disconnect":
+				player.alive = false;
+				player.disableBody(true, true);
 				break;
 		}
 	};
@@ -92,21 +93,13 @@ export default function() {
 		loop: true
 	});
 
-	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
-
 	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
-
-	//////////////////////////////////
 
 	this.entities.bullets = this.physics.add.group({
 		defaultKey: "laser",
-		repeat: 40,
-		setCollideWorldBounds: true,
-		setXY: { x: -50, y: -50 }
+		setCollideWorldBounds: true
 	});
-
-	// bullets.createMultiple(40, 'laser')
 
 	this.physics.add.collider(
 		this.entities.enemies,
