@@ -54,6 +54,8 @@ export default function() {
 		})
 	};
 
+	this.entities.bullets = {};
+
 	const addPlayer = player_id => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
@@ -71,6 +73,7 @@ export default function() {
 		player.setVelocityY(0);
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
+
 		this.entities.players.individuals[player_id] = player;
 	};
 
@@ -97,7 +100,7 @@ export default function() {
 	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	this.entities.bullets = this.physics.add.group({
-		defaultKey: "laser",
+		key: "laser",
 		setCollideWorldBounds: true
 	});
 
