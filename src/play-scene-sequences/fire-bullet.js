@@ -1,4 +1,4 @@
-export default function() {
+export default function(player) {
 	if (this.time.now > this.vars.bulletTime) {
 		let bullet = this.entities.bullets.get();
 
@@ -6,13 +6,13 @@ export default function() {
 			bullet.scaleX = 2;
 			bullet.scaleY = 2;
 			bullet.setPosition(
-				this.entities.player.body.x + 16,
-				this.entities.player.body.y + 16
+				player.body.x + 16,
+				player.body.y + 16
 			);
 			bullet.lifespan = 2000;
-			bullet.rotation = this.entities.player.rotation;
+			bullet.rotation = player.rotation;
 			this.physics.velocityFromRotation(
-				this.entities.player.rotation,
+				player.rotation,
 				1000,
 				bullet.body.velocity
 			);

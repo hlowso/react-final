@@ -1,27 +1,28 @@
 export default function() {
-	if (this.entities.players.length > 0) {
+	if (Object.keys(this.entities.players.individuals).length > 0) {
 		this.vars.score += 1;
 		this.vars.playerScore.setText("score: " + this.vars.score);
 
-		if (this.vars.y_velocity > 0) {
-			this.entities.player.rotation = Math.atan(
-				this.vars.x_velocity / this.vars.y_velocity
-			);
-		} else if (this.vars.y_velocity === 0.0) {
-			if (this.vars.x_velocity < 0) {
-				this.entities.player.rotation = 0.5 * Math.PI;
-			} else {
-				this.entities.player.rotation = 1.5 * Math.PI;
-			}
-		} else {
-			this.entities.player.rotation =
-				Math.atan(this.vars.x_velocity / this.vars.y_velocity) + Math.PI;
-		}
+		// this.entities.players.group.forEach(function(player) {
+		// 	if (player.y_velocity > 0) {
+		// 		player.rotation = Math.atan(
+		// 			player.x_velocity / player.y_velocity
+		// 		);
+		// 	} else if (player.y_velocity === 0.0) {
+		// 		if (player.x_velocity < 0) {
+		// 			player.rotation = 0.5 * Math.PI;
+		// 		} else {
+		// 			player.rotation = 1.5 * Math.PI;
+		// 		}
+		// 	} else {
+		// 		player.rotation = Math.atan(player.x_velocity / player.y_velocity) + Math.PI;
+		// 	}
+		// 	player.setVelocityX(8000.0 * player.x_velocity);
+		// 	player.setVelocityY(-8000.0 * player.y_velocity);
+		// });
 
-		this.entities.player.setVelocityX(8000.0 * this.vars.x_velocity);
-		this.entities.player.setVelocityY(-8000.0 * this.vars.y_velocity);
 
-		if (this.vars.score % 1000 === 0) {
+		if (this.vars.score % 300 === 0) {
 			this.enemySpawn();
 		}
 
@@ -33,9 +34,15 @@ export default function() {
 			this
 		);
 
-		if (this.vars.shooting) {
-			this.fireBullet();
+		// console.log(this.entities.players);
+		for (let player_id in this.entities.players.individuals) {
+			// console.log("byebyebye");
+			let player = this.entities.players.individuals[player_id];
+			if (player.shooting) {
+				this.fireBullet(player);
+			}
 		}
+
 	} else {
 		// Go To Gameover sequence
 	}

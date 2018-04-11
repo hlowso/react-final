@@ -1,4 +1,4 @@
-export default function(player, enemy) {
+export default function(enemy, player) {
 	// player.disableBody(true, false);
 	enemy.setBounce(0.4);
 	player.setTint(0xff0000);
