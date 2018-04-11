@@ -70,11 +70,13 @@ export default function() {
 		player.setVelocityY(0);
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
+		//player.emitter = true;
 		this.entities.players.individuals[player_id] = player;
 	};
 
 	this.vars.player_ids.forEach(function(player_id) {
 		addPlayer(player_id);
+		assignPlayerEmitter();
 	});
 
 	this.entities.enemies = this.physics.add.group({
@@ -122,4 +124,30 @@ export default function() {
 		null,
 		this
 	);
+
+	let emitter1 = this.add.particles('red_emitter');
+	let emitter2 = this.add.particles('yellow_emitter');
+
+	emitter1.createEmitter({
+		speed: 100,
+		gravity: { x: 0, y: 200 },
+		scale: { start: 0.1, end: 1 },
+	});
+
+	emitter2.createEmitter({
+		speed: 100,
+		gravity: { x: 0, y: 200},
+		scale: { start: 2, end: 2},
+	})
+
+
+	function assignPlayerEmitter(emitter) {
+		let emitter = emitter1 || emitter2
+		if(player) {
+			emitter = true;
+		}
+	}
+
+
+	//END
 }
