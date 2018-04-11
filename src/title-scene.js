@@ -3,16 +3,18 @@ import SkyBackground from "./assets/sky.png";
 import StartGameButton from "./assets/start_button.png";
 import leaderboardButton from "./assets/leaderboard_button.png";
 
-const leaderboardDB = { username: 'Lor3e',
-												score: 2500 }
+const leaderboardDB = {
+	username: "Lor3e",
+	score: 2500
+};
 
 function displayLeaderboard(button) {
 	button.off("clicked", displayLeaderboard);
 	button.input.enabled = false;
 	this.add.text(
-			gameAttributes.gameWidth / 6,
-			gameAttributes.gameHeight / 6,
-			`Username: ${leaderboardDB.username}
+		gameAttributes.gameWidth / 6,
+		gameAttributes.gameHeight / 6,
+		`Username: ${leaderboardDB.username}
 			 Score: ${leaderboardDB.score}`
 	);
 }
@@ -68,27 +70,17 @@ const titleScene = new Phaser.Class({
 			gameAttributes.gameHeight / 2,
 			`WELCOME BITCHES!`
 		);
-		// console.log(JSON.stringify());
-
 
 		leaderboard_button.setInteractive();
 		leaderboard_button.on("clicked", displayLeaderboard, this);
-
-		// console.log(this);
-	// 	setTimeout(() => {
-	// 		this.scene.start("Lobby", {
-	// 			data: "THIS is arbitrary data..."
-	// 		});
-	// 	}, 1000);
-		},
-
-	update: function() {
 
 		this.input.on(
 			"gameobjectup",
 			function(pointer, gameObject) {
 				gameObject.emit("clicked", gameObject);
-			},this);
+			},
+			this
+		);
 	}
 });
 

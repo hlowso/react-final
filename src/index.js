@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import start from "./startGame.js";
+import start from "./start-game.js";
 import MobileApp from "./MobileApp.js";
 
 const isMobile = () => {
