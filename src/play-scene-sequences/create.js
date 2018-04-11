@@ -111,7 +111,6 @@ export default function() {
     return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
 	}
 
-
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
 		setXY: {
@@ -151,13 +150,4 @@ export default function() {
 		this
 	);
 
-
-
-
-	// const assignPlayerColour = (player, emitter) => {
-	// 	return redEmitter || yellowEmitter
-	// };
-
-
-	//END
 }
