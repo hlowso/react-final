@@ -2,11 +2,10 @@ import gameAttributes from "../game-attributes.js";
 
 export default function() {
 	this.vars.ws.onmessage = incoming_message => {
-		let player;
 		const message = JSON.parse(incoming_message.data);
+		const player = this.entities.players.individuals[message.player_id];
 		switch (message.subject) {
 			case "push":
-				player = this.entities.players.individuals[message.player_id];
 				let x_velocity = message.velocity.x;
 				let y_velocity = message.velocity.y;
 
@@ -26,9 +25,11 @@ export default function() {
 
 				break;
 			case "shoot":
-				player = this.entities.players.individuals[message.player_id];
 				player.shooting = message.shooting;
-				console.log(player);
+				break;
+			case "disconnect":
+				player.alive = false;
+				player.disableBody(true, true);
 				break;
 		}
 	};
@@ -53,13 +54,16 @@ export default function() {
 		})
 	};
 
-	const addPlayer = player_id => {
+	this.vars.playerTexts = {};
+
+	const addPlayer = (player_id, playerNumber) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
 		player.id = player_id;
+		player.name = 'Player' + (playerNumber + 1).toString();
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -70,14 +74,43 @@ export default function() {
 		player.setVelocityY(0);
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
-		//player.emitter = true;
 		this.entities.players.individuals[player_id] = player;
+		addPlayerTexts(player, playerNumber);
 	};
 
-	this.vars.player_ids.forEach(function(player_id) {
-		addPlayer(player_id);
-		assignPlayerEmitter();
-	});
+	const addPlayerTexts = (player, index) => {
+		let colour = generateHexColor();
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: colour });
+		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: colour });
+		healthText.id = player.id;
+		const playerTexts = this.vars.playerTexts[player.id]= {};
+		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: colour });
+		killcountText.id = player.id;
+		playerTexts.health = healthText;
+		playerTexts.killcount = killcountText;
+	};
+
+	let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
+
+	for (let i = 0; i < this.vars.player_ids.length; i++) {
+		let player_id = this.vars.player_ids[i];
+		let newPlayer = addPlayer(player_id, i);
+		// let playerColour = assignPlayerColour();
+
+		emitters[i].createEmitter({
+			speed: 100,
+			gravity: { x: 0, y: 200 },
+			scale: { start: 0.1, end: 1 },
+			follow: this.entities.players.individuals[this.vars.player_ids[i]]
+		});
+	}
+
+	// console.log(this.vars.playerTexts);
+
+	function generateHexColor() {
+    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+	}
+
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -94,21 +127,14 @@ export default function() {
 		loop: true
 	});
 
-	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
-	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
-
-	//////////////////////////////////
+	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	this.entities.bullets = this.physics.add.group({
-		defaultKey: "laser",
-		repeat: 40,
-		setCollideWorldBounds: true,
-		setXY: { x: -50, y: -50 }
+		key: "laser",
+		setCollideWorldBounds: true
 	});
-
-	// bullets.createMultiple(40, 'laser')
 
 	this.physics.add.collider(
 		this.entities.enemies,
@@ -125,28 +151,12 @@ export default function() {
 		this
 	);
 
-	let emitter1 = this.add.particles('red_emitter');
-	let emitter2 = this.add.particles('yellow_emitter');
-
-	emitter1.createEmitter({
-		speed: 100,
-		gravity: { x: 0, y: 200 },
-		scale: { start: 0.1, end: 1 },
-	});
-
-	emitter2.createEmitter({
-		speed: 100,
-		gravity: { x: 0, y: 200},
-		scale: { start: 2, end: 2},
-	})
 
 
-	function assignPlayerEmitter(emitter) {
-		let emitter = emitter1 || emitter2
-		if(player) {
-			emitter = true;
-		}
-	}
+
+	// const assignPlayerColour = (player, emitter) => {
+	// 	return redEmitter || yellowEmitter
+	// };
 
 
 	//END

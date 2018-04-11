@@ -1,8 +1,7 @@
 // TODO ensure that while the user is configuring, if they're straddling the line between -180 and 180, then that's taken into account
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
-// TODO click n hold is for mouse click events! You've got to find the equivalent for touch events.
 import React, { Button } from "react";
-// import { Holdable, defineHold, holdProgress } from "react-touch";
+import NoSleep from "nosleep.js";
 
 const initial_alphas = [];
 const initial_gammas = [];
@@ -13,7 +12,7 @@ class MobileApp extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			step: 1,
+			step: 0,
 			instruction:
 				"Enter the code on your desktop's screen to connect this phone.",
 			ovec: {
@@ -29,83 +28,13 @@ class MobileApp extends React.Component {
 			calibrationTime: 5000,
 			useOrientation: () => {}
 		};
-		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.shootHandler = this.shootHandler.bind(this);
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
 		this.handleQuickConnect = this.handleQuickConnect.bind(this);
-	}
-
-	componentDidMount() {
-		const orientationHandler = event => {
-			// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
-			// IS TO GIVE ALPHA THE SAME RANGE AS BETA
-
-			const adjusted_alpha = event.alpha - 180.0;
-			const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
-			let readjusted_alpha;
-
-			if (normalized_alpha > 180) {
-				readjusted_alpha = normalized_alpha - 360.0;
-			} else if (normalized_alpha < -180.0) {
-				readjusted_alpha = normalized_alpha + 360.0;
-			} else {
-				readjusted_alpha = normalized_alpha;
-			}
-
-			this.setState(
-				{
-					ovec: {
-						alpha: readjusted_alpha,
-						beta: event.beta,
-						gamma: event.gamma
-					}
-				},
-				this.state.useOrientation()
-			);
-		};
-
-		this.ws.onopen = () => {
-			this.ws.onmessage = incoming_message => {
-				const message = JSON.parse(incoming_message.data);
-				if (message.success) {
-					this.setState({
-						step: 2,
-						instruction:
-							"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
-						error: ""
-					});
-					window.addEventListener(
-						"deviceorientation",
-						orientationHandler,
-						true
-					);
-				} else {
-					this.setState({
-						error: message.error
-					});
-				}
-			};
-			this.ws.onclose = () => {
-				this.setState({
-					step: 1,
-					instruction: "Connection closed. Enter in a new code to play again.",
-					ovec: {
-						alpha: 0.0,
-						beta: 0.0,
-						gamma: 0.0
-					},
-					alpha_offset: 0.0,
-					velocity: {
-						x: 0.0,
-						y: 0.0
-					},
-					calibrationTime: 5000,
-					useOrientation: () => {}
-				});
-			};
-		};
+		this.handleBegin = this.handleBegin.bind(this);
+		this.insomnia = new NoSleep();
 	}
 
 	send(data) {
@@ -258,7 +187,92 @@ class MobileApp extends React.Component {
 		);
 	}
 
+	handleBegin(event) {
+		const orientationHandler = event => {
+			// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
+			// IS TO GIVE ALPHA THE SAME RANGE AS BETA
+
+			const adjusted_alpha = event.alpha - 180.0;
+			const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
+			let readjusted_alpha;
+
+			if (normalized_alpha > 180) {
+				readjusted_alpha = normalized_alpha - 360.0;
+			} else if (normalized_alpha < -180.0) {
+				readjusted_alpha = normalized_alpha + 360.0;
+			} else {
+				readjusted_alpha = normalized_alpha;
+			}
+
+			this.setState(
+				{
+					ovec: {
+						alpha: readjusted_alpha,
+						beta: event.beta,
+						gamma: event.gamma
+					}
+				},
+				this.state.useOrientation()
+			);
+		};
+
+		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+
+		this.ws.onopen = () => {
+			this.ws.onmessage = incoming_message => {
+				const message = JSON.parse(incoming_message.data);
+				if (message.success) {
+					this.setState({
+						step: 2,
+						instruction:
+							"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
+						error: ""
+					});
+					window.addEventListener(
+						"deviceorientation",
+						orientationHandler,
+						true
+					);
+				} else {
+					this.setState({
+						error: message.error
+					});
+				}
+			};
+			this.ws.onclose = () => {
+				this.setState({
+					step: 1,
+					instruction: "Connection closed. Enter in a new code to play again.",
+					ovec: {
+						alpha: 0.0,
+						beta: 0.0,
+						gamma: 0.0
+					},
+					alpha_offset: 0.0,
+					velocity: {
+						x: 0.0,
+						y: 0.0
+					},
+					calibrationTime: 5000,
+					useOrientation: () => {}
+				});
+			};
+		};
+
+		this.insomnia.enable();
+		this.setState({
+			step: 1
+		});
+	}
+
 	render() {
+		const WelcomeView = (
+			<div>
+				<h1>WELCOME!</h1>
+				<button onClick={this.handleBegin}>Begin</button>
+			</div>
+		);
+
 		const CodeFormView = (
 			<div>
 				<h1>{this.state.instruction}</h1>
@@ -309,6 +323,8 @@ class MobileApp extends React.Component {
 		);
 
 		switch (this.state.step) {
+			case 0:
+				return WelcomeView;
 			case 1:
 				return CodeFormView;
 			case 2:
