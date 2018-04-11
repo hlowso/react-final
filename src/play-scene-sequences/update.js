@@ -1,14 +1,6 @@
 export default function() {
 	this.vars.score += 1;
-	this.vars.playerScore.setText("score: " + this.vars.score);
-
-	this.physics.collide(
-		this.entities.enemies,
-		this.entities.bullets,
-		this.bulletEnemyCollision,
-		null,
-		this
-	);
+	this.vars.gameScoreText.setText("score: " + this.vars.score);
 
 	let game_over = true;
 	for (let player_id in this.entities.players.individuals) {

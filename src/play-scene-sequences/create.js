@@ -61,7 +61,7 @@ export default function() {
 		);
 		player.id = player_id;
 		player.alive = true;
-		player.score = 0;
+		player.killcount = 0;
 		player.health = 3;
 		player.shooting = false;
 		player.disabled = false;
@@ -93,7 +93,7 @@ export default function() {
 	});
 
 	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
-	this.vars.playerScore = this.add.text(100, 100, `${this.vars.score}`);
+	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
 	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 

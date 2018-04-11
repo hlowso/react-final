@@ -13,13 +13,7 @@ const play = new Phaser.Class({
 
   vars: {
     score: 0,
-    health: 3,
     bulletTime: 0,
-    fireBullets: true,
-    x_velocity: 0.0,
-    y_velocity: 0.0,
-    shooting: false,
-    playerDisabled: false
   },
 
   Extends: Phaser.Scene,
