@@ -9,6 +9,7 @@ export default function() {
 			game_over = false;
 			if (player.shooting) {
 				this.fireBullet(player);
+				console.log(player.killcount);
 			}
 		}
 	}
