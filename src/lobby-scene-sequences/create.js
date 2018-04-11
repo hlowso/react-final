@@ -38,7 +38,7 @@ export default function() {
 	this.vars.ws.onmessage = incoming_message => {
 		let index;
 		const message = JSON.parse(incoming_message.data);
-		console.log("message to desktop: ", message);
+		// console.log("message to desktop: ", message);
 		switch (message.subject) {
 			case "connect":
 				instruction.setVisible(false);
@@ -47,7 +47,7 @@ export default function() {
 				for (let pid of this.vars.player_ids) {
 					player_statuses[i++].setVisible(true);
 				}
-				console.log(this.vars.player_ids);
+				// console.log(this.vars.player_ids);
 				break;
 			case "disconnect":
 				console.log("disconnect called", message.player_id);

@@ -1,24 +1,30 @@
 export default function() {
-	if (this.entities.player.alive) {
-		this.vars.score += 1;
-		this.vars.playerScore.setText("score: " + this.vars.score);
+	this.vars.score += 1;
+	this.vars.playerScore.setText("score: " + this.vars.score);
 
-		if (this.vars.score % 1000 === 0) {
-			this.enemySpawn();
+	if (this.vars.score % 300 === 0) {
+		this.enemySpawn();
+	}
+
+	this.physics.collide(
+		this.entities.enemies,
+		this.entities.bullets,
+		this.bulletEnemyCollision,
+		null,
+		this
+	);
+
+	let game_over = true;
+	for (let player_id in this.entities.players.individuals) {
+		let player = this.entities.players.individuals[player_id];
+		if (player.alive) {
+			game_over = false;
+			if (player.shooting) {
+				this.fireBullet(player);
+			}
 		}
-
-		this.physics.collide(
-			this.entities.enemies,
-			this.entities.bullets,
-			this.bulletEnemyCollision,
-			null,
-			this
-		);
-
-		if (this.vars.shooting) {
-			this.fireBullet();
-		}
-	} else {
-		// Go To Gameover sequence
+	}
+	if (game_over) {
+		console.log("GAME_OVER!");
 	}
 }

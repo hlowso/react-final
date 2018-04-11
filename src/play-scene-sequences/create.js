@@ -1,38 +1,41 @@
 import gameAttributes from "../game-attributes.js";
 
 export default function() {
+	console.log(this.vars.player_ids);
+
 	// TEMPORARY PLACEMENT FOR WS
 
 	this.vars.ws.onmessage = incoming_message => {
+		let player;
 		const message = JSON.parse(incoming_message.data);
 		switch (message.subject) {
 			// case "connect":
 			// 	console.log("player connecting with id:", message.player_id);
 			// 	break;
 			case "push":
-				this.vars.x_velocity = message.velocity.x;
-				this.vars.y_velocity = message.velocity.y;
+				player = this.entities.players.individuals[message.player_id];
+				let x_velocity = message.velocity.x;
+				let y_velocity = message.velocity.y;
 
-				if (this.vars.y_velocity > 0) {
-					this.entities.player.rotation = Math.atan(
-						this.vars.x_velocity / this.vars.y_velocity
-					);
-				} else if (this.vars.y_velocity === 0.0) {
-					if (this.vars.x_velocity < 0) {
-						this.entities.player.rotation = 0.5 * Math.PI;
+				if (y_velocity > 0) {
+					player.rotation = Math.atan(x_velocity / y_velocity);
+				} else if (y_velocity === 0.0) {
+					if (x_velocity < 0) {
+						player.rotation = 0.5 * Math.PI;
 					} else {
-						this.entities.player.rotation = 1.5 * Math.PI;
+						player.rotation = 1.5 * Math.PI;
 					}
 				} else {
-					this.entities.player.rotation =
-						Math.atan(this.vars.x_velocity / this.vars.y_velocity) + Math.PI;
+					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
 				}
+				player.setVelocityX(8000.0 * x_velocity);
+				player.setVelocityY(-8000.0 * y_velocity);
 
-				this.entities.player.setVelocityX(8000.0 * this.vars.x_velocity);
-				this.entities.player.setVelocityY(-8000.0 * this.vars.y_velocity);
 				break;
 			case "shoot":
-				this.vars.shooting = message.shooting;
+				player = this.entities.players.individuals[message.player_id];
+				player.shooting = message.shooting;
+				console.log(player);
 				break;
 		}
 	};
@@ -46,23 +49,44 @@ export default function() {
 
 	background.setScale(window.devicePixelRatio * 2);
 
-	this.entities.player = this.physics.add.sprite(
-		gameAttributes.gameWidth / 2,
-		gameAttributes.gameHeight / 2,
-		"pigeon"
-	);
+	this.entities.players = {
+		individuals: {},
+		group: this.physics.add.group({
+			key: "pigeon",
+			setXY: {
+				x: -50,
+				y: -50
+				// stepX: 60
+			}
+		})
+	};
 
-	this.entities.player.alive = true;
+	const addPlayer = player_id => {
+		let player = this.entities.players.group.create(
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2,
+			"pigeon"
+		);
+		player.id = player_id;
+		player.alive = true;
+		player.score = 0;
+		player.health = 3;
+		player.shooting = false;
+		player.disabled = false;
+		player.setCollideWorldBounds(true);
+		player.setVelocityX(0);
+		player.setVelocityY(0);
+		player.x = Math.random() * gameAttributes.gameWidth;
+		player.y = Math.random() * gameAttributes.gameHeight;
+		this.entities.players.individuals[player_id] = player;
+	};
 
-	this.entities.player.setBounce(0.4);
-	this.entities.player.setCollideWorldBounds(true);
-
-	this.entities.player.setVelocityX(0);
-	this.entities.player.setVelocityY(0);
+	this.vars.player_ids.forEach(function(player_id) {
+		addPlayer(player_id);
+	});
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
-		// repeat: 5,
 		setXY: {
 			x: -50,
 			y: -50
@@ -72,12 +96,11 @@ export default function() {
 	});
 
 	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
-	this.vars.playerScore = this.add.text(100, 100, `${this.vars.sscore}`);
+	this.vars.playerScore = this.add.text(100, 100, `${this.vars.score}`);
 
 	//health = this.add.group();
-	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
-	//cursors = this.input.keyboard.createCursorKeys();
+	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	//////////////////////////////////
 
@@ -99,7 +122,7 @@ export default function() {
 	);
 	this.physics.add.collider(
 		this.entities.enemies,
-		this.entities.player,
+		this.entities.players.group,
 		this.playerEnemyCollision,
 		null,
 		this
