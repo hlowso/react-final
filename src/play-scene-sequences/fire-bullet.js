@@ -8,7 +8,6 @@ export default function(player) {
 		if (bullet) {
 			bullet.scaleX = 2;
 			bullet.scaleY = 2;
-			// bullet.setPosition(player.body.x + 16, player.body.y + 16);
 			bullet.lifespan = 2000;
 			bullet.rotation = player.rotation;
 			bullet.player_id = player.id;

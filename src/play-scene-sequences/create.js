@@ -28,6 +28,8 @@ export default function() {
 				player.shooting = message.shooting;
 				break;
 			case "disconnect":
+				let index = this.vars.player_ids.findIndex(id => id === player.id);
+				this.vars.player_ids.splice(index, 1);
 				player.alive = false;
 				player.disableBody(true, true);
 				break;
