@@ -54,9 +54,9 @@ export default function() {
 		})
 	};
 
-	this.entities.healthTexts = {};
+	this.vars.playerTexts = {};
 
-	const addPlayer = player_id => {
+	const addPlayer = (player_id, playerNumber) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
@@ -75,18 +75,30 @@ export default function() {
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
 
-		return player;
+		this.entities.players.individuals[player_id] = player;
+		addPlayerTexts(player, playerNumber);
+	};
+
+	const addPlayerTexts = (player, index) => {
+		let colour = generateHexColor();
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: colour });
+		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: colour });
+		healthText.id = player.id;
+		const playerTexts = this.vars.playerTexts[player.id]= {};
+		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: colour });
+		killcountText.id = player.id;
+		playerTexts.health = healthText;
+		playerTexts.killcount = killcountText;
+
 	};
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let newPlayer = addPlayer(player_id, i);
-		this.entities.players.individuals[player_id] = newPlayer;
 
-		let newHealthText = this.add.text(100, 100 + i * 50, newPlayer.name + ' Health:' + newPlayer.health, { font: "32px Arial", fill: generateHexColor() });
-		newHealthText.id = player_id;
-		this.entities.healthTexts[player_id] = newHealthText;
 	}
+
+	// console.log(this.vars.playerTexts);
 
 	function generateHexColor() {
     return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
