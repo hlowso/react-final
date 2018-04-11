@@ -80,9 +80,10 @@ export default function() {
 		player.setVelocityY(0);
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
-
 		this.entities.players.individuals[player_id] = player;
 		addPlayerTexts(player, playerNumber);
+
+		return player;
 	};
 
 	const addPlayerTexts = (player, index) => {
@@ -94,12 +95,33 @@ export default function() {
 		killcountText.id = player.id;
 		playerTexts.health = healthText;
 		playerTexts.killcount = killcountText;
-
 	};
+
+	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let newPlayer = addPlayer(player_id, i);
+
+		let emitter = this.add.particles('white_emitter');
+
+		console.log(newPlayer.colour)
+		let colour = newPlayer.colour.toString()
+		colour = colour.split('')
+		colour.shift()
+		colour = colour.join('')
+		let colourGood = '0xff' + colour;
+		console.log(colourGood);
+
+		emitter.createEmitter({
+			speed: 100,
+			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
+			blendMode: 'NORMAL',
+			gravity: { x: 0, y: 200 },
+			scale: { start: 0.1, end: 1 },
+			follow: this.entities.players.individuals[this.vars.player_ids[i]],
+		});
+
 
 	}
 
@@ -108,12 +130,6 @@ export default function() {
 	function generateHexColor() {
     return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
 	}
-
-			// textGroup.add(game.make.text(100, 64 + i * 32, 'here is a colored line of text',  { font: "32px Arial", fill: generateHexColor() }));
-
-	// this.vars.player_ids.forEach(function(player_id) {
-	// 	addPlayer(player_id);
-	// });
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -146,6 +162,7 @@ export default function() {
 		null,
 		this
 	);
+
 	this.physics.add.collider(
 		this.entities.enemies,
 		this.entities.players.group,
@@ -153,4 +170,5 @@ export default function() {
 		null,
 		this
 	);
+
 }
