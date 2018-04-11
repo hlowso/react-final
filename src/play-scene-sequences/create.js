@@ -56,15 +56,16 @@ export default function() {
 		})
 	};
 
-	this.entities.bullets = {};
+	this.vars.playerTexts = {};
 
-	const addPlayer = player_id => {
+	const addPlayer = (player_id, playerNumber) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
 		player.id = player_id;
+		player.name = 'Player' + (playerNumber + 1).toString();
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -77,11 +78,39 @@ export default function() {
 		player.y = Math.random() * gameAttributes.gameHeight;
 
 		this.entities.players.individuals[player_id] = player;
+		addPlayerTexts(player, playerNumber);
 	};
 
-	this.vars.player_ids.forEach(function(player_id) {
-		addPlayer(player_id);
-	});
+	const addPlayerTexts = (player, index) => {
+		let colour = generateHexColor();
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: colour });
+		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: colour });
+		healthText.id = player.id;
+		const playerTexts = this.vars.playerTexts[player.id]= {};
+		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: colour });
+		killcountText.id = player.id;
+		playerTexts.health = healthText;
+		playerTexts.killcount = killcountText;
+
+	};
+
+	for (let i = 0; i < this.vars.player_ids.length; i++) {
+		let player_id = this.vars.player_ids[i];
+		let newPlayer = addPlayer(player_id, i);
+
+	}
+
+	// console.log(this.vars.playerTexts);
+
+	function generateHexColor() {
+    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+	}
+
+			// textGroup.add(game.make.text(100, 64 + i * 32, 'here is a colored line of text',  { font: "32px Arial", fill: generateHexColor() }));
+
+	// this.vars.player_ids.forEach(function(player_id) {
+	// 	addPlayer(player_id);
+	// });
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -99,7 +128,8 @@ export default function() {
 	});
 
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
-	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
+
+	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
