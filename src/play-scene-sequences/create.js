@@ -62,8 +62,12 @@ export default function() {
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
+
+		let colour = generateHexColor();
+
 		player.id = player_id;
 		player.name = 'Player' + (playerNumber + 1).toString();
+		player.colour = colour;
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -76,33 +80,47 @@ export default function() {
 		player.y = Math.random() * gameAttributes.gameHeight;
 		this.entities.players.individuals[player_id] = player;
 		addPlayerTexts(player, playerNumber);
+
+		return player;
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let colour = generateHexColor();
-		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: colour });
-		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: colour });
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: player.colour });
+		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: player.colour });
 		healthText.id = player.id;
 		const playerTexts = this.vars.playerTexts[player.id]= {};
-		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: colour });
+		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: player.colour });
 		killcountText.id = player.id;
 		playerTexts.health = healthText;
 		playerTexts.killcount = killcountText;
 	};
 
-	let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
+	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let newPlayer = addPlayer(player_id, i);
-		// let playerColour = assignPlayerColour();
 
-		emitters[i].createEmitter({
+		let emitter = this.add.particles('white_emitter');
+
+		console.log(newPlayer.colour)
+		let colour = newPlayer.colour.toString()
+		colour = colour.split('')
+		colour.shift()
+		colour = colour.join('')
+		let colourGood = '0xff' + colour;
+		console.log(colourGood);
+
+		emitter.createEmitter({
 			speed: 100,
+			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
+			blendMode: 'NORMAL',
 			gravity: { x: 0, y: 200 },
 			scale: { start: 0.1, end: 1 },
-			follow: this.entities.players.individuals[this.vars.player_ids[i]]
+			follow: this.entities.players.individuals[this.vars.player_ids[i]],
 		});
+
+
 	}
 
 	// console.log(this.vars.playerTexts);
@@ -142,6 +160,7 @@ export default function() {
 		null,
 		this
 	);
+
 	this.physics.add.collider(
 		this.entities.enemies,
 		this.entities.players.group,
