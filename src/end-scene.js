@@ -43,14 +43,16 @@ const endScene = new Phaser.Class({
 			{ font: "96px Courier New", fill: "#000000" }
 		);
 
-		const new_game_button = this.add.image(
-			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight - 100,
-			"new-game-button"
-		);
+		if (this.vars.player_ids.length) {
+			const replay_button = this.add.image(
+				gameAttributes.gameWidth / 2,
+				gameAttributes.gameHeight - 100,
+				"new-game-button"
+			);
 
-		new_game_button.setInteractive();
-		new_game_button.on("clicked", clickHandler, this);
+			replay_button.setInteractive();
+			replay_button.on("clicked", clickHandler, this);
+		}
 
 		this.input.on(
 			"gameobjectup",
