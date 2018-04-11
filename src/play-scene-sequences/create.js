@@ -62,8 +62,12 @@ export default function() {
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
+
+		let colour = generateHexColor();
+
 		player.id = player_id;
 		player.name = 'Player' + (playerNumber + 1).toString();
+		player.colour = colour;
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -80,12 +84,11 @@ export default function() {
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let colour = generateHexColor();
-		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: colour });
-		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: colour });
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: player.colour });
+		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: player.colour });
 		healthText.id = player.id;
 		const playerTexts = this.vars.playerTexts[player.id]= {};
-		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: colour });
+		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: player.colour });
 		killcountText.id = player.id;
 		playerTexts.health = healthText;
 		playerTexts.killcount = killcountText;
