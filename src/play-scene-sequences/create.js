@@ -53,13 +53,16 @@ export default function() {
 		})
 	};
 
-	const addPlayer = player_id => {
+	this.entities.healthTexts = {};
+
+	const addPlayer = (player_id, playerNumber) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
 		player.id = player_id;
+		player.name = 'Player' + (playerNumber + 1).toString();
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -70,12 +73,29 @@ export default function() {
 		player.setVelocityY(0);
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
-		this.entities.players.individuals[player_id] = player;
+
+		return player;
 	};
 
-	this.vars.player_ids.forEach(function(player_id) {
-		addPlayer(player_id);
-	});
+	for (let i = 0; i < this.vars.player_ids.length; i++) {
+		let player_id = this.vars.player_ids[i];
+		let newPlayer = addPlayer(player_id, i);
+		this.entities.players.individuals[player_id] = newPlayer;
+
+		let newHealthText = this.add.text(100, 100 + i * 50, newPlayer.name + ' Health:' + newPlayer.health, { font: "32px Arial", fill: generateHexColor() });
+		newHealthText.id = player_id;
+		this.entities.healthTexts[player_id] = newHealthText;
+	}
+
+	function generateHexColor() {
+    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+	}
+
+			// textGroup.add(game.make.text(100, 64 + i * 32, 'here is a colored line of text',  { font: "32px Arial", fill: generateHexColor() }));
+
+	// this.vars.player_ids.forEach(function(player_id) {
+	// 	addPlayer(player_id);
+	// });
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -95,13 +115,13 @@ export default function() {
 	this.add.text(100, 200, `Code: ${gameAttributes.code}`);
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
-	this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
+	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	//////////////////////////////////
 
 	this.entities.bullets = this.physics.add.group({
 		defaultKey: "laser",
-		repeat: 40,
+		repeat: 5,
 		setCollideWorldBounds: true,
 		setXY: { x: -50, y: -50 }
 	});

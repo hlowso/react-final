@@ -10,6 +10,9 @@ export default function(enemy, player) {
 	if (!player.playerDisabled) {
 		player.playerDisabled = true;
 		player.health -= 1;
+		// console.log(this.entities.healthTexts);
+		console.log(player);
+		// this.entities.healthTexts[player.id].setText('Player' + player.playerNumber + ' Health: ' + player.health);
 
 		if (player.health <= 0) {
 			player.alive = false;
