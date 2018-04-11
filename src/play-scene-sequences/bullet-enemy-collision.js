@@ -1,4 +1,5 @@
 // TODO bullet.player_id not always defined...
+// Another comment
 
 export default function(enemy, bullet) {
 	if (bullet) {
