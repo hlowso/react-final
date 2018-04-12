@@ -188,8 +188,8 @@ class MobileApp extends React.Component {
 			() => {
 				this.send({
 					subject: "connect",
-					code: QUICK_CODE,
-					username: this.state.username
+					username: this.state.username,
+					code: QUICK_CODE
 				});
 			}
 		);
@@ -307,6 +307,7 @@ class MobileApp extends React.Component {
 		const CodeFormView = (
 			<div>
 				<h1>{this.state.instruction}</h1>
+				<h1>Username: {this.state.username}</h1>
 				<form onSubmit={this.handleCodeSubmission}>
 					<input type="text" name="c0" maxlength="1" />
 					<input type="text" name="c1" maxlength="1" />
