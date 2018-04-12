@@ -1,5 +1,6 @@
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 import React, { Button } from "react";
+import ReactDOM from "react-dom";
 import NoSleep from "nosleep.js";
 
 const initial_alphas = [];
@@ -308,17 +309,42 @@ class MobileApp extends React.Component {
 			</div>
 		);
 
+		// function handleChange(event) {
+
+		// }
+
+		const getCharInput = (i, next) => (
+			<input
+				id={`c${i}`}
+				type="text"
+				name={`c${i}`}
+				maxlength="1"
+				onChange={event => {
+					ReactDOM.findDOMNode(this.refs["c4"]).focus();
+				}}
+				ref={component => {
+					if (i === 0) ReactDOM.findDOMNode(component).focus();
+				}}
+			/>
+		);
+
+		const getAllCharInputs = () => {
+			let next = null;
+			const inputs = [];
+			for (let i = 5; i >= 0; i--) {
+				let input = getCharInput(i, next);
+				next = `c${i}`;
+				inputs.unshift(input);
+			}
+			return inputs;
+		};
+
 		const CodeFormView = (
 			<div>
 				<h1>{this.state.instruction}</h1>
 				<h1>Username: {this.state.username}</h1>
 				<form className="sdfd" onSubmit={this.handleCodeSubmission}>
-					<input type="text" name="c0" maxlength="1" />
-					<input type="text" name="c1" maxlength="1" />
-					<input type="text" name="c2" maxlength="1" />
-					<input type="text" name="c3" maxlength="1" />
-					<input type="text" name="c4" maxlength="1" />
-					<input type="text" name="c5" maxlength="1" />
+					{getAllCharInputs()}
 					<input type="submit" value="Connect" />
 				</form>
 				<h1>{this.state.error}</h1>
