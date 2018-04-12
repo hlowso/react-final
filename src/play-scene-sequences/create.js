@@ -58,7 +58,7 @@ export default function() {
 
 	this.vars.playerTexts = {};
 
-	const addPlayer = (player_id, player_name) => {
+	const addPlayer = (player_id, player_name, index) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
@@ -81,7 +81,7 @@ export default function() {
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
 		this.entities.players.individuals[player_id] = player;
-		addPlayerTexts(player, playerNumber);
+		addPlayerTexts(player, index);
 
 		return player;
 	};
@@ -102,7 +102,7 @@ export default function() {
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let player_name = this.vars.player_names[player_id];
-		let newPlayer = addPlayer(player_id, player_name);
+		let newPlayer = addPlayer(player_id, player_name, i);
 
 		let emitter = this.add.particles('white_emitter');
 

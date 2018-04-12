@@ -45,10 +45,11 @@ export default function() {
 				instruction.setVisible(false);
 				this.vars.player_ids.push(message.player_id);
 				this.vars.player_names[message.player_id] = 'bob';
+				console.log(this.vars.player_names);
 
 				let i = 0;
 				for (let pid of this.vars.player_ids) {
-					player_statuses[i].setText(`${message.username}: not yet calibrated`);
+					player_statuses[i].setText(`${this.vars.player_names[message.player_id]}: not yet calibrated`);
 					player_statuses[i++].setVisible(true);
 				}
 				// console.log(this.vars.player_ids);
