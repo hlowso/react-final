@@ -200,6 +200,8 @@ class MobileApp extends React.Component {
 	handleUsernameSubmission(event) {
 		event.preventDefault();
 		const username = event.target.username.value;
+		event.target.username.value = "";
+		event.target.button.value = "";
 
 		const validateUsername = username =>
 			/^[a-zA-Z0-9]+$/.test(username) &&
@@ -299,9 +301,9 @@ class MobileApp extends React.Component {
 			<div>
 				<h1>WELCOME!</h1>
 				<h1>{this.state.instruction}</h1>
-				<form onSubmit={this.handleUsernameSubmission}>
+				<form className="blah" onSubmit={this.handleUsernameSubmission}>
 					<input type="text" name="username" maxlength="8" />
-					<input type="submit" value="Begin" />
+					<input type="submit" name="button" value="Begin" />
 				</form>
 			</div>
 		);
@@ -310,7 +312,7 @@ class MobileApp extends React.Component {
 			<div>
 				<h1>{this.state.instruction}</h1>
 				<h1>Username: {this.state.username}</h1>
-				<form onSubmit={this.handleCodeSubmission}>
+				<form className="sdfd" onSubmit={this.handleCodeSubmission}>
 					<input type="text" name="c0" maxlength="1" />
 					<input type="text" name="c1" maxlength="1" />
 					<input type="text" name="c2" maxlength="1" />
