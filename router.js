@@ -1,3 +1,5 @@
+// TODO change type of bodyParser to JSON
+
 const express = require("express");
 const bodyParser = require("body-parser");
 
