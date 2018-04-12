@@ -14,6 +14,12 @@ const asyncPostScore = (collection, score) => {
 	}).then(response => response.json());
 };
 
+// EXAMPLE USAGE
+// asyncPostScore("user", {
+// 	username: "deadmau5",
+// 	killCount: 512
+// }).then(() => console.log("done"));
+
 const endScene = new Phaser.Class({
 	Extends: Phaser.Scene,
 

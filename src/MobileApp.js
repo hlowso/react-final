@@ -59,18 +59,26 @@ class MobileApp extends React.Component {
 			},
 			() => {
 				setTimeout(() => {
-					const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
+					let alpha_sum = 0.0;
+					for (let a of initial_alphas) {
+						if (a < 0.0) {
+							alpha_sum += a + 360.0;
+						} else {
+							alpha_sum += a;
+						}
+					}
+
 					const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
 
 					const alpha_offset = alpha_sum / initial_alphas.length;
-					const gamma_offset = alpha_sum / initial_gammas.length;
+					const gamma_offset = gamma_sum / initial_gammas.length;
 
 					const y_zero =
 						gamma_offset > 0.0
 							? -1.0 * (gamma_offset - 90.0)
 							: -1.0 * (gamma_offset + 90.0);
 
-					// TODO make calibration successful meaningful
+					// TODO make calibration_successful meaningful
 					const calibration_successful = true;
 					if (calibration_successful) {
 						this.send({
@@ -176,7 +184,7 @@ class MobileApp extends React.Component {
 	handleQuickConnect(event) {
 		this.setState(
 			{
-				calibrationTime: 1000
+				calibrationTime: 2000
 			},
 			() => {
 				this.send({
