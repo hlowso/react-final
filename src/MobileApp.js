@@ -182,6 +182,7 @@ class MobileApp extends React.Component {
 
 	handleQuickConnect(event) {
 		let username = this.state.username;
+		alert(username);
 		this.setState(
 			{
 				calibrationTime: 2000

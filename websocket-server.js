@@ -37,7 +37,8 @@ const handleMobileMessage = (ws, message) => {
 					link.desktopSocket.send(
 						JSON.stringify({
 							subject: message.subject,
-							player_id: ws.player_id
+							player_id: ws.player_id,
+							username: message.username
 						})
 					);
 				} else {
