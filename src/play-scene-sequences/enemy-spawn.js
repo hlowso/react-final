@@ -57,8 +57,7 @@ export default function() {
 	enemy.setCollideWorldBounds(true);
 
 	let enemyTimeline = this.tweens.createTimeline({
-		yoyo: true,
-		loop: true
+		repeat: -1
 	});
 
 	for (let i = 1; i < enemyPath.points.length; i++) {
