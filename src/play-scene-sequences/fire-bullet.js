@@ -9,7 +9,7 @@ export default function(player) {
 			bullet.scaleX = 2;
 			bullet.scaleY = 2;
 			bullet.lifespan = 2000;
-			bullet.rotation = player.rotation;
+			bullet.rotation = player.rotation - Math.PI / 2;
 			bullet.player_id = player.id;
 
 			this.physics.velocityFromRotation(
