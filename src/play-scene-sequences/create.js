@@ -58,7 +58,7 @@ export default function() {
 
 	this.vars.playerTexts = {};
 
-	const addPlayer = (player_id, playerNumber) => {
+	const addPlayer = (player_id, player_name) => {
 		let player = this.entities.players.group.create(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
@@ -68,7 +68,7 @@ export default function() {
 		let colour = generateHexColor();
 
 		player.id = player_id;
-		player.name = 'Player' + (playerNumber + 1).toString();
+		player.name = player_name;
 		player.colour = colour;
 		player.alive = true;
 		player.killcount = 0;
@@ -101,15 +101,16 @@ export default function() {
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
-		let newPlayer = addPlayer(player_id, i);
+		let player_name = this.vars.player_names[player_id];
+		let newPlayer = addPlayer(player_id, player_name);
 
 		let emitter = this.add.particles('white_emitter');
 
-		console.log(newPlayer.colour)
-		let colour = newPlayer.colour.toString()
-		colour = colour.split('')
-		colour.shift()
-		colour = colour.join('')
+		console.log(newPlayer.colour);
+		let colour = newPlayer.colour.toString();
+		colour = colour.split('');
+		colour.shift();
+		colour = colour.join('');
 		let colourGood = '0xff' + colour;
 		console.log(colourGood);
 
