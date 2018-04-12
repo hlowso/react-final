@@ -188,7 +188,8 @@ class MobileApp extends React.Component {
 			() => {
 				this.send({
 					subject: "connect",
-					code: QUICK_CODE
+					code: QUICK_CODE,
+					username: this.state.username
 				});
 			}
 		);
