@@ -7,7 +7,8 @@ export default function() {
 			button.input.enabled = false;
 			this.scene.start("Play", {
 				ws: this.vars.ws,
-				player_ids: this.vars.player_ids
+				player_ids: this.vars.player_ids,
+				player_names: this.vars.player_names
 			});
 		}
 	};
@@ -41,10 +42,15 @@ export default function() {
 		// console.log("message to desktop: ", message);
 		switch (message.subject) {
 			case "connect":
+			console.log(message);
 				instruction.setVisible(false);
 				this.vars.player_ids.push(message.player_id);
+				this.vars.player_names[message.player_id] = message.username;
+				console.log(this.vars.player_names);
+
 				let i = 0;
 				for (let pid of this.vars.player_ids) {
+					player_statuses[i].setText(`${this.vars.player_names[message.player_id]}: not yet calibrated`);
 					player_statuses[i++].setVisible(true);
 				}
 				// console.log(this.vars.player_ids);
@@ -59,8 +65,9 @@ export default function() {
 					ready = true;
 					armButton(new_game_button);
 				}
+				let name = this.vars.player_names[message.player_id];
 				index = this.vars.player_ids.indexOf(message.player_id);
-				player_statuses[index].setText(`player${index + 1}: calibrated`);
+				player_statuses[index].setText(`${name}: calibrated`);
 				break;
 		}
 	};
@@ -86,7 +93,7 @@ export default function() {
 		let status = this.add.text(
 			100,
 			200 + 100 * i,
-			`player${i}: not yet calibrated`,
+			``,
 			{ font: "96px Courier New", fill: "#000000" }
 		);
 		player_statuses.push(status);

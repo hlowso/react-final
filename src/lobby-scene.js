@@ -19,7 +19,8 @@ const lobbyScene = new Phaser.Class({
 
 	init: function() {
 		this.vars = {
-			player_ids: []
+			player_ids: [],
+			player_names: {}
 		};
 	},
 

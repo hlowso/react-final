@@ -44,7 +44,8 @@ const endScene = new Phaser.Class({
 			button.input.enabled = false;
 			this.scene.start("Play", {
 				ws: this.vars.ws,
-				player_ids: this.vars.player_ids
+				player_ids: this.vars.player_ids,
+				player_names: this.vars.player_names
 			});
 		};
 
@@ -79,7 +80,7 @@ const endScene = new Phaser.Class({
 			let killcountText = this.add.text(
 				gameAttributes.gameWidth / 2,
 				gameAttributes.gameHeight / 2 + step * 75,
-				player.name + " kills: " + player.killcount,
+				player.name + "'s kills: " + player.killcount,
 				{ font: "72px Courier New", fill: player.colour }
 			);
 			killcountText.setOrigin(0.5);
