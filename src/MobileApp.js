@@ -195,18 +195,15 @@ class MobileApp extends React.Component {
 	}
 
 	handleUsernameSubmission(event) {
-		alert("You clicked!");
-
 		event.preventDefault();
 		const username = event.target.username.value;
-		validateUsername = username =>
+
+		const validateUsername = username =>
 			/^[a-zA-Z0-9]+$/.test(username) &&
 			username.length <= 8 &&
 			username.length >= 3;
 
 		if (validateUsername(username)) {
-			alert(`in herer! ${username}`);
-
 			const orientationHandler = event => {
 				// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
 				// IS TO GIVE ALPHA THE SAME RANGE AS BETA
@@ -287,8 +284,6 @@ class MobileApp extends React.Component {
 				step: 1
 			});
 		} else {
-			alert(`in else! ${username}`);
-
 			this.setState({
 				instruction:
 					"Username must be between 3 and 8 characters, and must contain only letters and numbers."
