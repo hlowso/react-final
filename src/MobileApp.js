@@ -181,6 +181,7 @@ class MobileApp extends React.Component {
 	}
 
 	handleQuickConnect(event) {
+		let username = this.state.username;
 		this.setState(
 			{
 				calibrationTime: 2000
@@ -188,7 +189,7 @@ class MobileApp extends React.Component {
 			() => {
 				this.send({
 					subject: "connect",
-					username: this.state.username,
+					username,
 					code: QUICK_CODE
 				});
 			}
