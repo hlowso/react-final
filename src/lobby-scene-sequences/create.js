@@ -42,9 +42,10 @@ export default function() {
 		// console.log("message to desktop: ", message);
 		switch (message.subject) {
 			case "connect":
+			console.log(message);
 				instruction.setVisible(false);
 				this.vars.player_ids.push(message.player_id);
-				this.vars.player_names[message.player_id] = 'bob';
+				this.vars.player_names[message.player_id] = message.username;
 				console.log(this.vars.player_names);
 
 				let i = 0;
