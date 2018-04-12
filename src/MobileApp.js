@@ -1,4 +1,3 @@
-// TODO ensure that while the user is configuring, if they're straddling the line between -180 and 180, then that's taken into account
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 import React, { Button } from "react";
 import NoSleep from "nosleep.js";
@@ -13,8 +12,7 @@ class MobileApp extends React.Component {
 		super(props);
 		this.state = {
 			step: 0,
-			instruction:
-				"Enter the code on your desktop's screen to connect this phone.",
+			instruction: "Enter a username to begin.",
 			ovec: {
 				alpha: 0.0,
 				beta: 0.0,
@@ -29,11 +27,11 @@ class MobileApp extends React.Component {
 			useOrientation: () => {}
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
 		this.shootHandler = this.shootHandler.bind(this);
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
 		this.handleQuickConnect = this.handleQuickConnect.bind(this);
-		this.handleBegin = this.handleBegin.bind(this);
+		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.insomnia = new NoSleep();
 	}
 
@@ -59,18 +57,26 @@ class MobileApp extends React.Component {
 			},
 			() => {
 				setTimeout(() => {
-					const alpha_sum = initial_alphas.reduce((sum, a) => sum + a);
+					let alpha_sum = 0.0;
+					for (let a of initial_alphas) {
+						if (a < 0.0) {
+							alpha_sum += a + 360.0;
+						} else {
+							alpha_sum += a;
+						}
+					}
+
 					const gamma_sum = initial_gammas.reduce((sum, a) => sum + a);
 
 					const alpha_offset = alpha_sum / initial_alphas.length;
-					const gamma_offset = alpha_sum / initial_gammas.length;
+					const gamma_offset = gamma_sum / initial_gammas.length;
 
 					const y_zero =
 						gamma_offset > 0.0
 							? -1.0 * (gamma_offset - 90.0)
 							: -1.0 * (gamma_offset + 90.0);
 
-					// TODO make calibration successful meaningful
+					// TODO make calibration_successful meaningful
 					const calibration_successful = true;
 					if (calibration_successful) {
 						this.send({
@@ -141,7 +147,7 @@ class MobileApp extends React.Component {
 		);
 	}
 
-	handleSubmit(event) {
+	handleCodeSubmission(event) {
 		event.preventDefault();
 		const code =
 			event.target.c0.value +
@@ -153,6 +159,7 @@ class MobileApp extends React.Component {
 
 		this.send({
 			subject: "connect",
+			username: this.state.username,
 			code
 		});
 	}
@@ -176,7 +183,7 @@ class MobileApp extends React.Component {
 	handleQuickConnect(event) {
 		this.setState(
 			{
-				calibrationTime: 1000
+				calibrationTime: 2000
 			},
 			() => {
 				this.send({
@@ -187,96 +194,119 @@ class MobileApp extends React.Component {
 		);
 	}
 
-	handleBegin(event) {
-		const orientationHandler = event => {
-			// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
-			// IS TO GIVE ALPHA THE SAME RANGE AS BETA
+	handleUsernameSubmission(event) {
+		event.preventDefault();
+		const username = event.target.username.value;
 
-			const adjusted_alpha = event.alpha - 180.0;
-			const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
-			let readjusted_alpha;
+		const validateUsername = username =>
+			/^[a-zA-Z0-9]+$/.test(username) &&
+			username.length <= 8 &&
+			username.length >= 3;
 
-			if (normalized_alpha > 180) {
-				readjusted_alpha = normalized_alpha - 360.0;
-			} else if (normalized_alpha < -180.0) {
-				readjusted_alpha = normalized_alpha + 360.0;
-			} else {
-				readjusted_alpha = normalized_alpha;
-			}
+		if (validateUsername(username)) {
+			const orientationHandler = event => {
+				// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
+				// IS TO GIVE ALPHA THE SAME RANGE AS BETA
 
-			this.setState(
-				{
-					ovec: {
-						alpha: readjusted_alpha,
-						beta: event.beta,
-						gamma: event.gamma
-					}
-				},
-				this.state.useOrientation()
-			);
-		};
+				const adjusted_alpha = event.alpha - 180.0;
+				const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
+				let readjusted_alpha;
 
-		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-
-		this.ws.onopen = () => {
-			this.ws.onmessage = incoming_message => {
-				const message = JSON.parse(incoming_message.data);
-				if (message.success) {
-					this.setState({
-						step: 2,
-						instruction:
-							"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
-						error: ""
-					});
-					window.addEventListener(
-						"deviceorientation",
-						orientationHandler,
-						true
-					);
+				if (normalized_alpha > 180) {
+					readjusted_alpha = normalized_alpha - 360.0;
+				} else if (normalized_alpha < -180.0) {
+					readjusted_alpha = normalized_alpha + 360.0;
 				} else {
-					this.setState({
-						error: message.error
-					});
+					readjusted_alpha = normalized_alpha;
 				}
-			};
-			this.ws.onclose = () => {
-				this.setState({
-					step: 1,
-					instruction: "Connection closed. Enter in a new code to play again.",
-					ovec: {
-						alpha: 0.0,
-						beta: 0.0,
-						gamma: 0.0
-					},
-					alpha_offset: 0.0,
-					velocity: {
-						x: 0.0,
-						y: 0.0
-					},
-					calibrationTime: 5000,
-					useOrientation: () => {}
-				});
-			};
-		};
 
-		this.insomnia.enable();
-		this.setState({
-			step: 1
-		});
+				this.setState(
+					{
+						ovec: {
+							alpha: readjusted_alpha,
+							beta: event.beta,
+							gamma: event.gamma
+						}
+					},
+					this.state.useOrientation()
+				);
+			};
+
+			this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+
+			this.ws.onopen = () => {
+				this.ws.onmessage = incoming_message => {
+					const message = JSON.parse(incoming_message.data);
+					if (message.success) {
+						this.setState({
+							step: 2,
+							instruction:
+								"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
+							error: ""
+						});
+						window.addEventListener(
+							"deviceorientation",
+							orientationHandler,
+							true
+						);
+					} else {
+						this.setState({
+							error: message.error
+						});
+					}
+				};
+				this.ws.onclose = () => {
+					this.setState({
+						step: 1,
+						instruction:
+							"Connection closed. Enter in a new code to play again.",
+						ovec: {
+							alpha: 0.0,
+							beta: 0.0,
+							gamma: 0.0
+						},
+						alpha_offset: 0.0,
+						velocity: {
+							x: 0.0,
+							y: 0.0
+						},
+						calibrationTime: 5000,
+						useOrientation: () => {}
+					});
+				};
+			};
+
+			this.insomnia.enable();
+			this.setState({
+				instruction:
+					"Enter the code on your desktop's screen to connect this phone.",
+				username,
+				step: 1
+			});
+		} else {
+			this.setState({
+				instruction:
+					"Username must be between 3 and 8 characters, and must contain only letters and numbers."
+			});
+		}
 	}
 
 	render() {
 		const WelcomeView = (
 			<div>
 				<h1>WELCOME!</h1>
-				<button onClick={this.handleBegin}>Begin</button>
+				<h1>{this.state.instruction}</h1>
+				<form onSubmit={this.handleUsernameSubmission}>
+					<input type="text" name="username" maxlength="8" />
+					<input type="submit" value="Begin" />
+				</form>
 			</div>
 		);
 
 		const CodeFormView = (
 			<div>
 				<h1>{this.state.instruction}</h1>
-				<form onSubmit={this.handleSubmit}>
+				<form onSubmit={this.handleCodeSubmission}>
 					<input type="text" name="c0" maxlength="1" />
 					<input type="text" name="c1" maxlength="1" />
 					<input type="text" name="c2" maxlength="1" />

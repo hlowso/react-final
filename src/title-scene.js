@@ -8,6 +8,13 @@ const leaderboardDB = {
 	score: 2500
 };
 
+const asyncGetScores = collection => {
+	return fetch(`/${collection}-scores`).then(response => response.json());
+};
+
+// EXAMPLE USAGE
+// asyncGetScores("user").then(scores => console.log(scores));
+
 function displayLeaderboard(button) {
 	button.off("clicked", displayLeaderboard);
 	button.input.enabled = false;
