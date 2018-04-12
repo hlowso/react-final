@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 
 module.exports = db => {
   const router = express.Router();
-  router.use(bodyParser.urlencoded({ extended: false }));
+  router.use(bodyParser.json());
 
   const userScoresCollection = db.collection("userScores");
   const teamScoresCollection = db.collection("teamScores");
@@ -27,6 +27,9 @@ module.exports = db => {
 
   router.post("/user-scores", (request, response) => {
     const { username, killCount } = request.body;
+
+    console.log(request.body);
+
     userScoresCollection.insertOne(
       {
         username,
@@ -54,6 +57,8 @@ module.exports = db => {
   });
 
   router.post("/team-scores", (request, response) => {
+    console.log(request.body);
+
     const { teamname, score, totalKills } = request.body;
     teamScoresCollection.insertOne(
       {

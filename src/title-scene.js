@@ -12,15 +12,8 @@ const asyncGetScores = collection => {
 	return fetch(`/${collection}-scores`).then(response => response.json());
 };
 
-const asyncPostScore = (collection, score) => {
-	return fetch(`/${collection}-scores`, {
-		method: "POST",
-		data: score,
-		headers: {
-			"content-type": "application/x-www-form-urlencoded"
-		}
-	}).then(response => response.json());
-};
+// EXAMPLE USAGE
+// asyncGetScores("user").then(scores => console.log(scores));
 
 function displayLeaderboard(button) {
 	button.off("clicked", displayLeaderboard);
@@ -55,12 +48,6 @@ const titleScene = new Phaser.Class({
 	},
 
 	create: function() {
-		// asyncGetScores("user").then(data => console.log(data));
-		asyncPostScore("user", {
-			username: "deadmau5",
-			killCount: 512
-		}).then(() => console.log("done"));
-
 		const background = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,

@@ -2,6 +2,24 @@ import gameAttributes from "./game-attributes.js";
 import SkyBackground from "./assets/sky.png";
 import NewGameButton from "./assets/new_game_button.png";
 
+const asyncPostScore = (collection, score) => {
+	console.log(score);
+
+	return fetch(`/${collection}-scores`, {
+		method: "POST",
+		body: JSON.stringify(score),
+		headers: {
+			"content-type": "application/json"
+		}
+	}).then(response => response.json());
+};
+
+// EXAMPLE USAGE
+// asyncPostScore("user", {
+// 	username: "deadmau5",
+// 	killCount: 512
+// }).then(() => console.log("done"));
+
 const endScene = new Phaser.Class({
 	Extends: Phaser.Scene,
 
