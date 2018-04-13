@@ -8,6 +8,11 @@ const initial_gammas = [];
 
 const QUICK_CODE = "buster";
 
+const changeInputId = inputId => {
+	let i = Number(inputId.charAt(1));
+	return `c${i + 1}`;
+};
+
 class MobileApp extends React.Component {
 	constructor(props) {
 		super(props);
@@ -25,7 +30,8 @@ class MobileApp extends React.Component {
 				y: 0.0
 			},
 			calibrationTime: 5000,
-			useOrientation: () => {}
+			useOrientation: () => {},
+			idInFocus: "c0"
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
@@ -33,6 +39,7 @@ class MobileApp extends React.Component {
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
 		this.handleQuickConnect = this.handleQuickConnect.bind(this);
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
 	}
 
@@ -183,7 +190,6 @@ class MobileApp extends React.Component {
 
 	handleQuickConnect(event) {
 		let username = this.state.username;
-		alert(username);
 		this.setState(
 			{
 				calibrationTime: 2000
@@ -297,6 +303,13 @@ class MobileApp extends React.Component {
 		}
 	}
 
+	handleInputChange(event) {
+		const form = event.target.form;
+		const index = Array.prototype.indexOf.call(form, event.target);
+		form.elements[index + 1].focus();
+		event.preventDefault();
+	}
+
 	render() {
 		const WelcomeView = (
 			<div>
@@ -309,32 +322,19 @@ class MobileApp extends React.Component {
 			</div>
 		);
 
-		// function handleChange(event) {
-
-		// }
-
-		const getCharInput = (i, next) => (
+		const getCharInput = i => (
 			<input
-				id={`c${i}`}
 				type="text"
 				name={`c${i}`}
 				maxlength="1"
-				onChange={event => {
-					ReactDOM.findDOMNode(this.refs["c4"]).focus();
-				}}
-				ref={component => {
-					if (i === 0) ReactDOM.findDOMNode(component).focus();
-				}}
+				onInput={this.handleInputChange}
 			/>
 		);
 
-		const getAllCharInputs = () => {
-			let next = null;
+		const getShiftingCharInputs = () => {
 			const inputs = [];
-			for (let i = 5; i >= 0; i--) {
-				let input = getCharInput(i, next);
-				next = `c${i}`;
-				inputs.unshift(input);
+			for (let i = 0; i < 5; i++) {
+				inputs.push(getCharInput(i));
 			}
 			return inputs;
 		};
@@ -344,7 +344,8 @@ class MobileApp extends React.Component {
 				<h1>{this.state.instruction}</h1>
 				<h1>Username: {this.state.username}</h1>
 				<form className="sdfd" onSubmit={this.handleCodeSubmission}>
-					{getAllCharInputs()}
+					{getShiftingCharInputs()}
+					<input type="text" name="c5" maxlength="1" />
 					<input type="submit" value="Connect" />
 				</form>
 				<h1>{this.state.error}</h1>

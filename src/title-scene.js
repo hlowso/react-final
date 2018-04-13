@@ -12,18 +12,64 @@ const asyncGetScores = collection => {
 	return fetch(`/${collection}-scores`).then(response => response.json());
 };
 
-// EXAMPLE USAGE
-// asyncGetScores("user").then(scores => console.log(scores));
+const fillScoresTable = (tableId, name, fields, scores) => {
+	const table = document.getElementById(tableId);
+	table.innerHTML = "";
+	const caption = table.createCaption();
+	caption.innerHTML = `<b>${name}</b>`;
+	const header = table.createTHead();
+	const headRow = header.insertRow(0);
 
-function displayLeaderboard(button) {
-	button.off("clicked", displayLeaderboard);
-	button.input.enabled = false;
-	this.add.text(
-		gameAttributes.gameWidth / 6,
-		gameAttributes.gameHeight / 6,
-		`Username: ${leaderboardDB.username}
-			 Score: ${leaderboardDB.score}`
-	);
+	let i, j;
+	for (i = 0; i < fields.length; i++) {
+		headRow.insertCell(i).innerHTML = `<b>${fields[i]}</b>`;
+	}
+
+	for (i = 1; i <= scores.length; i++) {
+		const row = table.insertRow(i);
+		const keys = Object.keys(scores[i - 1]);
+		for (j = 1; j < keys.length; j++) {
+			row.insertCell(j - 1).innerHTML = scores[i - 1][keys[j]];
+		}
+	}
+};
+
+function displayLeaderboards(button) {
+	const modal = document.getElementById("myModal");
+	const exit = document.getElementById("close-modal");
+	exit.onclick = function() {
+		modal.style.display = "none";
+	};
+
+	asyncGetScores("user")
+		.then(scores => {
+			return fillScoresTable(
+				"user-scores-table",
+				"Kill Counts",
+				["username", "kills"],
+				scores
+			);
+		})
+		.then(() => {
+			return asyncGetScores("team");
+		})
+		.then(scores => {
+			return fillScoresTable(
+				"team-scores-table",
+				"High Scores",
+				["teamname", "score", "total kills"],
+				scores
+			);
+		})
+		.then(() => {
+			modal.style.display = "block";
+		});
+
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	};
 }
 
 let start = false;
@@ -79,7 +125,7 @@ const titleScene = new Phaser.Class({
 		);
 
 		leaderboard_button.setInteractive();
-		leaderboard_button.on("clicked", displayLeaderboard, this);
+		leaderboard_button.on("clicked", displayLeaderboards, this);
 
 		this.input.on(
 			"gameobjectup",

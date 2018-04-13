@@ -133,8 +133,6 @@ module.exports = server => {
 			} else {
 				const link = links.find(l => l.id === ws.link_id);
 				if (link && link.open) {
-					// console.log("Sending the disconnect messgae");
-					console.log(link.desktopSocket);
 					link.desktopSocket.send(
 						JSON.stringify({
 							subject: "disconnect",
