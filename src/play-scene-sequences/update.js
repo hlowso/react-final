@@ -5,11 +5,11 @@ export default function() {
 	let game_over = true;
 	for (let player_id in this.entities.players.individuals) {
 		let player = this.entities.players.individuals[player_id];
+
 		if (player.alive) {
 			game_over = false;
 			if (player.shooting) {
 				this.fireBullet(player);
-				console.log(player.killcount);
 			}
 		}
 	}

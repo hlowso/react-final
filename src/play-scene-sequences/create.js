@@ -74,6 +74,7 @@ export default function() {
 		player.killcount = 0;
 		player.health = 3;
 		player.shooting = false;
+		player.bulletTime = 0;
 		player.disabled = false;
 		player.setCollideWorldBounds(true);
 		player.setVelocityX(0);
@@ -87,19 +88,36 @@ export default function() {
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, { font: "32px Arial", fill: player.colour });
-		let healthText = this.add.text(225, 100 + index * 60, 'Health:' + player.health, { font: "32px Arial", fill: player.colour });
+		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, {
+			font: "32px Arial",
+			fill: player.colour
+		});
+		let healthText = this.add.text(
+			225,
+			100 + index * 60,
+			"Health:" + player.health,
+			{ font: "32px Arial", fill: player.colour }
+		);
 		healthText.id = player.id;
-		const playerTexts = this.vars.playerTexts[player.id]= {};
-		let killcountText = this.add.text(225, 125 + index * 60, 'Kill Count:' + player.killcount, { font: "32px Arial", fill: player.colour });
+		const playerTexts = (this.vars.playerTexts[player.id] = {});
+		let killcountText = this.add.text(
+			225,
+			125 + index * 60,
+			"Kill Count:" + player.killcount,
+			{ font: "32px Arial", fill: player.colour }
+		);
 		killcountText.id = player.id;
 		playerTexts.health = healthText;
 		playerTexts.killcount = killcountText;
 	};
 
 	this.anims.create({
-		key: 'pigeonfly',
-		frames: this.anims.generateFrameNumbers('pigeon', { start: 0, end: 3, first: 0 }),
+		key: "pigeonfly",
+		frames: this.anims.generateFrameNumbers("pigeon", {
+			start: 0,
+			end: 3,
+			first: 0
+		}),
 		frameRate: 20,
 		repeat: -1
 	});
@@ -110,33 +128,28 @@ export default function() {
 		let player_name = this.vars.player_names[player_id];
 		let newPlayer = addPlayer(player_id, player_name, i);
 
-		newPlayer.anims.play('pigeonfly');
-		let emitter = this.add.particles('white_emitter');
+		newPlayer.anims.play("pigeonfly");
+		let emitter = this.add.particles("white_emitter");
 
 		let colour = newPlayer.colour.toString();
-		colour = colour.split('');
+		colour = colour.split("");
 		colour.shift();
-		colour = colour.join('');
-		let colourGood = '0xff' + colour;
+		colour = colour.join("");
+		let colourGood = "0xff" + colour;
 
 		emitter.createEmitter({
 			speed: 100,
 			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
-			blendMode: 'NORMAL',
+			blendMode: "NORMAL",
 			gravity: { x: 0, y: 200 },
 			scale: { start: 0.1, end: 1 },
-			follow: this.entities.players.individuals[this.vars.player_ids[i]],
+			follow: this.entities.players.individuals[this.vars.player_ids[i]]
 		});
-
-
 	}
-
-	// console.log(this.vars.playerTexts);
 
 	function generateHexColor() {
-    return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
+		return "#" + (((0.5 + 0.5 * Math.random()) * 0xffffff) << 0).toString(16);
 	}
-
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
@@ -154,11 +167,14 @@ export default function() {
 	});
 
 	this.anims.create({
-		key: 'explode',
-		frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 23, first: 0 }),
-    frameRate: 20
+		key: "explode",
+		frames: this.anims.generateFrameNumbers("explosion", {
+			start: 0,
+			end: 23,
+			first: 0
+		}),
+		frameRate: 20
 	});
-
 
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
@@ -166,14 +182,12 @@ export default function() {
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
-		setCollideWorldBounds: true,
+		setCollideWorldBounds: true
 		// x: gameAttributes.gameWidth / 2,
 		// y: gameAttributes.gameHeight / 2
 	});
 
-	console.log(this.entities.bullets);
 	let firstBullet = this.entities.bullets.getChildren();
-	console.log(firstBullet);
 	firstBullet[0].destroy();
 
 	this.physics.add.collider(
@@ -191,5 +205,4 @@ export default function() {
 		null,
 		this
 	);
-
 }

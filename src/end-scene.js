@@ -25,7 +25,6 @@ const endScene = new Phaser.Class({
 	},
 
 	init: function(data) {
-		console.log(data);
 		this.vars = data.vars;
 		this.entities = data.entities;
 	},

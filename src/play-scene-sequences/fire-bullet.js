@@ -1,5 +1,5 @@
 export default function(player) {
-	if (this.time.now > this.vars.bulletTime) {
+	if (this.time.now > player.bulletTime) {
 		let bullet = this.entities.bullets.create(
 			player.body.x,
 			player.body.y,
@@ -17,7 +17,7 @@ export default function(player) {
 				3000,
 				bullet.body.velocity
 			);
-			this.vars.bulletTime = this.time.now + 100;
+			player.bulletTime = this.time.now + 100;
 		}
 	}
 }

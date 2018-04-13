@@ -42,21 +42,20 @@ export default function() {
 		// console.log("message to desktop: ", message);
 		switch (message.subject) {
 			case "connect":
-			console.log(message);
 				instruction.setVisible(false);
 				this.vars.player_ids.push(message.player_id);
 				this.vars.player_names[message.player_id] = message.username;
-				console.log(this.vars.player_names);
 
 				let i = 0;
 				for (let pid of this.vars.player_ids) {
-					player_statuses[i].setText(`${this.vars.player_names[message.player_id]}: not yet calibrated`);
+					player_statuses[i].setText(
+						`${this.vars.player_names[message.player_id]}: not yet calibrated`
+					);
 					player_statuses[i++].setVisible(true);
 				}
 				// console.log(this.vars.player_ids);
 				break;
 			case "disconnect":
-				console.log("disconnect called", message.player_id);
 				index = this.vars.player_ids.indexOf(message.player_id);
 				player_statuses[index].setVisible(false);
 				break;
@@ -90,12 +89,10 @@ export default function() {
 
 	const player_statuses = [];
 	for (let i = 1; i <= 3; i++) {
-		let status = this.add.text(
-			100,
-			200 + 100 * i,
-			``,
-			{ font: "96px Courier New", fill: "#000000" }
-		);
+		let status = this.add.text(100, 200 + 100 * i, ``, {
+			font: "96px Courier New",
+			fill: "#000000"
+		});
 		player_statuses.push(status);
 		status.setVisible(false);
 	}

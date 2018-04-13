@@ -28,7 +28,6 @@ export default function() {
 		points.push(Math.random() * gameAttributes.gameHeight);
 
 		curve = new Phaser.Curves.Spline(points);
-		// console.log(curve.points);
 		return curve;
 	};
 
@@ -75,6 +74,5 @@ export default function() {
 		});
 	}
 
-	console.log(enemyTimeline);
 	enemyTimeline.play();
 }
