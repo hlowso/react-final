@@ -25,9 +25,6 @@ module.exports = db => {
 
   router.post("/user-scores", (request, response) => {
     const { username, killCount } = request.body;
-
-    console.log(request.body);
-
     userScoresCollection.insertOne(
       {
         username,

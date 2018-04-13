@@ -9,12 +9,10 @@ import playerEnemyCollision from "./play-scene-sequences/player-enemy-collision.
 import enemySpawn from "./play-scene-sequences/enemy-spawn.js";
 
 const play = new Phaser.Class({
+  // The entities and vars objects exclusively contain
+  // objects and data defined by the development team.
   entities: {},
-
-  vars: {
-    score: 0,
-    bulletTime: 0,
-  },
+  vars: {},
 
   Extends: Phaser.Scene,
 
