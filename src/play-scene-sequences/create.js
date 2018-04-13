@@ -166,8 +166,15 @@ export default function() {
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
-		setCollideWorldBounds: true
+		setCollideWorldBounds: true,
+		// x: gameAttributes.gameWidth / 2,
+		// y: gameAttributes.gameHeight / 2
 	});
+
+	console.log(this.entities.bullets);
+	let firstBullet = this.entities.bullets.getChildren();
+	console.log(firstBullet);
+	firstBullet[0].destroy();
 
 	this.physics.add.collider(
 		this.entities.enemies,
