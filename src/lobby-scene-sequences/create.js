@@ -50,7 +50,7 @@ export default function() {
 
 				let i = 0;
 				for (let pid of this.vars.player_ids) {
-					player_statuses[i].setText(`${this.vars.player_names[message.player_id]}: not yet calibrated`);
+					player_statuses[i].setText(`${this.vars.player_names[this.vars.player_ids[i]]}: not yet calibrated`);
 					player_statuses[i++].setVisible(true);
 				}
 				// console.log(this.vars.player_ids);
