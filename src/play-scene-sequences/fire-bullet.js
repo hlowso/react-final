@@ -1,8 +1,8 @@
 export default function(player) {
 	if (this.time.now > player.bulletTime) {
 		let bullet = this.entities.bullets.create(
-			player.body.x,
-			player.body.y,
+			player.x,
+			player.y,
 			"laser"
 		);
 		if (bullet) {

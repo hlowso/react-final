@@ -81,6 +81,8 @@ export default function() {
 		player.setCollideWorldBounds(true);
 		player.setVelocityX(0);
 		player.setVelocityY(0);
+		player.originX = 0.5;
+		player.originY = 0.5;
 		player.x = Math.random() * gameAttributes.gameWidth;
 		player.y = Math.random() * gameAttributes.gameHeight;
 		this.entities.players.individuals[player_id] = player;
@@ -142,6 +144,7 @@ export default function() {
 		let newPlayerEmitter = emitter.createEmitter({
 			speed: 100,
 			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
+			lifespan: 250,
 			blendMode: "NORMAL",
 			gravity: { x: 0, y: 200 },
 			scale: { start: 0.1, end: 1 },
