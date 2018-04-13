@@ -46,16 +46,13 @@ export default function() {
 				this.vars.player_ids.push(message.player_id);
 				this.vars.player_names[message.player_id] = message.username;
 
-				let i = 0;
-				for (let pid of this.vars.player_ids) {
-					player_statuses[i].setText(
-						`${
-							this.vars.player_names[this.vars.player_ids[i]]
-						}: not yet calibrated`
-					);
-					player_statuses[i++].setVisible(true);
-				}
-				// console.log(this.vars.player_ids);
+				let status = this.add.text(100, 200 + 100 * player_statuses.length + 1, `${
+							this.vars.player_names[message.player_id]
+						}: not yet calibrated`, {
+					font: "96px Courier New",
+					fill: "#000000"
+				});
+				player_statuses.push(status);
 				break;
 			case "disconnect":
 				index = this.vars.player_ids.indexOf(message.player_id);
@@ -92,14 +89,6 @@ export default function() {
 	new_game_button.setVisible(false);
 
 	const player_statuses = [];
-	for (let i = 1; i <= 3; i++) {
-		let status = this.add.text(100, 200 + 100 * i, ``, {
-			font: "96px Courier New",
-			fill: "#000000"
-		});
-		player_statuses.push(status);
-		status.setVisible(false);
-	}
 
 	const instruction = this.add.text(
 		200,

@@ -55,6 +55,8 @@ export default function() {
 		})
 	};
 
+	this.entities.emitters = {};
+
 	this.vars.playerTexts = {};
 
 	const addPlayer = (player_id, player_name, index) => {
@@ -135,7 +137,7 @@ export default function() {
 		colour = colour.join("");
 		let colourGood = "0xff" + colour;
 
-		emitter.createEmitter({
+		let newPlayerEmitter = emitter.createEmitter({
 			speed: 100,
 			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
 			blendMode: "NORMAL",
@@ -143,6 +145,8 @@ export default function() {
 			scale: { start: 0.1, end: 1 },
 			follow: this.entities.players.individuals[this.vars.player_ids[i]]
 		});
+
+		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
 	function generateHexColor() {
