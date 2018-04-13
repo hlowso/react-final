@@ -7,13 +7,11 @@ export default function(enemy, bullet) {
 			.killcount;
 		this.vars.score += 1000;
 
-		console.log(enemy);
-		enemy.anims.play('explode');
-		enemy.disableBody(true, false);
 
-		setTimeout(() =>{
-			enemy.destroy();
-		}, 1500);
+		let boom = this.add.sprite(enemy.x, enemy.y, 'explosion');
+		boom.anims.play('explode');
+
+		enemy.destroy();
 		bullet.destroy();
 		this.vars.playerTexts[bullet.player_id].killcount.setText(
 			"Kill Count: " + killcount
