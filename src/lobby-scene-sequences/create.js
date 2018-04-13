@@ -60,6 +60,8 @@ export default function() {
 			case "disconnect":
 				index = this.vars.player_ids.indexOf(message.player_id);
 				player_statuses[index].setVisible(false);
+				player_statuses.splice(index, 1);
+				this.vars.player_ids.splice(index, 1);
 				break;
 			case "calibrated":
 				if (!ready) {

@@ -51,7 +51,6 @@ export default function() {
 			setXY: {
 				x: -50,
 				y: -50
-				// stepX: 60
 			}
 		})
 	};
@@ -121,7 +120,6 @@ export default function() {
 		frameRate: 20,
 		repeat: -1
 	});
-	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
@@ -178,19 +176,15 @@ export default function() {
 
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
-	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
-
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
 		setCollideWorldBounds: true
-		// x: gameAttributes.gameWidth / 2,
-		// y: gameAttributes.gameHeight / 2
 	});
 
 	let firstBullet = this.entities.bullets.getChildren();
 	firstBullet[0].destroy();
 
-	this.physics.add.collider(
+	this.physics.add.overlap(
 		this.entities.enemies,
 		this.entities.bullets,
 		this.bulletEnemyCollision,
@@ -198,7 +192,7 @@ export default function() {
 		this
 	);
 
-	this.physics.add.collider(
+	this.physics.add.overlap(
 		this.entities.enemies,
 		this.entities.players.group,
 		this.playerEnemyCollision,

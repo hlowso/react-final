@@ -64,13 +64,13 @@ export default function() {
 			targets: enemy,
 			x: enemyPath.points[i].x,
 			ease: "Sine.easeInOut",
-			duration: 1000
+			duration: 3000
 		});
 		enemyTimeline.add({
 			targets: enemy,
 			y: enemyPath.points[i].y,
 			ease: "Sine.easeInOut",
-			duration: 1000
+			duration: 3000
 		});
 	}
 
