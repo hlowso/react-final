@@ -13,8 +13,8 @@ export default function(player) {
 			bullet.player_id = player.id;
 
 			this.physics.velocityFromRotation(
-				player.rotation,
-				1000,
+				player.rotation - Math.PI / 2,
+				3000,
 				bullet.body.velocity
 			);
 			this.vars.bulletTime = this.time.now + 100;
