@@ -54,11 +54,10 @@ export default function() {
 		"falcon"
 	);
 
-	enemy.setCollideWorldBounds(true);
+	// enemy.setCollideWorldBounds(true);
 
-	let enemyTimeline = this.tweens.createTimeline({
-		yoyo: true,
-		loop: true
+	let enemyTimeline = this.tweens.timeline({
+		loop: -1
 	});
 
 	for (let i = 1; i < enemyPath.points.length; i++) {
@@ -75,5 +74,7 @@ export default function() {
 			duration: 1000
 		});
 	}
+
+	console.log(enemyTimeline);
 	enemyTimeline.play();
 }

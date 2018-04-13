@@ -97,6 +97,12 @@ export default function() {
 		playerTexts.killcount = killcountText;
 	};
 
+	this.anims.create({
+		key: 'pigeonfly',
+		frames: this.anims.generateFrameNumbers('pigeon', { start: 0, end: 3, first: 0 }),
+		frameRate: 20,
+		repeat: -1
+	});
 	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
@@ -104,15 +110,14 @@ export default function() {
 		let player_name = this.vars.player_names[player_id];
 		let newPlayer = addPlayer(player_id, player_name, i);
 
+		newPlayer.anims.play('pigeonfly');
 		let emitter = this.add.particles('white_emitter');
 
-		console.log(newPlayer.colour);
 		let colour = newPlayer.colour.toString();
 		colour = colour.split('');
 		colour.shift();
 		colour = colour.join('');
 		let colourGood = '0xff' + colour;
-		console.log(colourGood);
 
 		emitter.createEmitter({
 			speed: 100,
@@ -132,6 +137,7 @@ export default function() {
     return '#' + ((0.5 + 0.5 * Math.random()) * 0xFFFFFF << 0).toString(16);
 	}
 
+
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
 		setXY: {
@@ -147,14 +153,28 @@ export default function() {
 		loop: true
 	});
 
+	this.anims.create({
+		key: 'explode',
+		frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 23, first: 0 }),
+    frameRate: 20
+	});
+
+
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
 	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
-		setCollideWorldBounds: true
+		setCollideWorldBounds: true,
+		// x: gameAttributes.gameWidth / 2,
+		// y: gameAttributes.gameHeight / 2
 	});
+
+	console.log(this.entities.bullets);
+	let firstBullet = this.entities.bullets.getChildren();
+	console.log(firstBullet);
+	firstBullet[0].destroy();
 
 	this.physics.add.collider(
 		this.entities.enemies,
