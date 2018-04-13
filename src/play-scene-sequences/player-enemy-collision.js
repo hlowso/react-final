@@ -2,6 +2,7 @@ export default function(enemy, player) {
 	if (!isNaN(player.health)) {
 		enemy.setBounce(0.4);
 		player.setTint(0xff0000);
+		console.log(player);
 
 		setTimeout(() => {
 			player.playerDisabled = false;
@@ -18,6 +19,7 @@ export default function(enemy, player) {
 			if (player.health <= 0) {
 				player.alive = false;
 				player.disableBody(true, true);
+				this.entities.emitters[player.id].on = false;
 			}
 		}
 	}
