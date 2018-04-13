@@ -3,8 +3,6 @@ import SkyBackground from "./assets/sky.png";
 import NewGameButton from "./assets/new_game_button.png";
 
 const asyncPostScore = (collection, score) => {
-	console.log(score);
-
 	return fetch(`/${collection}-scores`, {
 		method: "POST",
 		body: JSON.stringify(score),
@@ -73,8 +71,9 @@ const endScene = new Phaser.Class({
 		);
 		teamScoreText.setOrigin(0.5);
 
-		// console.log(this.entities.players.individuals);
 		let step = 0;
+		let totalKills = 0;
+		let teamname = "";
 		for (let playerId in this.entities.players.individuals) {
 			let player = this.entities.players.individuals[playerId];
 			let killcountText = this.add.text(
@@ -84,8 +83,23 @@ const endScene = new Phaser.Class({
 				{ font: "72px Courier New", fill: player.colour }
 			);
 			killcountText.setOrigin(0.5);
+
+			totalKills += player.killcount;
+			teamname += teamname ? `, ${player.name}` : player.name;
+
+			asyncPostScore("user", {
+				username: player.name,
+				killCount: player.killcount
+			});
+
 			step++;
 		}
+
+		asyncPostScore("team", {
+			teamname,
+			score: this.vars.score,
+			totalKills
+		});
 
 		// for (let i = 0; i < Object.keys(this.entities.players.individuals).length; i ++) {
 		// 	let player = this.entities.players.individuals[i];

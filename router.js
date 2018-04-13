@@ -1,5 +1,3 @@
-// TODO change type of bodyParser to JSON
-
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -57,8 +55,6 @@ module.exports = db => {
   });
 
   router.post("/team-scores", (request, response) => {
-    console.log(request.body);
-
     const { teamname, score, totalKills } = request.body;
     teamScoresCollection.insertOne(
       {
