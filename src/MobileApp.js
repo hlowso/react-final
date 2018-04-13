@@ -304,10 +304,12 @@ class MobileApp extends React.Component {
 	}
 
 	handleInputChange(event) {
-		const form = event.target.form;
-		const index = Array.prototype.indexOf.call(form, event.target);
-		form.elements[index + 1].focus();
-		event.preventDefault();
+		if (event.target.value !== "") {
+			const form = event.target.form;
+			const index = Array.prototype.indexOf.call(form, event.target);
+			form.elements[index + 1].focus();
+			event.preventDefault();
+		}
 	}
 
 	render() {
