@@ -3,11 +3,6 @@ import SkyBackground from "./assets/sky.png";
 import StartGameButton from "./assets/start_button.png";
 import leaderboardButton from "./assets/leaderboard_button.png";
 
-const leaderboardDB = {
-	username: "Lor3e",
-	score: 2500
-};
-
 const asyncGetScores = collection => {
 	return fetch(`/${collection}-scores`).then(response => response.json());
 };
