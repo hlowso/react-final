@@ -116,8 +116,19 @@ export default function() {
 	};
 
 	this.anims.create({
-		key: "pigeonfly",
+		key: "pigeonFly",
 		frames: this.anims.generateFrameNumbers("pigeon", {
+			start: 0,
+			end: 3,
+			first: 0
+		}),
+		frameRate: 20,
+		repeat: -1
+	});
+
+	this.anims.create({
+		key: "falconFly",
+		frames: this.anims.generateFrameNumbers("falcon", {
 			start: 0,
 			end: 3,
 			first: 0
@@ -132,7 +143,7 @@ export default function() {
 		let player_name = this.vars.player_names[player_id];
 		let newPlayer = addPlayer(player_id, player_name, i);
 
-		newPlayer.anims.play("pigeonfly");
+		newPlayer.anims.play("pigeonFly");
 		let emitter = this.add.particles("white_emitter");
 
 		let colour = newPlayer.colour.toString();

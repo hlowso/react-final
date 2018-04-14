@@ -53,6 +53,8 @@ export default function() {
 		"falcon"
 	);
 
+	enemy.anims.play("falconFly");
+
 	// enemy.setCollideWorldBounds(true);
 
 	let enemyTimeline = this.tweens.timeline({
