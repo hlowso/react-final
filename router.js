@@ -1,5 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
 
 module.exports = db => {
   const router = express.Router();
@@ -67,6 +69,33 @@ module.exports = db => {
         response.send(result);
       }
     );
+  });
+
+  router.post("/reviews", (request, response) => {
+    const { comment, rating } = request.body;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "mission.6ix@gmail.com",
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    const mailOptions = {
+      from: "mission.6ix@gmail.com",
+      to: process.env.MAILING_LIST,
+      subject: "Review",
+      text: `Rating: ${rating}\nComment: ${comment}`
+    };
+
+    transporter.sendMail(mailOptions, function(err, info) {
+      if (err) {
+        console.log("There was an error sending an email");
+        response.status(500);
+      } else {
+        response.send(info.response);
+      }
+    });
   });
 
   return router;
