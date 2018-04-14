@@ -2,4 +2,3 @@
 journal
 .eslintrc
 node_modules
-dist/bundle.js
