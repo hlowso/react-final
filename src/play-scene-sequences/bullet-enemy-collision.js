@@ -14,8 +14,8 @@ export default function(enemy, bullet) {
 		);
 
 		if (Math.floor(Math.random() * 100) > 75) {
-			let type = Math.floor(Math.random() * this.entities.bonsuses.length);
-			let bonus = this.physics.add.image(enemy.x, enemy.y, this.entities.bonsuses[type]);
+			let type = Math.floor(Math.random() * this.entities.bonuses.types.length);
+			let bonus = this.entities.bonuses.group.create(enemy.x, enemy.y, this.entities.bonuses.types[type]);
 			bonus.type = type;
 			setTimeout(() => {
 				bonus.destroy();

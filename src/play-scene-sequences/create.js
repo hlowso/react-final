@@ -80,7 +80,16 @@ export default function() {
 
 	this.entities.emitters = {};
 	this.vars.playerTexts = {};
-	this.entities.bonsuses = ["heart"];
+	this.entities.bonuses = {
+		types: ["heart"],
+		group: this.physics.add.group({
+			key: "heart",
+			setXY: {
+				x: -100,
+				y: -100
+			}
+		})
+	};
 
 	const addPlayer = (player_id, player_name, index) => {
 		let player = this.entities.players.group.create(
@@ -248,4 +257,12 @@ export default function() {
 		null,
 		this
 	);
+
+	// this.physics.add.overlap(
+	// 	this.entities.players.group,
+	// 	this.entities.bonsuses.group,
+	// 	this.playerBonusCollision,
+	// 	null,
+	// 	this
+	// );
 }
