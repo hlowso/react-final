@@ -1,80 +1,87 @@
 import gameAttributes from "../game-attributes.js";
 
 export default function() {
-	let path;
-	let curve;
-	let points;
-	let xOrY;
-	let enemyPath;
-	let xCoord;
-	let yCoord;
-	let leftOrRight;
+	let numberOfEnemies = Math.floor(this.vars.score / 10000) + 1;
+	let step = 1;
 
-	const createPath = (x, y) => {
-		path = { t: 0, vec: new Phaser.Math.Vector2() };
+	while (step <= numberOfEnemies) {
 
-		points = [x, y];
+		let path;
+		let curve;
+		let points;
+		let xOrY;
+		let enemyPath;
+		let xCoord;
+		let yCoord;
+		let leftOrRight;
 
-		for (
-			let point = 0;
-			point < Math.floor(Math.random() * (12 - 6) + 6);
-			point++
-		) {
-			points.push(Math.random() * gameAttributes.gameWidth);
+		const createPath = (x, y) => {
+			path = { t: 0, vec: new Phaser.Math.Vector2() };
+
+			points = [x, y];
+
+			for (
+				let point = 0;
+				point < Math.floor(Math.random() * (12 - 6) + 6);
+				point++
+			) {
+				points.push(Math.random() * gameAttributes.gameWidth);
+				points.push(Math.random() * gameAttributes.gameHeight);
+			}
+
+			points.push(gameAttributes.gameWidth);
 			points.push(Math.random() * gameAttributes.gameHeight);
-		}
 
-		points.push(gameAttributes.gameWidth);
-		points.push(Math.random() * gameAttributes.gameHeight);
+			curve = new Phaser.Curves.Spline(points);
+			return curve;
+		};
 
-		curve = new Phaser.Curves.Spline(points);
-		return curve;
-	};
-
-	xOrY = Math.floor(Math.random() * Math.floor(2));
-	if (xOrY === 0) {
-		xCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameWidth));
-		yCoord = 0;
-		enemyPath = createPath(xCoord, yCoord);
-	} else {
-		yCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameHeight));
-		leftOrRight = Math.floor(Math.random() * Math.floor(2));
-		if (leftOrRight === 0) {
-			xCoord = 0;
+		xOrY = Math.floor(Math.random() * Math.floor(2));
+		if (xOrY === 0) {
+			xCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameWidth));
+			yCoord = 0;
 			enemyPath = createPath(xCoord, yCoord);
 		} else {
-			xCoord = gameAttributes.gameWidth;
-			enemyPath = createPath(xCoord, yCoord);
+			yCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameHeight));
+			leftOrRight = Math.floor(Math.random() * Math.floor(2));
+			if (leftOrRight === 0) {
+				xCoord = 0;
+				enemyPath = createPath(xCoord, yCoord);
+			} else {
+				xCoord = gameAttributes.gameWidth;
+				enemyPath = createPath(xCoord, yCoord);
+			}
 		}
-	}
-	let enemy = this.entities.enemies.create(
-		enemyPath.points[0].x,
-		enemyPath.points[0].y,
-		"falcon"
-	);
+		let enemy = this.entities.enemies.create(
+			enemyPath.points[0].x,
+			enemyPath.points[0].y,
+			"falcon"
+		);
 
-	enemy.anims.play("falconFly");
+		enemy.anims.play("falconFly");
 
-	// enemy.setCollideWorldBounds(true);
+		// enemy.setCollideWorldBounds(true);
 
-	let enemyTimeline = this.tweens.timeline({
-		loop: -1
-	});
-
-	for (let i = 1; i < enemyPath.points.length; i++) {
-		enemyTimeline.add({
-			targets: enemy,
-			x: enemyPath.points[i].x,
-			ease: "Sine.easeInOut",
-			duration: 1000
+		let enemyTimeline = this.tweens.timeline({
+			loop: -1
 		});
-		enemyTimeline.add({
-			targets: enemy,
-			y: enemyPath.points[i].y,
-			ease: "Sine.easeInOut",
-			duration: 1000
-		});
-	}
 
-	enemyTimeline.play();
+		for (let i = 1; i < enemyPath.points.length; i++) {
+			enemyTimeline.add({
+				targets: enemy,
+				x: enemyPath.points[i].x,
+				ease: "Sine.easeInOut",
+				duration: 1000
+			});
+			enemyTimeline.add({
+				targets: enemy,
+				y: enemyPath.points[i].y,
+				ease: "Sine.easeInOut",
+				duration: 1000
+			});
+		}
+
+		enemyTimeline.play();
+		step++;
+	}
 }
