@@ -72,7 +72,9 @@ let start = false;
 function startClickHandler(button) {
 	button.off("clicked", startClickHandler);
 	button.input.enabled = false;
-	this.scene.start("Lobby");
+	this.scene.start("Lobby", {
+		vars: this.vars
+	});
 }
 
 const titleScene = new Phaser.Class({
@@ -86,6 +88,10 @@ const titleScene = new Phaser.Class({
 		this.load.image("background", SkyBackground);
 		this.load.image("start_button", StartGameButton);
 		this.load.image("leaderboard_button", leaderboardButton);
+	},
+
+	init: function(data) {
+		this.vars = data.vars;
 	},
 
 	create: function() {

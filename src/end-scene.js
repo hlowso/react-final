@@ -1,6 +1,7 @@
 import gameAttributes from "./game-attributes.js";
 import SkyBackground from "./assets/sky.png";
 import NewGameButton from "./assets/new_game_button.png";
+import MenuButton from "./assets/menu_button.png";
 
 const asyncPostScore = (collection, score) => {
 	return fetch(`/${collection}-scores`, {
@@ -22,6 +23,7 @@ const endScene = new Phaser.Class({
 	preload: function() {
 		this.load.image("background", SkyBackground);
 		this.load.image("new-game-button", NewGameButton);
+		this.load.image("menu-button", MenuButton);
 	},
 
 	init: function(data) {
@@ -34,9 +36,18 @@ const endScene = new Phaser.Class({
 			button.off("clicked", clickHandler);
 			button.input.enabled = false;
 			this.scene.start("Play", {
-				ws: this.vars.ws,
-				player_ids: this.vars.player_ids,
-				player_names: this.vars.player_names
+				// ws: this.vars.ws,
+				// player_ids: this.vars.player_ids,
+				// player_names: this.vars.player_names
+				vars: this.vars
+			});
+		};
+
+		const menuButtonHandler = button => {
+			button.off("clicked", menuButtonHandler);
+			button.input.enabled = false;
+			this.scene.start("Title", {
+				vars: this.vars
 			});
 		};
 
@@ -94,25 +105,23 @@ const endScene = new Phaser.Class({
 			totalKills
 		});
 
-		// for (let i = 0; i < Object.keys(this.entities.players.individuals).length; i ++) {
-		// 	let player = this.entities.players.individuals[i];
-		// 	let killcountText = this.add.text(
-		// 		gameAttributes.gameWidth / 2,
-		// 		gameAttributes.gameHeight / 2 + i * 50,
-		// 		player.name + ' kills: ' + player.killcount,
-		// 		{ font: "72px Courier New", fill: player.colour });
-		// 	killcountText.setOrigin(0.5);
-		// }
-
 		if (this.vars.player_ids.length) {
 			const replay_button = this.add.image(
-				gameAttributes.gameWidth / 2,
+				gameAttributes.gameWidth / 3,
 				gameAttributes.gameHeight - 100,
 				"new-game-button"
 			);
 
+			const menu_button = this.add.image(
+				2 * gameAttributes.gameWidth / 3,
+				gameAttributes.gameHeight - 300,
+				"menu-button"
+			);
+
 			replay_button.setInteractive();
+			menu_button.setInteractive();
 			replay_button.on("clicked", clickHandler, this);
+			menu_button.on("clicked", menuButtonHandler, this);
 		}
 
 		this.input.on(

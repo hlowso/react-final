@@ -17,13 +17,14 @@ const handleDesktopMessage = (ws, message) => {
 };
 
 const handleMobileMessage = (ws, message) => {
-	let link;
+	let link, readyState;
 
 	switch (message.subject) {
 		case "connect":
 			link = links.find(
 				l => l.code === message.code || message.code === "buster"
 			);
+
 			if (link) {
 				if (link.mobileSockets.length < MAX_PLAYER_COUNT) {
 					link.mobileSockets.push(ws);
@@ -61,13 +62,19 @@ const handleMobileMessage = (ws, message) => {
 		case "push":
 			link = links.find(l => l.id === ws.link_id);
 			if (link) {
-				link.desktopSocket.send(
-					JSON.stringify({
-						subject: message.subject,
-						player_id: ws.player_id,
-						velocity: message.velocity
-					})
-				);
+				readyState = link.desktopSocket.readyState;
+				if (
+					readyState !== link.desktopSocket.CLOSED &&
+					readyState !== link.desktopSocket.CLOSING
+				) {
+					link.desktopSocket.send(
+						JSON.stringify({
+							subject: message.subject,
+							player_id: ws.player_id,
+							velocity: message.velocity
+						})
+					);
+				}
 			} else {
 				ws.close();
 			}
@@ -75,13 +82,19 @@ const handleMobileMessage = (ws, message) => {
 		case "shoot":
 			link = links.find(l => l.id === ws.link_id);
 			if (link) {
-				link.desktopSocket.send(
-					JSON.stringify({
-						subject: message.subject,
-						player_id: ws.player_id,
-						shooting: message.shooting
-					})
-				);
+				readyState = link.desktopSocket.readyState;
+				if (
+					readyState !== link.desktopSocket.CLOSED &&
+					readyState !== link.desktopSocket.CLOSING
+				) {
+					link.desktopSocket.send(
+						JSON.stringify({
+							subject: message.subject,
+							player_id: ws.player_id,
+							shooting: message.shooting
+						})
+					);
+				}
 			} else {
 				ws.close();
 			}
@@ -89,12 +102,18 @@ const handleMobileMessage = (ws, message) => {
 		case "calibrated":
 			link = links.find(l => l.id === ws.link_id);
 			if (link) {
-				link.desktopSocket.send(
-					JSON.stringify({
-						subject: message.subject,
-						player_id: ws.player_id
-					})
-				);
+				readyState = link.desktopSocket.readyState;
+				if (
+					readyState !== link.desktopSocket.CLOSED &&
+					readyState !== link.desktopSocket.CLOSING
+				) {
+					link.desktopSocket.send(
+						JSON.stringify({
+							subject: message.subject,
+							player_id: ws.player_id
+						})
+					);
+				}
 			} else {
 				ws.close();
 			}
@@ -133,6 +152,11 @@ module.exports = server => {
 			} else {
 				const link = links.find(l => l.id === ws.link_id);
 				if (link && link.open) {
+					index = link.mobileSockets.findIndex(
+						ms => ms.player_id === ws.player_id
+					);
+
+					link.mobileSockets.splice(index, 1);
 					link.desktopSocket.send(
 						JSON.stringify({
 							subject: "disconnect",

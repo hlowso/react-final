@@ -20,8 +20,34 @@ export default function() {
 				} else {
 					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
 				}
-				player.setVelocityX(8000.0 * x_velocity);
-				player.setVelocityY(-8000.0 * y_velocity);
+
+				let x_sign = 0;
+				let y_sign = 0;
+
+				if(x_velocity !== 0.0) {
+					x_sign = x_velocity / Math.abs(x_velocity);
+				}
+				if(y_velocity !== 0.0) {
+					y_sign = y_velocity / Math.abs(y_velocity);
+				}
+
+				if(Math.abs(x_velocity) < 0.1) {
+					x_velocity = x_sign * 500.0;
+				}
+				else {
+					x_velocity *= 5000.0;
+				}
+
+				if(Math.abs(y_velocity) < 0.1) {
+					y_velocity = y_sign * 500.0;
+				}
+				else {
+					y_velocity *= -5000.0;
+				}
+
+
+				player.setVelocityX(x_velocity);
+				player.setVelocityY(y_velocity);
 
 				break;
 			case "shoot":
@@ -51,7 +77,6 @@ export default function() {
 			setXY: {
 				x: -50,
 				y: -50
-				// stepX: 60
 			}
 		})
 	};
@@ -138,6 +163,7 @@ export default function() {
 	});
 	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
+
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let player_name = this.vars.player_names[player_id];
@@ -196,19 +222,15 @@ export default function() {
 
 	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
 
-	// this.vars.healthText = this.add.text(100, 120, "Health: " + this.vars.health);
-
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
 		setCollideWorldBounds: true
-		// x: gameAttributes.gameWidth / 2,
-		// y: gameAttributes.gameHeight / 2
 	});
 
 	let firstBullet = this.entities.bullets.getChildren();
 	firstBullet[0].destroy();
 
-	this.physics.add.collider(
+	this.physics.add.overlap(
 		this.entities.enemies,
 		this.entities.bullets,
 		this.bulletEnemyCollision,
@@ -216,7 +238,7 @@ export default function() {
 		this
 	);
 
-	this.physics.add.collider(
+	this.physics.add.overlap(
 		this.entities.enemies,
 		this.entities.players.group,
 		this.playerEnemyCollision,

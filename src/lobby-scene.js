@@ -17,11 +17,16 @@ const lobbyScene = new Phaser.Class({
 		this.load.image("new-game-button", NewGameButton);
 	},
 
-	init: function() {
-		this.vars = {
-			player_ids: [],
-			player_names: {}
-		};
+	init: function(data) {
+		if (data.vars && Object.keys(data.vars).length) {
+			this.vars = data.vars;
+			console.log(this.vars);
+		} else {
+			this.vars = {
+				player_ids: [],
+				player_names: {}
+			};
+		}
 	},
 
 	create
