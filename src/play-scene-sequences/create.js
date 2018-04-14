@@ -9,18 +9,6 @@ export default function() {
 				let x_velocity = message.velocity.x;
 				let y_velocity = message.velocity.y;
 
-				if (y_velocity > 0) {
-					player.rotation = Math.atan(x_velocity / y_velocity);
-				} else if (y_velocity === 0.0) {
-					if (x_velocity < 0) {
-						player.rotation = 0.5 * Math.PI;
-					} else {
-						player.rotation = 1.5 * Math.PI;
-					}
-				} else {
-					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
-				}
-
 				let x_sign = 0;
 				let y_sign = 0;
 
@@ -40,11 +28,23 @@ export default function() {
 				if (Math.abs(y_velocity) < 0.1) {
 					y_velocity = y_sign * 500.0;
 				} else {
-					y_velocity *= -5000.0;
+					y_velocity *= 5000.0;
+				}
+
+				if (y_velocity > 0) {
+					player.rotation = Math.atan(x_velocity / y_velocity);
+				} else if (y_velocity === 0.0) {
+					if (x_velocity < 0) {
+						player.rotation = 0.5 * Math.PI;
+					} else {
+						player.rotation = 1.5 * Math.PI;
+					}
+				} else {
+					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
 				}
 
 				player.setVelocityX(x_velocity);
-				player.setVelocityY(y_velocity);
+				player.setVelocityY(-1.0 * y_velocity);
 
 				break;
 			case "shoot":
