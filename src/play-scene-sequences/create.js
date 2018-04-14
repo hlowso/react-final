@@ -72,8 +72,8 @@ export default function() {
 		group: this.physics.add.group({
 			key: "pigeon",
 			setXY: {
-				x: -50,
-				y: -50
+				x: -100,
+				y: -100
 			}
 		})
 	};
@@ -193,8 +193,8 @@ export default function() {
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
 		setXY: {
-			x: -50,
-			y: -50
+			x: -100,
+			y: -100
 		}
 	});
 
