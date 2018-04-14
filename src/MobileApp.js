@@ -29,7 +29,7 @@ class MobileApp extends React.Component {
 				x: 0.0,
 				y: 0.0
 			},
-			calibrationTime: 5000,
+			calibrationTime: 3000,
 			useOrientation: () => {},
 			idInFocus: "c0"
 		};
@@ -41,6 +41,83 @@ class MobileApp extends React.Component {
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
+	}
+
+	connectToWSS(code) {
+		const orientationHandler = event => {
+			// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
+			// IS TO GIVE ALPHA THE SAME RANGE AS BETA
+
+			const adjusted_alpha = event.alpha - 180.0;
+			const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
+			let readjusted_alpha;
+
+			if (normalized_alpha > 180) {
+				readjusted_alpha = normalized_alpha - 360.0;
+			} else if (normalized_alpha < -180.0) {
+				readjusted_alpha = normalized_alpha + 360.0;
+			} else {
+				readjusted_alpha = normalized_alpha;
+			}
+
+			this.setState(
+				{
+					ovec: {
+						alpha: readjusted_alpha,
+						beta: event.beta,
+						gamma: event.gamma
+					}
+				},
+				this.state.useOrientation()
+			);
+		};
+
+		this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+		this.ws.onopen = () => {
+			this.send({
+				subject: "connect",
+				username: this.state.username,
+				code
+			});
+			this.ws.onmessage = incoming_message => {
+				const message = JSON.parse(incoming_message.data);
+				if (message.success) {
+					this.setState({
+						step: 2,
+						instruction:
+							"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
+						error: ""
+					});
+					window.addEventListener(
+						"deviceorientation",
+						orientationHandler,
+						true
+					);
+				} else {
+					this.setState({
+						error: message.error
+					});
+				}
+			};
+			this.ws.onclose = () => {
+				this.setState({
+					step: 1,
+					instruction: "Connection closed. Enter in a new code to play again.",
+					ovec: {
+						alpha: 0.0,
+						beta: 0.0,
+						gamma: 0.0
+					},
+					alpha_offset: 0.0,
+					velocity: {
+						x: 0.0,
+						y: 0.0
+					},
+					calibrationTime: 3000,
+					useOrientation: () => {}
+				});
+			};
+		};
 	}
 
 	send(data) {
@@ -130,7 +207,7 @@ class MobileApp extends React.Component {
 								this.setState(
 									{
 										velocity: {
-											x: x / 90.0, //x < 0.0 ? -1.0 * x_normalized : x_normalized,
+											x: x / 90.0,
 											y: y / 90.0
 										}
 									},
@@ -165,11 +242,7 @@ class MobileApp extends React.Component {
 			event.target.c4.value +
 			event.target.c5.value;
 
-		this.send({
-			subject: "connect",
-			username: this.state.username,
-			code
-		});
+		this.connectToWSS(code);
 	}
 
 	shootHandler(event) {
@@ -189,19 +262,7 @@ class MobileApp extends React.Component {
 	}
 
 	handleQuickConnect(event) {
-		let username = this.state.username;
-		this.setState(
-			{
-				calibrationTime: 2000
-			},
-			() => {
-				this.send({
-					subject: "connect",
-					username,
-					code: QUICK_CODE
-				});
-			}
-		);
+		this.connectToWSS(QUICK_CODE);
 	}
 
 	handleUsernameSubmission(event) {
@@ -216,78 +277,6 @@ class MobileApp extends React.Component {
 			username.length >= 3;
 
 		if (validateUsername(username)) {
-			const orientationHandler = event => {
-				// SO THE ONLY PREPROCESSING WE DO ON THE OVEC
-				// IS TO GIVE ALPHA THE SAME RANGE AS BETA
-
-				const adjusted_alpha = event.alpha - 180.0;
-				const normalized_alpha = adjusted_alpha - this.state.alpha_offset;
-				let readjusted_alpha;
-
-				if (normalized_alpha > 180) {
-					readjusted_alpha = normalized_alpha - 360.0;
-				} else if (normalized_alpha < -180.0) {
-					readjusted_alpha = normalized_alpha + 360.0;
-				} else {
-					readjusted_alpha = normalized_alpha;
-				}
-
-				this.setState(
-					{
-						ovec: {
-							alpha: readjusted_alpha,
-							beta: event.beta,
-							gamma: event.gamma
-						}
-					},
-					this.state.useOrientation()
-				);
-			};
-
-			this.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-
-			this.ws.onopen = () => {
-				this.ws.onmessage = incoming_message => {
-					const message = JSON.parse(incoming_message.data);
-					if (message.success) {
-						this.setState({
-							step: 2,
-							instruction:
-								"Turn your phone 90 degrees to the left. Press 'Calibrate' when your phone is in a comfortable position.",
-							error: ""
-						});
-						window.addEventListener(
-							"deviceorientation",
-							orientationHandler,
-							true
-						);
-					} else {
-						this.setState({
-							error: message.error
-						});
-					}
-				};
-				this.ws.onclose = () => {
-					this.setState({
-						step: 1,
-						instruction:
-							"Connection closed. Enter in a new code to play again.",
-						ovec: {
-							alpha: 0.0,
-							beta: 0.0,
-							gamma: 0.0
-						},
-						alpha_offset: 0.0,
-						velocity: {
-							x: 0.0,
-							y: 0.0
-						},
-						calibrationTime: 5000,
-						useOrientation: () => {}
-					});
-				};
-			};
-
 			this.insomnia.enable();
 			this.setState({
 				instruction:
