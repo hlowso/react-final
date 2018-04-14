@@ -2,18 +2,33 @@ const WebSocket = require("ws");
 const SocketServer = WebSocket.Server;
 const uuid = require("uuid-v4");
 const MAX_PLAYER_COUNT = 3;
+const links = [];
 
 const handleDesktopMessage = (ws, message) => {
-	const link_id = uuid();
-	links.push({
-		id: link_id,
-		code: message.code,
-		desktopSocket: ws,
-		mobileSockets: [],
-		open: true
-	});
-	ws.link_id = link_id;
-	ws.is_desktop = true;
+	let link;
+	switch (message.subject) {
+		case "connect":
+			const link_id = uuid();
+			links.push({
+				id: link_id,
+				code: message.code,
+				desktopSocket: ws,
+				mobileSockets: [],
+				open: true,
+				listening: true
+			});
+			ws.link_id = link_id;
+			ws.is_desktop = true;
+			break;
+		case "listen":
+			link = links.find(l => l.id === ws.link_id);
+			link.listening = true;
+			break;
+		case "ignore":
+			link = links.find(l => l.id === ws.link_id);
+			link.listening = false;
+			break;
+	}
 };
 
 const handleMobileMessage = (ws, message) => {
@@ -61,7 +76,7 @@ const handleMobileMessage = (ws, message) => {
 			break;
 		case "push":
 			link = links.find(l => l.id === ws.link_id);
-			if (link) {
+			if (link && link.listening) {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
@@ -81,7 +96,7 @@ const handleMobileMessage = (ws, message) => {
 			break;
 		case "shoot":
 			link = links.find(l => l.id === ws.link_id);
-			if (link) {
+			if (link && link.listening) {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
@@ -120,7 +135,6 @@ const handleMobileMessage = (ws, message) => {
 	}
 };
 
-const links = [];
 module.exports = server => {
 	const wss = new SocketServer({ server });
 

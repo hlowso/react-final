@@ -107,6 +107,7 @@ export default function() {
 			this.vars.ws.send(
 				JSON.stringify({
 					device: "desktop",
+					subject: "connect",
 					code: gameAttributes.code
 				})
 			);
@@ -142,8 +143,16 @@ export default function() {
 					break;
 			}
 		};
-	} else if (this.vars.player_ids.length) {
-		armButton(new_game_button);
+	} else {
+		this.vars.ws.send(
+			JSON.stringify({
+				device: "desktop",
+				subject: "listen"
+			})
+		);
+		if (this.vars.player_ids.length) {
+			armButton(new_game_button);
+		}
 	}
 
 	printStatuses();

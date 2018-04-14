@@ -15,11 +15,21 @@ export default function() {
 			}
 		}
 		if (game_over) {
-			this.vars.ws.onmessage = null;
+			this.vars.ws.send(
+				JSON.stringify({
+					device: "desktop",
+					subject: "ignore"
+				})
+			);
 			this.scene.start("End", { vars: this.vars, entities: this.entities });
 		}
 	} else {
-		this.vars.ws.onmessage = null;
+		this.vars.ws.send(
+			JSON.stringify({
+				device: "desktop",
+				subject: "ignore"
+			})
+		);
 		this.scene.start("Lobby", { vars: this.vars });
 	}
 }
