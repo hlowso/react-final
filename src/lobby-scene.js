@@ -1,34 +1,15 @@
 import gameAttributes from "./game-attributes.js";
 import create from "./lobby-scene-sequences/create.js";
-import SkyBackground from "./assets/sky.png";
-import NewGameButton from "./assets/new_game_button.png";
-
-let start = false;
+import initialize from "./lobby-scene-sequences/initialize.js";
+import preload from "./lobby-scene-sequences/preload.js";
+import init from "./lobby-scene-sequences/init.js";
 
 const lobbyScene = new Phaser.Class({
 	Extends: Phaser.Scene,
 
-	initialize: function() {
-		Phaser.Scene.call(this, { key: "Lobby" });
-	},
-
-	preload: function() {
-		this.load.image("background", SkyBackground);
-		this.load.image("new-game-button", NewGameButton);
-	},
-
-	init: function(data) {
-		if (data.vars && Object.keys(data.vars).length) {
-			this.vars = data.vars;
-			console.log(this.vars);
-		} else {
-			this.vars = {
-				player_ids: [],
-				player_names: {}
-			};
-		}
-	},
-
+	initialize,
+	preload,
+	init,
 	create
 });
 
