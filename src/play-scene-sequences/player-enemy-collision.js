@@ -11,8 +11,8 @@ export default function(enemy, player) {
 		if (!player.playerDisabled) {
 			player.playerDisabled = true;
 			player.health -= 1;
-			this.vars.playerTexts[player.id].health.setText(
-				"Health: " + player.health
+			this.vars.playerTexts[player.id].health.setText(player.health > 5 ?
+				`Health: ❤️ x ${player.health}` : `Health: ${'❤️'.repeat(player.health)}`
 			);
 
 			if (player.health <= 0) {

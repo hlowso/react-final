@@ -111,23 +111,24 @@ export default function() {
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let playerLabelText = this.add.text(100, 100 + index * 60, player.name, {
-			font: "32px Arial",
-			fill: player.colour
-		});
+		let playerLabelText = this.add.text(
+			100,
+			100 + index * 100, player.name,
+			{ font: "48px Arial", fill: player.colour }
+		);
 		let healthText = this.add.text(
-			225,
-			100 + index * 60,
-			"Health:" + player.health,
-			{ font: "32px Arial", fill: player.colour }
+			290,
+			100 + index * 100,
+			`Health: ${'❤️'.repeat(player.health)}`,
+			{ font: "48px Arial", fill: player.colour }
 		);
 		healthText.id = player.id;
 		const playerTexts = (this.vars.playerTexts[player.id] = {});
 		let killcountText = this.add.text(
-			225,
-			125 + index * 60,
-			"Kill Count:" + player.killcount,
-			{ font: "32px Arial", fill: player.colour }
+			290,
+			140 + index * 100,
+			"Kill Count: " + player.killcount,
+			{ font: "48px Arial", fill: player.colour }
 		);
 		killcountText.id = player.id;
 		playerTexts.health = healthText;
@@ -215,7 +216,13 @@ export default function() {
 		frameRate: 20
 	});
 
-	this.vars.gameScoreText = this.add.text(100, 100, `${this.vars.score}`);
+	this.vars.gameScoreText = this.add.text(
+		gameAttributes.gameWidth / 2,
+		100,
+		`Score: ${this.vars.score}`,
+		{font: "48px Arial", fill: "black"}
+	);
+	this.vars.gameScoreText.setOrigin(0.5);
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
