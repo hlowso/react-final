@@ -33,7 +33,6 @@ const handleDesktopMessage = (ws, message) => {
 
 const handleMobileMessage = (ws, message) => {
 	let link, readyState;
-
 	switch (message.subject) {
 		case "connect":
 			link = links.find(
@@ -76,11 +75,12 @@ const handleMobileMessage = (ws, message) => {
 			break;
 		case "push":
 			link = links.find(l => l.id === ws.link_id);
-			if (link && link.listening) {
+			if (link) {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
-					readyState !== link.desktopSocket.CLOSING
+					readyState !== link.desktopSocket.CLOSING &&
+					link.listening
 				) {
 					link.desktopSocket.send(
 						JSON.stringify({
@@ -96,11 +96,12 @@ const handleMobileMessage = (ws, message) => {
 			break;
 		case "shoot":
 			link = links.find(l => l.id === ws.link_id);
-			if (link && link.listening) {
+			if (link) {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
-					readyState !== link.desktopSocket.CLOSING
+					readyState !== link.desktopSocket.CLOSING &&
+					link.listening
 				) {
 					link.desktopSocket.send(
 						JSON.stringify({
