@@ -10,12 +10,14 @@ import Explosion from "../assets/explosion.png";
 import Pigeon from "../assets/pigeon.png";
 
 import Heart from "../assets/heart.png";
+import Bomb from "../assets/bomb.png";
 
 export default function() {
 	this.load.image("background", SkyBackground);
 	this.load.image("laser", GreenLaser);
 
   this.load.image("heart", Heart);
+  this.load.image("bomb", Bomb);
 
 	this.load.image("white_emitter", WhiteEmitter);
 	this.load.image("red_emitter", RedEmitter);

@@ -6,7 +6,10 @@ import update from "./play-scene-sequences/update.js";
 import fireBullet from "./play-scene-sequences/fire-bullet.js";
 import bulletEnemyCollision from "./play-scene-sequences/bullet-enemy-collision.js";
 import playerEnemyCollision from "./play-scene-sequences/player-enemy-collision.js";
+import playerBonusCollision from "./play-scene-sequences/player-bonus-collision.js";
 import enemySpawn from "./play-scene-sequences/enemy-spawn.js";
+import destroyEnemy from "./play-scene-sequences/destroy-enemy.js";
+
 
 const play = new Phaser.Class({
   // The entities and vars objects exclusively contain
@@ -23,7 +26,9 @@ const play = new Phaser.Class({
   fireBullet,
   bulletEnemyCollision,
   playerEnemyCollision,
+  playerBonusCollision,
   enemySpawn,
+  destroyEnemy,
   update
 });
 

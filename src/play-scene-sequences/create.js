@@ -72,24 +72,34 @@ export default function() {
 		group: this.physics.add.group({
 			key: "pigeon",
 			setXY: {
-				x: -100,
-				y: -100
+				x: -200,
+				y: -200
 			}
 		})
 	};
 
+	let firstChild = this.entities.players.group.getChildren();
+	firstChild[0].destroy();
+
 	this.entities.emitters = {};
 	this.vars.playerTexts = {};
 	this.entities.bonuses = {
-		types: ["heart"],
+		types: ["heart", "bomb"],
 		group: this.physics.add.group({
 			key: "heart",
 			setXY: {
-				x: -100,
-				y: -100
+				x: -400,
+				y: -400
 			}
 		})
 	};
+
+	let testBomb = this.entities.bonuses.group.create(400, 100, "bomb");
+	testBomb.type = "bomb";
+	// console.log(this.entities.bonuses);
+	// firstChild = this.entities.bonusus.group.getChildren();
+	// firstChild[0].destroy();
+
 
 	const addPlayer = (player_id, player_name, index) => {
 		let player = this.entities.players.group.create(
@@ -204,10 +214,12 @@ export default function() {
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
 		setXY: {
-			x: -100,
-			y: -100
+			x: -600,
+			y: -600
 		}
 	});
+	firstChild = this.entities.enemies.getChildren();
+	firstChild[0].destroy();
 
 	this.time.addEvent({
 		delay: 5000,
@@ -239,8 +251,8 @@ export default function() {
 		setCollideWorldBounds: true
 	});
 
-	let firstBullet = this.entities.bullets.getChildren();
-	firstBullet[0].destroy();
+	firstChild = this.entities.bullets.getChildren();
+	firstChild[0].destroy();
 
 	this.physics.add.overlap(
 		this.entities.enemies,
@@ -258,11 +270,11 @@ export default function() {
 		this
 	);
 
-	// this.physics.add.overlap(
-	// 	this.entities.players.group,
-	// 	this.entities.bonsuses.group,
-	// 	this.playerBonusCollision,
-	// 	null,
-	// 	this
-	// );
+	this.physics.add.overlap(
+		this.entities.players.group,
+		this.entities.bonuses.group,
+		this.playerBonusCollision,
+		null,
+		this
+	);
 }

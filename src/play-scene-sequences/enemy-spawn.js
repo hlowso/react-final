@@ -83,5 +83,7 @@ export default function() {
 		});
 
 		step++;
+
+		console.log(this.entities.enemies.children);
 	}
 }
