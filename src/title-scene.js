@@ -67,8 +67,6 @@ function displayLeaderboards(button) {
 	};
 }
 
-let start = false;
-
 function startClickHandler(button) {
 	button.off("clicked", startClickHandler);
 	button.input.enabled = false;
@@ -116,14 +114,7 @@ const titleScene = new Phaser.Class({
 		);
 
 		start_button.setInteractive();
-
 		start_button.on("clicked", startClickHandler, this);
-
-		this.add.text(
-			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight / 2,
-			`WELCOME BITCHES!`
-		);
 
 		leaderboard_button.setInteractive();
 		leaderboard_button.on("clicked", displayLeaderboards, this);

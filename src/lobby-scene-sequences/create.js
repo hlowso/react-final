@@ -1,5 +1,7 @@
 import gameAttributes from "../game-attributes.js";
 
+const PLAYER_COLOURS = ["white", "red", "yellow"];
+
 export default function() {
 	const clickHandler = button => {
 		if (this.vars.player_ids.length) {
@@ -7,10 +9,6 @@ export default function() {
 			button.input.enabled = false;
 			this.scene.start("Play", {
 				vars: this.vars
-				// ws: this.vars.ws,
-				// player_ids: this.vars.player_ids,
-				// player_names: this.vars.player_names,
-				// playerStatuses: this.vars.playerStatuses
 			});
 		}
 	};
@@ -41,13 +39,16 @@ export default function() {
 			}
 
 			if (this.vars.playerStatuses[id]) {
+				if (!this.vars.player_colours[id]) {
+					this.vars.player_colours[id] = PLAYER_COLOURS[i];
+				}
 				playerStatusTextObjects[id] = this.add.text(
 					100,
 					200 + 100 * i++,
 					this.vars.playerStatuses[id],
 					{
 						font: "96px Courier New",
-						fill: "#000000"
+						fill: `${this.vars.player_colours[id]}`
 					}
 				);
 			} else {

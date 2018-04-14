@@ -5,7 +5,8 @@ export default function(data) {
 	} else {
 		this.vars = {
 			player_ids: [],
-			player_names: {}
+			player_names: {},
+			player_colours: {}
 		};
 	}
 }

@@ -24,27 +24,24 @@ export default function() {
 				let x_sign = 0;
 				let y_sign = 0;
 
-				if(x_velocity !== 0.0) {
+				if (x_velocity !== 0.0) {
 					x_sign = x_velocity / Math.abs(x_velocity);
 				}
-				if(y_velocity !== 0.0) {
+				if (y_velocity !== 0.0) {
 					y_sign = y_velocity / Math.abs(y_velocity);
 				}
 
-				if(Math.abs(x_velocity) < 0.1) {
+				if (Math.abs(x_velocity) < 0.1) {
 					x_velocity = x_sign * 500.0;
-				}
-				else {
+				} else {
 					x_velocity *= 5000.0;
 				}
 
-				if(Math.abs(y_velocity) < 0.1) {
+				if (Math.abs(y_velocity) < 0.1) {
 					y_velocity = y_sign * 500.0;
-				}
-				else {
+				} else {
 					y_velocity *= -5000.0;
 				}
-
 
 				player.setVelocityX(x_velocity);
 				player.setVelocityY(y_velocity);
@@ -82,7 +79,6 @@ export default function() {
 	};
 
 	this.entities.emitters = {};
-
 	this.vars.playerTexts = {};
 
 	const addPlayer = (player_id, player_name, index) => {
@@ -92,11 +88,9 @@ export default function() {
 			"pigeon"
 		);
 
-		let colour = generateHexColor();
-
 		player.id = player_id;
 		player.name = player_name;
-		player.colour = colour;
+		player.colour = this.vars.player_colours[player_id];
 		player.alive = true;
 		player.killcount = 0;
 		player.health = 3;
@@ -163,24 +157,25 @@ export default function() {
 	});
 	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
-
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let player_name = this.vars.player_names[player_id];
 		let newPlayer = addPlayer(player_id, player_name, i);
 
 		newPlayer.anims.play("pigeonFly");
-		let emitter = this.add.particles("white_emitter");
+		let emitter = this.add.particles(
+			`${this.vars.player_colours[player_id]}_emitter`
+		);
 
-		let colour = newPlayer.colour.toString();
-		colour = colour.split("");
-		colour.shift();
-		colour = colour.join("");
-		let colourGood = "0xff" + colour;
+		// let colour = newPlayer.colour.toString();
+		// colour = colour.split("");
+		// colour.shift();
+		// colour = colour.join("");
+		// let colourGood = "0xff" + colour;
 
 		let newPlayerEmitter = emitter.createEmitter({
 			speed: 100,
-			tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
+			// tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
 			lifespan: 250,
 			blendMode: "NORMAL",
 			gravity: { x: 0, y: 200 },
