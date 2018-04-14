@@ -30,8 +30,8 @@ const fillScoresTable = (tableId, name, fields, scores) => {
 };
 
 function displayLeaderboards(button) {
-	const modal = document.getElementById("myModal");
-	const exit = document.getElementById("close-modal");
+	const modal = document.getElementById("leaderboard-modal");
+	const exit = document.getElementsByClassName("close-modal")[0];
 	exit.onclick = function() {
 		modal.style.display = "none";
 	};

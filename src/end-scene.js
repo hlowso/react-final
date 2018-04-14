@@ -2,6 +2,7 @@ import gameAttributes from "./game-attributes.js";
 import SkyBackground from "./assets/sky.png";
 import NewGameButton from "./assets/new_game_button.png";
 import MenuButton from "./assets/menu_button.png";
+import ReviewButton from "./assets/review_button.png";
 
 const asyncPostScore = (collection, score) => {
 	return fetch(`/${collection}-scores`, {
@@ -24,6 +25,7 @@ const endScene = new Phaser.Class({
 		this.load.image("background", SkyBackground);
 		this.load.image("new-game-button", NewGameButton);
 		this.load.image("menu-button", MenuButton);
+		this.load.image("review-button", ReviewButton);
 	},
 
 	init: function(data) {
@@ -36,9 +38,6 @@ const endScene = new Phaser.Class({
 			button.off("clicked", clickHandler);
 			button.input.enabled = false;
 			this.scene.start("Play", {
-				// ws: this.vars.ws,
-				// player_ids: this.vars.player_ids,
-				// player_names: this.vars.player_names
 				vars: this.vars
 			});
 		};
@@ -49,6 +48,42 @@ const endScene = new Phaser.Class({
 			this.scene.start("Title", {
 				vars: this.vars
 			});
+		};
+
+		const reviewButtonHandler = button => {
+			const modal = document.getElementById("review-modal");
+			const exit = document.getElementsByClassName("close-modal")[0];
+			const form = document.getElementById("review-form");
+			function handleSubmission(event) {
+				event.preventDefault();
+				fetch("/reviews", {
+					method: "POST",
+					body: JSON.stringify({
+						rating: event.target.rating.value,
+						comment: event.target.comment.value
+					}),
+					headers: {
+						"content-type": "application/json"
+					}
+				}).then(response => {
+					event.target.comment.value = "";
+					form.removeEventListener("submit", handleSubmission);
+					modal.style.display = "none";
+				});
+			}
+
+			form.addEventListener("submit", handleSubmission);
+			modal.style.display = "block";
+
+			exit.onclick = function() {
+				modal.style.display = "none";
+			};
+
+			window.onclick = function(event) {
+				if (event.target == modal) {
+					modal.style.display = "none";
+				}
+			};
 		};
 
 		const background = this.add.image(
@@ -112,17 +147,27 @@ const endScene = new Phaser.Class({
 				"new-game-button"
 			);
 
-			const menu_button = this.add.image(
-				2 * gameAttributes.gameWidth / 3,
-				gameAttributes.gameHeight - 300,
-				"menu-button"
-			);
-
 			replay_button.setInteractive();
-			menu_button.setInteractive();
 			replay_button.on("clicked", clickHandler, this);
-			menu_button.on("clicked", menuButtonHandler, this);
 		}
+
+		const menu_button = this.add.image(
+			2 * gameAttributes.gameWidth / 3,
+			gameAttributes.gameHeight - 300,
+			"menu-button"
+		);
+
+		menu_button.setInteractive();
+		menu_button.on("clicked", menuButtonHandler, this);
+
+		const review_button = this.add.image(
+			gameAttributes.gameWidth - 200,
+			gameAttributes.gameHeight / 2,
+			"review-button"
+		);
+
+		review_button.setInteractive();
+		review_button.on("clicked", reviewButtonHandler, this);
 
 		this.input.on(
 			"gameobjectup",

@@ -6,13 +6,32 @@
   </head>
   <body>
 
-  	<div id="myModal" class="modal">
+  	<div id="leaderboard-modal" class="modal">
 		  <div class="modal-content">
-		    <span id="close-modal">&times;</span>
+		    <span class="close-modal">&times;</span>
 		    <table id="user-scores-table"></table>
 		    <table id="team-scores-table"></table>
 		  </div>
 		</div>
+
+    <div id="review-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>How'd we do?</h3>
+        <p>User feedback is very much appreciated. Send us a comment to let us know where we can improve.</p>
+        <form action="/reviews" method="POST" id="review-form">
+          <select name="rating">
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+          <textarea name="comment"></textarea>
+          <input type="submit" value="Send">
+        </form>
+      </div>
+    </div>
 
   	<div id="root"></div>
     <script src="bundle.js"></script>

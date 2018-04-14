@@ -1,5 +1,7 @@
 import gameAttributes from "../game-attributes.js";
 
+const MIN_SPEED_SQUARED = 250000;
+
 export default function() {
 	this.vars.ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
@@ -19,15 +21,15 @@ export default function() {
 					y_sign = y_velocity / Math.abs(y_velocity);
 				}
 
-				if (Math.abs(x_velocity) < 0.1) {
-					x_velocity = x_sign * 500.0;
+				if (Math.pow(x_velocity, 2) + Math.pow(y_velocity, 2) < 0.02) {
+					y_velocity = Math.sqrt(
+						MIN_SPEED_SQUARED / (1.0 + Math.pow(x_velocity / y_velocity, 2))
+					);
+					x_velocity = Math.sqrt(MIN_SPEED_SQUARED - Math.pow(y_velocity, 2));
+					y_velocity *= y_sign;
+					x_velocity *= x_sign;
 				} else {
 					x_velocity *= 5000.0;
-				}
-
-				if (Math.abs(y_velocity) < 0.1) {
-					y_velocity = y_sign * 500.0;
-				} else {
 					y_velocity *= 5000.0;
 				}
 
@@ -131,15 +133,14 @@ export default function() {
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let playerLabelText = this.add.text(
-			100,
-			100 + index * 100, player.name,
-			{ font: "48px Arial", fill: player.colour }
-		);
+		let playerLabelText = this.add.text(100, 100 + index * 100, player.name, {
+			font: "48px Arial",
+			fill: player.colour
+		});
 		let healthText = this.add.text(
 			290,
 			100 + index * 100,
-			`Health: ${'❤️'.repeat(player.health)}`,
+			`Health: ${"❤️".repeat(player.health)}`,
 			{ font: "48px Arial", fill: player.colour }
 		);
 		healthText.id = player.id;
@@ -242,7 +243,7 @@ export default function() {
 		gameAttributes.gameWidth / 2,
 		100,
 		`Score: ${this.vars.score}`,
-		{font: "48px Arial", fill: "black"}
+		{ font: "48px Arial", fill: "black" }
 	);
 	this.vars.gameScoreText.setOrigin(0.5);
 

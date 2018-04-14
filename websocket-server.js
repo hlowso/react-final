@@ -2,23 +2,37 @@ const WebSocket = require("ws");
 const SocketServer = WebSocket.Server;
 const uuid = require("uuid-v4");
 const MAX_PLAYER_COUNT = 3;
+const links = [];
 
 const handleDesktopMessage = (ws, message) => {
-	const link_id = uuid();
-	links.push({
-		id: link_id,
-		code: message.code,
-		desktopSocket: ws,
-		mobileSockets: [],
-		open: true
-	});
-	ws.link_id = link_id;
-	ws.is_desktop = true;
+	let link;
+	switch (message.subject) {
+		case "connect":
+			const link_id = uuid();
+			links.push({
+				id: link_id,
+				code: message.code,
+				desktopSocket: ws,
+				mobileSockets: [],
+				open: true,
+				listening: true
+			});
+			ws.link_id = link_id;
+			ws.is_desktop = true;
+			break;
+		case "listen":
+			link = links.find(l => l.id === ws.link_id);
+			link.listening = true;
+			break;
+		case "ignore":
+			link = links.find(l => l.id === ws.link_id);
+			link.listening = false;
+			break;
+	}
 };
 
 const handleMobileMessage = (ws, message) => {
 	let link, readyState;
-
 	switch (message.subject) {
 		case "connect":
 			link = links.find(
@@ -65,7 +79,8 @@ const handleMobileMessage = (ws, message) => {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
-					readyState !== link.desktopSocket.CLOSING
+					readyState !== link.desktopSocket.CLOSING &&
+					link.listening
 				) {
 					link.desktopSocket.send(
 						JSON.stringify({
@@ -85,7 +100,8 @@ const handleMobileMessage = (ws, message) => {
 				readyState = link.desktopSocket.readyState;
 				if (
 					readyState !== link.desktopSocket.CLOSED &&
-					readyState !== link.desktopSocket.CLOSING
+					readyState !== link.desktopSocket.CLOSING &&
+					link.listening
 				) {
 					link.desktopSocket.send(
 						JSON.stringify({
@@ -120,7 +136,6 @@ const handleMobileMessage = (ws, message) => {
 	}
 };
 
-const links = [];
 module.exports = server => {
 	const wss = new SocketServer({ server });
 
