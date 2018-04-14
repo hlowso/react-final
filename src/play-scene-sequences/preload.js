@@ -9,9 +9,14 @@ import YellowEmitter from "../assets/yellow_emitter.png";
 import Explosion from "../assets/explosion.png";
 import Pigeon from "../assets/pigeon.png";
 
+import Heart from "../assets/heart.png";
+
 export default function() {
 	this.load.image("background", SkyBackground);
 	this.load.image("laser", GreenLaser);
+
+  this.load.image("heart", Heart);
+
 	this.load.image("white_emitter", WhiteEmitter);
 	this.load.image("red_emitter", RedEmitter);
 	this.load.image("yellow_emitter", YellowEmitter);
@@ -31,4 +36,5 @@ export default function() {
 		frameHeight: 64,
 		endFrame: 23
 	});
+
 }

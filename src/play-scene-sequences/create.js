@@ -80,6 +80,7 @@ export default function() {
 
 	this.entities.emitters = {};
 	this.vars.playerTexts = {};
+	this.entities.bonsuses = ["heart"];
 
 	const addPlayer = (player_id, player_name, index) => {
 		let player = this.entities.players.group.create(

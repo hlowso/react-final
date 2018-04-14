@@ -12,5 +12,14 @@ export default function(enemy, bullet) {
 		this.vars.playerTexts[bullet.player_id].killcount.setText(
 			"Kill Count: " + killcount
 		);
+
+		if (Math.floor(Math.random() * 100) > 75) {
+			let type = Math.floor(Math.random() * this.entities.bonsuses.length);
+			let bonus = this.physics.add.image(enemy.x, enemy.y, this.entities.bonsuses[type]);
+			bonus.type = type;
+			setTimeout(() => {
+				bonus.destroy();
+			}, 5000);
+		}
 	}
 }
