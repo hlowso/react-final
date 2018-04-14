@@ -6,7 +6,7 @@ export default function() {
 
 	while (step <= numberOfEnemies) {
 
-		let path;
+		let path = [];
 		let curve;
 		let points;
 		let xOrY;
@@ -16,7 +16,7 @@ export default function() {
 		let leftOrRight;
 
 		const createPath = (x, y) => {
-			path = { t: 0, vec: new Phaser.Math.Vector2() };
+			// path = { t: 0, vec: new Phaser.Math.Vector2() };
 
 			points = [x, y];
 
@@ -60,28 +60,28 @@ export default function() {
 
 		enemy.anims.play("falconFly");
 
-		// enemy.setCollideWorldBounds(true);
-
-		let enemyTimeline = this.tweens.timeline({
-			loop: -1
-		});
+		enemy.setCollideWorldBounds(true);
 
 		for (let i = 1; i < enemyPath.points.length; i++) {
-			enemyTimeline.add({
-				targets: enemy,
+			path.push({
 				x: enemyPath.points[i].x,
-				ease: "Sine.easeInOut",
-				duration: 1000
-			});
-			enemyTimeline.add({
-				targets: enemy,
-				y: enemyPath.points[i].y,
-				ease: "Sine.easeInOut",
-				duration: 1000
+				y: enemyPath.points[i].y
 			});
 		}
 
-		enemyTimeline.play();
+		path.push({
+				x: enemyPath.points[0].x,
+				y: enemyPath.points[0].y
+			});
+
+		let enemyTimeline = this.tweens.timeline({
+			targets: enemy,
+			duration: 1000,
+			loop: -1,
+			ease: "Sine.easeInOut",
+			tweens: path
+		});
+
 		step++;
 	}
 }
