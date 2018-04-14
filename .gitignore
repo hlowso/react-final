@@ -3,3 +3,4 @@ journal
 .eslintrc
 node_modules
 dist/bundle.js
+src/.DS_Store
