@@ -6,9 +6,11 @@ export default function() {
 			button.off("clicked", clickHandler);
 			button.input.enabled = false;
 			this.scene.start("Play", {
-				ws: this.vars.ws,
-				player_ids: this.vars.player_ids,
-				player_names: this.vars.player_names
+				vars: this.vars
+				// ws: this.vars.ws,
+				// player_ids: this.vars.player_ids,
+				// player_names: this.vars.player_names,
+				// playerStatuses: this.vars.playerStatuses
 			});
 		}
 	};
@@ -25,50 +27,33 @@ export default function() {
 	};
 
 	let ready = false;
+	const playerStatusTextObjects = {};
 
-	this.vars.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
-	this.vars.ws.onopen = () => {
-		this.vars.ws.send(
-			JSON.stringify({
-				device: "desktop",
-				code: gameAttributes.code
-			})
-		);
-	};
+	const printStatuses = () => {
+		let i = 0;
+		for (let id of this.vars.player_ids) {
+			let obj = playerStatusTextObjects[id];
 
-	this.vars.ws.onmessage = incoming_message => {
-		let index;
-		const message = JSON.parse(incoming_message.data);
-		// console.log("message to desktop: ", message);
-		switch (message.subject) {
-			case "connect":
-				instruction.setVisible(false);
-				this.vars.player_ids.push(message.player_id);
-				this.vars.player_names[message.player_id] = message.username;
+			if (obj && Object.keys(obj).length) {
+				obj.setVisible(false);
+				obj.destroy();
+				delete playerStatusTextObjects[id];
+			}
 
-				let status = this.add.text(100, 200 + 100 * player_statuses.length + 1, `${
-							this.vars.player_names[message.player_id]
-						}: not yet calibrated`, {
-					font: "96px Courier New",
-					fill: "#000000"
-				});
-				player_statuses.push(status);
-				break;
-			case "disconnect":
-				index = this.vars.player_ids.indexOf(message.player_id);
-				player_statuses[index].setVisible(false);
-				player_statuses.splice(index, 1);
+			if (this.vars.playerStatuses[id]) {
+				playerStatusTextObjects[id] = this.add.text(
+					100,
+					200 + 100 * i++,
+					this.vars.playerStatuses[id],
+					{
+						font: "96px Courier New",
+						fill: "#000000"
+					}
+				);
+			} else {
+				let index = this.vars.player_ids.indexOf(id);
 				this.vars.player_ids.splice(index, 1);
-				break;
-			case "calibrated":
-				if (!ready) {
-					ready = true;
-					armButton(new_game_button);
-				}
-				let name = this.vars.player_names[message.player_id];
-				index = this.vars.player_ids.indexOf(message.player_id);
-				player_statuses[index].setText(`${name}: calibrated`);
-				break;
+			}
 		}
 	};
 
@@ -87,8 +72,6 @@ export default function() {
 	);
 
 	new_game_button.setVisible(false);
-
-	const player_statuses = [];
 
 	const instruction = this.add.text(
 		200,
@@ -114,4 +97,53 @@ export default function() {
 		},
 		this
 	);
+
+	if (!this.vars.ws) {
+		this.vars.playerStatuses = {};
+
+		this.vars.ws = new WebSocket(window.location.origin.replace(/^http/, "ws"));
+		this.vars.ws.onopen = () => {
+			this.vars.ws.send(
+				JSON.stringify({
+					device: "desktop",
+					code: gameAttributes.code
+				})
+			);
+		};
+
+		this.vars.ws.onmessage = incoming_message => {
+			let index;
+			const message = JSON.parse(incoming_message.data);
+			switch (message.subject) {
+				case "connect":
+					this.vars.player_ids.push(message.player_id);
+					this.vars.player_names[message.player_id] = message.username;
+
+					this.vars.playerStatuses[message.player_id] = `${
+						this.vars.player_names[message.player_id]
+					}: not yet calibrated`;
+
+					printStatuses();
+					break;
+
+				case "disconnect":
+					delete this.vars.playerStatuses[message.player_id];
+					printStatuses();
+					break;
+				case "calibrated":
+					if (!ready) {
+						ready = true;
+						armButton(new_game_button);
+					}
+					let name = this.vars.player_names[message.player_id];
+					this.vars.playerStatuses[message.player_id] = `${name}: calibrated`;
+					printStatuses();
+					break;
+			}
+		};
+	} else if (this.vars.player_ids.length) {
+		armButton(new_game_button);
+	}
+
+	printStatuses();
 }

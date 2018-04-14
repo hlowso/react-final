@@ -2,7 +2,6 @@ export default function(enemy, player) {
 	if (!isNaN(player.health)) {
 		enemy.setBounce(0.4);
 		player.setTint(0xff0000);
-		console.log(player);
 
 		setTimeout(() => {
 			player.playerDisabled = false;

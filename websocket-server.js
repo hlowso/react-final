@@ -152,6 +152,11 @@ module.exports = server => {
 			} else {
 				const link = links.find(l => l.id === ws.link_id);
 				if (link && link.open) {
+					index = link.mobileSockets.findIndex(
+						ms => ms.player_id === ws.player_id
+					);
+
+					link.mobileSockets.splice(index, 1);
 					link.desktopSocket.send(
 						JSON.stringify({
 							subject: "disconnect",
