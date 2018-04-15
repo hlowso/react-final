@@ -1,7 +1,12 @@
 export default function(data) {
 	if (data.vars && Object.keys(data.vars).length) {
 		this.vars = data.vars;
-		console.log(this.vars);
+		this.vars.ws.send(
+			JSON.stringify({
+				device: "desktop",
+				subject: "listen"
+			})
+		);
 	} else {
 		this.vars = {
 			player_ids: [],

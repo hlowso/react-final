@@ -5,7 +5,6 @@ export default function() {
 	let step = 1;
 
 	while (step <= numberOfEnemies) {
-
 		let path = [];
 		let curve;
 		let points;
@@ -42,7 +41,9 @@ export default function() {
 			yCoord = 0;
 			enemyPath = createPath(xCoord, yCoord);
 		} else {
-			yCoord = Math.floor(Math.random() * Math.floor(gameAttributes.gameHeight));
+			yCoord = Math.floor(
+				Math.random() * Math.floor(gameAttributes.gameHeight)
+			);
 			leftOrRight = Math.floor(Math.random() * Math.floor(2));
 			if (leftOrRight === 0) {
 				xCoord = 0;
@@ -70,9 +71,9 @@ export default function() {
 		}
 
 		path.push({
-				x: enemyPath.points[0].x,
-				y: enemyPath.points[0].y
-			});
+			x: enemyPath.points[0].x,
+			y: enemyPath.points[0].y
+		});
 
 		let enemyTimeline = this.tweens.timeline({
 			targets: enemy,
@@ -83,7 +84,5 @@ export default function() {
 		});
 
 		step++;
-
-		console.log(this.entities.enemies.children);
 	}
 }

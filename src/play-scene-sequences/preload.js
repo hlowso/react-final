@@ -11,13 +11,15 @@ import Pigeon from "../assets/pigeon.png";
 
 import Heart from "../assets/heart.png";
 import Bomb from "../assets/bomb.png";
+import Gem from "../assets/gem.png";
 
 export default function() {
 	this.load.image("background", SkyBackground);
 	this.load.image("laser", GreenLaser);
 
-  this.load.image("heart", Heart);
-  this.load.image("bomb", Bomb);
+	this.load.image("heart", Heart);
+	this.load.image("bomb", Bomb);
+	this.load.image("gem", Gem);
 
 	this.load.image("white_emitter", WhiteEmitter);
 	this.load.image("red_emitter", RedEmitter);
@@ -38,5 +40,4 @@ export default function() {
 		frameHeight: 64,
 		endFrame: 23
 	});
-
 }

@@ -144,12 +144,6 @@ export default function() {
 			}
 		};
 	} else {
-		this.vars.ws.send(
-			JSON.stringify({
-				device: "desktop",
-				subject: "listen"
-			})
-		);
 		if (this.vars.player_ids.length) {
 			armButton(new_game_button);
 		}

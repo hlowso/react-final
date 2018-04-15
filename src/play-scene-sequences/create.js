@@ -96,12 +96,11 @@ export default function() {
 		})
 	};
 
-	// let testBomb = this.entities.bonuses.group.create(400, 100, "bomb");
-	// testBomb.type = "bomb";
+	let testBomb = this.entities.bonuses.group.create(400, 100, "gem");
+	testBomb.type = "gem";
 	// console.log(this.entities.bonuses);
 	// firstChild = this.entities.bonusus.group.getChildren();
 	// firstChild[0].destroy();
-
 
 	const addPlayer = (player_id, player_name, index) => {
 		let player = this.entities.players.group.create(
@@ -179,6 +178,10 @@ export default function() {
 	});
 	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
+	// this.vars.player_ids.push("0");
+	// this.vars.player_names["0"] = "ZERO";
+	// this.vars.player_colours["0"] = "yellow";
+
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
 		let player_name = this.vars.player_names[player_id];
@@ -189,15 +192,8 @@ export default function() {
 			`${this.vars.player_colours[player_id]}_emitter`
 		);
 
-		// let colour = newPlayer.colour.toString();
-		// colour = colour.split("");
-		// colour.shift();
-		// colour = colour.join("");
-		// let colourGood = "0xff" + colour;
-
 		let newPlayerEmitter = emitter.createEmitter({
 			speed: 100,
-			// tint: { start: parseInt(colourGood, 16), end: parseInt(colourGood, 16) },
 			lifespan: 250,
 			blendMode: "NORMAL",
 			gravity: { x: 0, y: 200 },
@@ -208,9 +204,13 @@ export default function() {
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
-	function generateHexColor() {
-		return "#" + (((0.5 + 0.5 * Math.random()) * 0xffffff) << 0).toString(16);
-	}
+	// this.entities.players.individuals["0"].alive = false;
+	// this.entities.players.individuals["0"].disableBody(true, true);
+	// this.vars.playerTexts["0"].health.setText("Health: ");
+
+	// function generateHexColor() {
+	// 	return "#" + (((0.5 + 0.5 * Math.random()) * 0xffffff) << 0).toString(16);
+	// }
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
