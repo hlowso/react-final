@@ -3,12 +3,14 @@ export default function(player, bonus) {
     bonus.disableBody(true, true);
     switch (bonus.type) {
       case "heart":
-        player.health++;
-        this.vars.playerTexts[player.id].health.setText(
-          player.health > 5
-            ? `Health: ❤️ x ${player.health}`
-            : `Health: ${"❤️".repeat(player.health)}`
-        );
+        if (player.health < 10) {
+          player.health++;
+          this.vars.playerTexts[player.id].health.setText(
+            player.health > 5
+              ? `Health: ❤️ x ${player.health}`
+              : `Health: ${"❤️".repeat(player.health)}`
+          );
+        }
         break;
       case "bomb":
         let enemies = this.entities.enemies.getChildren();
@@ -24,17 +26,13 @@ export default function(player, bonus) {
         let players = this.entities.players.individuals;
         for (let id in players) {
           let deadPlayer = players[id];
-          if (!deadPlayer.alive) {
+          if (deadPlayer && !deadPlayer.alive) {
             deadPlayer.body.enable = true;
             deadPlayer.visible = true;
             deadPlayer.alive = true;
             deadPlayer.health = 3;
             this.vars.playerTexts[id].health.setText("Health: ❤️❤️❤️");
             this.entities.emitters[id].on = true;
-
-            // this.vars.playerTexts[id].killcount.setText(
-            //   `KillCount: ${deadPlayer.killcount}`
-            // );
             break;
           }
         }

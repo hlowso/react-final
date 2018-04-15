@@ -57,6 +57,10 @@ export default function() {
 				this.vars.player_ids.splice(index, 1);
 				player.alive = false;
 				player.disableBody(true, true);
+				this.entities.emitters[player.id].on = false;
+				delete this.entities.players.individuals[player.id];
+				this.vars.playerTexts[player.id].health.setText("DISCONNECTED");
+				this.vars.playerTexts[player.id].killcount.setVisible(false);
 				break;
 		}
 	};
@@ -96,10 +100,10 @@ export default function() {
 		})
 	};
 
-	let testBomb = this.entities.bonuses.group.create(400, 100, "gem");
-	testBomb.type = "gem";
+	// let testBomb = this.entities.bonuses.group.create(400, 100, "gem");
+	// testBomb.type = "gem";
 	// console.log(this.entities.bonuses);
-	// firstChild = this.entities.bonusus.group.getChildren();
+	// firstChild = this.entities.bonusus.group.getChildren9();
 	// firstChild[0].destroy();
 
 	const addPlayer = (player_id, player_name, index) => {
@@ -176,11 +180,8 @@ export default function() {
 		frameRate: 20,
 		repeat: -1
 	});
-	//let emitters = [this.add.particles('red_emitter'), this.add.particles('yellow_emitter')];
 
-	// this.vars.player_ids.push("0");
-	// this.vars.player_names["0"] = "ZERO";
-	// this.vars.player_colours["0"] = "yellow";
+	console.log(this.vars);
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
@@ -203,14 +204,6 @@ export default function() {
 
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
-
-	// this.entities.players.individuals["0"].alive = false;
-	// this.entities.players.individuals["0"].disableBody(true, true);
-	// this.vars.playerTexts["0"].health.setText("Health: ");
-
-	// function generateHexColor() {
-	// 	return "#" + (((0.5 + 0.5 * Math.random()) * 0xffffff) << 0).toString(16);
-	// }
 
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",

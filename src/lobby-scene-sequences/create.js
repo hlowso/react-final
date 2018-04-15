@@ -40,7 +40,7 @@ export default function() {
 
 			if (this.vars.playerStatuses[id]) {
 				if (!this.vars.player_colours[id]) {
-					this.vars.player_colours[id] = PLAYER_COLOURS[i];
+					this.vars.player_colours[id] = PLAYER_COLOURS.shift();
 				}
 				playerStatusTextObjects[id] = this.add.text(
 					100,
@@ -57,6 +57,14 @@ export default function() {
 			}
 		}
 	};
+
+	for (let id of this.vars.player_ids) {
+		let colour = this.vars.player_colours[id];
+		if (colour) {
+			let index = PLAYER_COLOURS.indexOf(colour);
+			PLAYER_COLOURS.splice(index, 1);
+		}
+	}
 
 	const background = this.add.image(
 		gameAttributes.gameWidth / 2,
@@ -112,42 +120,45 @@ export default function() {
 				})
 			);
 		};
-
-		this.vars.ws.onmessage = incoming_message => {
-			let index;
-			const message = JSON.parse(incoming_message.data);
-			switch (message.subject) {
-				case "connect":
-					this.vars.player_ids.push(message.player_id);
-					this.vars.player_names[message.player_id] = message.username;
-
-					this.vars.playerStatuses[message.player_id] = `${
-						this.vars.player_names[message.player_id]
-					}: not yet calibrated`;
-
-					printStatuses();
-					break;
-
-				case "disconnect":
-					delete this.vars.playerStatuses[message.player_id];
-					printStatuses();
-					break;
-				case "calibrated":
-					if (!ready) {
-						ready = true;
-						armButton(new_game_button);
-					}
-					let name = this.vars.player_names[message.player_id];
-					this.vars.playerStatuses[message.player_id] = `${name}: calibrated`;
-					printStatuses();
-					break;
-			}
-		};
 	} else {
 		if (this.vars.player_ids.length) {
+			ready = true;
 			armButton(new_game_button);
 		}
 	}
+
+	this.vars.ws.onmessage = incoming_message => {
+		let index;
+		const message = JSON.parse(incoming_message.data);
+		switch (message.subject) {
+			case "connect":
+				this.vars.player_ids.push(message.player_id);
+				this.vars.player_names[message.player_id] = message.username;
+
+				this.vars.playerStatuses[message.player_id] = `${
+					this.vars.player_names[message.player_id]
+				}: not yet calibrated`;
+
+				printStatuses();
+				break;
+
+			case "disconnect":
+				PLAYER_COLOURS.unshift(this.vars.player_colours[message.player_id]);
+				delete this.vars.playerStatuses[message.player_id];
+				printStatuses();
+				break;
+
+			case "calibrated":
+				if (!ready) {
+					ready = true;
+					armButton(new_game_button);
+				}
+				let name = this.vars.player_names[message.player_id];
+				this.vars.playerStatuses[message.player_id] = `${name}: calibrated`;
+				printStatuses();
+				break;
+		}
+	};
 
 	printStatuses();
 }

@@ -5,9 +5,7 @@ export default function(enemy) {
     boom.anims.play("explode");
     enemy.destroy();
 
-    if (Math.floor(Math.random() * 100) > 80) {
-      console.log("In destroy enemy if");
-
+    if (Math.floor(Math.random() * 100) < 33) {
       let atLeastOneDeadPlayer = false;
       let players = this.entities.players.individuals;
       let bonusList = [

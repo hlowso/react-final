@@ -19,6 +19,12 @@ const handleDesktopMessage = (ws, message) => {
 			});
 			ws.link_id = link_id;
 			ws.is_desktop = true;
+
+			setInterval(() => {
+				if (ws.readyState !== ws.CLOSED && ws.readyState !== ws.CLOSING) {
+					ws.ping();
+				}
+			}, 30000);
 			break;
 		case "listen":
 			link = links.find(l => l.id === ws.link_id);
@@ -72,6 +78,11 @@ const handleMobileMessage = (ws, message) => {
 				);
 				console.log("No link found for requesting mobile device");
 			}
+			setInterval(() => {
+				if (ws.readyState !== ws.CLOSED && ws.readyState !== ws.CLOSING) {
+					ws.ping();
+				}
+			}, 30000);
 			break;
 		case "push":
 			link = links.find(l => l.id === ws.link_id);
