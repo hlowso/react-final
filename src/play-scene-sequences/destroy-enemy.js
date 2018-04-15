@@ -7,13 +7,13 @@ export default function (enemy) {
 
     enemy.destroy();
 
-    if (Math.floor(Math.random() * 100) > 0) {
+    if (Math.floor(Math.random() * 100) > 90) {
       let type = Math.floor(Math.random() * this.entities.bonuses.types.length);
       let bonus = this.entities.bonuses.group.create(enemy.x, enemy.y, this.entities.bonuses.types[type]);
       bonus.type = this.entities.bonuses.types[type];
-      // setTimeout(() => {
-      //  bonus.destroy();
-      // }, 5000);
+      setTimeout(() => {
+        bonus.destroy();
+      }, 5000);
     }
   }
 }

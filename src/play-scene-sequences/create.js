@@ -96,8 +96,8 @@ export default function() {
 		})
 	};
 
-	let testBomb = this.entities.bonuses.group.create(400, 100, "bomb");
-	testBomb.type = "bomb";
+	// let testBomb = this.entities.bonuses.group.create(400, 100, "bomb");
+	// testBomb.type = "bomb";
 	// console.log(this.entities.bonuses);
 	// firstChild = this.entities.bonusus.group.getChildren();
 	// firstChild[0].destroy();

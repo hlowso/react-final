@@ -11,6 +11,8 @@ export default function(player, bonus) {
         break;
       case "bomb":
         bonus.destroy();
+        console.log(this);
+
         console.log(this.entities.enemies);
         let enemies = this.entities.enemies.getChildren();
         if (enemies.length > 0) {
@@ -22,6 +24,5 @@ export default function(player, bonus) {
         }
         break;
     }
-
   }
 }
