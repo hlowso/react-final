@@ -51,22 +51,12 @@ canvas {
     cursor: pointer;
 }
 
-/*#root {
-    display: block;
+#root {
+    width: 100%;
+    height: 100%;
 }
 
-@media only screen and (orientation: portrait) {
-    #root {
-        height: 100vw;
-
-        -webkit-transform: rotate(90deg);
-
-        -moz-transform: rotate(90deg);
-
-        -o-transform: rotate(90deg);
-
-        -ms-transform: rotate(90deg);
-
-        transform: rotate(90deg);
-    }
-}*/
+.wrong-orientation {
+    background-color: green;
+    height: 100%;
+}

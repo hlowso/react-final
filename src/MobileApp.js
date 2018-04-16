@@ -390,7 +390,7 @@ class MobileApp extends React.Component {
 	render() {
 		if (this.state.angle !== 90) {
 			return (
-				<div>
+				<div className="wrong-orientation">
 					<h1>Mission 6ix</h1>
 					<p>Hold your phone rotated with the top pointing to the left.</p>
 				</div>
