@@ -162,10 +162,10 @@ export default function() {
 		let startingPosition;
 		switch (index) {
 			case 0:
-				if (this.vars.player_ids.length === 1) {
-					startingPosition = gameAttributes.gameWidth / 2;
-				} else {
+				if (this.vars.player_ids.length === 2) {
 					startingPosition = gameAttributes.gameWidth / 2 - 160;
+				} else {
+					startingPosition = gameAttributes.gameWidth / 2;
 				}
 				break;
 			case 1:
@@ -292,7 +292,7 @@ export default function() {
 
 	this.vars.flyText = this.add.text(
 		gameAttributes.gameWidth / 2,
-		gameAttributes,gameHeight / 2,
+		gameAttributes.gameHeight / 2,
 		`FLY!`,
 		{ font: "256px Arial", fill: "black" }
 	);
