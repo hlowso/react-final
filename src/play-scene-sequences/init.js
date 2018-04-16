@@ -5,7 +5,10 @@ export default function(data) {
 		this.scene.start("Lobby", {
 			vars: this.vars
 		});
-	} else {
+	} else if (this.vars.ws && (this.vars.ws.readyState === this.vars.ws.CLOSED || this.vars.ws.readyState === this.vars.ws.CLOSING)) {
+		this.scene.start("Title", { vars: {message: "Connection closed."}  });
+	}
+	 else {
 		this.vars.ws.send(
 			JSON.stringify({
 				device: "desktop",

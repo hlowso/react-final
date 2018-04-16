@@ -100,15 +100,87 @@ export default function() {
 		})
 	};
 
+	this.anims.create({
+		key: "falconFly",
+		frames: this.anims.generateFrameNumbers("falcon", {
+			start: 0,
+			end: 3,
+			first: 0
+		}),
+		frameRate: 20,
+		repeat: -1
+	});
+
+	this.entities.enemies = this.physics.add.group({
+		key: "falcon",
+		setXY: {
+			x: -600,
+			y: -600
+		}
+	});
+	firstChild = this.entities.enemies.getChildren();
+	firstChild[0].destroy();
+
+	this.entities.dummies = this.physics.add.group({
+		key: "falcon",
+		setXY: {
+			x: -1000,
+			y: -1000
+		}
+	});
+	firstChild = this.entities.dummies.getChildren();
+	firstChild[0].destroy();
+
+
+	// TODO: REFACTOR MAYBE
+	let tut1 = this.entities.dummies.create(gameAttributes.gameWidth - 100, 100, "falcon");
+	tut1.anims.play("falconFly");
+	let tut2 = this.entities.dummies.create(100, gameAttributes.gameHeight - 100, "falcon");
+	tut2.anims.play("falconFly");
+	let tut3 = this.entities.dummies.create(gameAttributes.gameWidth - 100, gameAttributes.gameHeight - 100, "falcon");
+	tut3.anims.play("falconFly");
+	let tut4 = this.entities.dummies.create(100, 100, "falcon");
+	tut4.anims.play("falconFly");
+
+	this.anims.create({
+		key: "explode",
+		frames: this.anims.generateFrameNumbers("explosion", {
+			start: 0,
+			end: 23,
+			first: 0
+		}),
+		frameRate: 20
+	});
+
 	// let testBomb = this.entities.bonuses.group.create(400, 100, "gem");
 	// testBomb.type = "gem";
 	// console.log(this.entities.bonuses);
-	// firstChild = this.entities.bonusus.group.getChildren9();
+	// firstChild = this.entities.bonusus.group.getChildren();
 	// firstChild[0].destroy();
 
 	const addPlayer = (player_id, player_name, index) => {
+		let startingPosition;
+		switch (index) {
+			case 0:
+				if (this.vars.player_ids.length === 1) {
+					startingPosition = gameAttributes.gameWidth / 2;
+				} else {
+					startingPosition = gameAttributes.gameWidth / 2 - 160;
+				}
+				break;
+			case 1:
+				if (this.vars.player_ids.length === 2) {
+					startingPosition = gameAttributes.gameWidth + 160;
+				} else {
+					startingPosition = gameAttributes.gameWidth / 2 - 320;
+				}
+				break;
+			case 2:
+			startingPosition = gameAttributes.gameWidth / 2 + 320;
+		}
+
 		let player = this.entities.players.group.create(
-			gameAttributes.gameWidth / 2,
+			startingPosition,
 			gameAttributes.gameHeight / 2,
 			"pigeon"
 		);
@@ -127,8 +199,8 @@ export default function() {
 		player.setVelocityY(0);
 		player.originX = 0.5;
 		player.originY = 0.5;
-		player.x = Math.random() * gameAttributes.gameWidth;
-		player.y = Math.random() * gameAttributes.gameHeight;
+		// player.x = Math.random() * gameAttributes.gameWidth;
+		// player.y = Math.random() * gameAttributes.gameHeight;
 		this.entities.players.individuals[player_id] = player;
 		addPlayerTexts(player, index);
 
@@ -170,18 +242,7 @@ export default function() {
 		repeat: -1
 	});
 
-	this.anims.create({
-		key: "falconFly",
-		frames: this.anims.generateFrameNumbers("falcon", {
-			start: 0,
-			end: 3,
-			first: 0
-		}),
-		frameRate: 20,
-		repeat: -1
-	});
 
-	console.log(this.vars);
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
@@ -205,32 +266,20 @@ export default function() {
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
-	this.entities.enemies = this.physics.add.group({
-		key: "falcon",
-		setXY: {
-			x: -600,
-			y: -600
-		}
-	});
-	firstChild = this.entities.enemies.getChildren();
-	firstChild[0].destroy();
+	const tutContent = 	[
+		`To fly, tilt the phone back and forth.`,
+		`To turn, turn the phone left and right.`,
+		`Press the trigger on the phone to shoot.`,
+		`Shoot the four birds to start the game!`
+	];
 
-	this.time.addEvent({
-		delay: 5000,
-		callback: this.enemySpawn,
-		callbackScope: this,
-		loop: true
-	});
-
-	this.anims.create({
-		key: "explode",
-		frames: this.anims.generateFrameNumbers("explosion", {
-			start: 0,
-			end: 23,
-			first: 0
-		}),
-		frameRate: 20
-	});
+	this.vars.tutorialText = this.add.text(
+		gameAttributes.gameWidth / 2,
+		600,
+		tutContent,
+		{ font: "48px Arial", fill: "black" }
+	);
+	this.vars.tutorialText.setOrigin(0.5);
 
 	this.vars.gameScoreText = this.add.text(
 		gameAttributes.gameWidth / 2,
@@ -239,6 +288,16 @@ export default function() {
 		{ font: "48px Arial", fill: "black" }
 	);
 	this.vars.gameScoreText.setOrigin(0.5);
+	this.vars.gameScoreText.visible = false;
+
+	this.vars.flyText = this.add.text(
+		gameAttributes.gameWidth / 2,
+		gameAttributes,gameHeight / 2,
+		`FLY!`,
+		{ font: "256px Arial", fill: "black" }
+	);
+	this.vars.flyText.setOrigin(0.5);
+	this.vars.flyText.visible = false;
 
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
@@ -252,6 +311,14 @@ export default function() {
 		this.entities.enemies,
 		this.entities.bullets,
 		this.bulletEnemyCollision,
+		null,
+		this
+	);
+
+	this.physics.add.overlap(
+		this.entities.dummies,
+		this.entities.bullets,
+		this.bulletDummyCollision,
 		null,
 		this
 	);
@@ -271,4 +338,8 @@ export default function() {
 		null,
 		this
 	);
+
+	const music = this.sound.add("playSong", { loop: true });
+	console.log(music);
+	music.play();
 }

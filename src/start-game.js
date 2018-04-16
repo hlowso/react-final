@@ -11,12 +11,10 @@ const start = () => {
     height: gameAttributes.gameHeight,
     physics: {
       default: "arcade",
-      arcade: {
-        debug: true
-        // gravity: { y: 20 }
-      }
+      arcade: {}
     },
-    scene: [titleScene, lobbyScene, playScene, endScene]
+    scene: [titleScene, lobbyScene, playScene, endScene],
+    audio: { disableWebAudio: true }
   };
 
   const game = new Phaser.Game(gameConfig);
