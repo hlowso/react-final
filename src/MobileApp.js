@@ -1,6 +1,8 @@
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 import React, { Button } from "react";
 import ReactDOM from "react-dom";
+// import DeviceOrientation, { Orientation } from "react-screen-orientation";
+// import PropTypes from "prop-types";
 import NoSleep from "nosleep.js";
 
 const initial_alphas = [];
@@ -31,7 +33,8 @@ class MobileApp extends React.Component {
 			},
 			calibrationTime: 3000,
 			useOrientation: () => {},
-			idInFocus: "c0"
+			idInFocus: "c0",
+			angle: window.orientation
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
@@ -41,6 +44,12 @@ class MobileApp extends React.Component {
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
+
+		window.addEventListener("orientationchange", () =>
+			this.setState({
+				angle: window.orientation
+			})
+		);
 	}
 
 	connectToWSS(code) {
@@ -301,7 +310,7 @@ class MobileApp extends React.Component {
 		}
 	}
 
-	render() {
+	renderMain() {
 		const WelcomeView = (
 			<div>
 				<h1>WELCOME!</h1>
@@ -388,6 +397,18 @@ class MobileApp extends React.Component {
 			case 4:
 				return GameView;
 		}
+	}
+
+	render() {
+		if (this.state.angle !== 90) {
+			return (
+				<div>
+					<h1>Mission 6ix</h1>
+					<p>Hold your phone rotated with the top pointing to the left.</p>
+				</div>
+			);
+		}
+		return this.renderMain();
 	}
 }
 
