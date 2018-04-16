@@ -1,6 +1,8 @@
 // TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 import React, { Button } from "react";
 import ReactDOM from "react-dom";
+// import DeviceOrientation, { Orientation } from "react-screen-orientation";
+// import PropTypes from "prop-types";
 import NoSleep from "nosleep.js";
 
 const initial_alphas = [];
@@ -31,7 +33,8 @@ class MobileApp extends React.Component {
 			},
 			calibrationTime: 3000,
 			useOrientation: () => {},
-			idInFocus: "c0"
+			idInFocus: "c0",
+			angle: window.orientation
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
@@ -41,6 +44,12 @@ class MobileApp extends React.Component {
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
+
+		window.addEventListener("orientationchange", () =>
+			this.setState({
+				angle: window.orientation
+			})
+		);
 	}
 
 	connectToWSS(code) {
@@ -301,16 +310,22 @@ class MobileApp extends React.Component {
 		}
 	}
 
-	render() {
-		const WelcomeView = (
+	renderMain() {
+		const MobileWrapper = props => (
 			<div>
-				<h1>WELCOME!</h1>
-				<h1>{this.state.instruction}</h1>
-				<form className="blah" onSubmit={this.handleUsernameSubmission}>
+				<h1>Mission 6ix</h1>
+				<p>{this.state.instruction}</p>
+				{props.children}
+			</div>
+		);
+
+		const WelcomeView = (
+			<MobileWrapper>
+				<form onSubmit={this.handleUsernameSubmission}>
 					<input type="text" name="username" maxlength="8" />
 					<input type="submit" name="button" value="Begin" />
 				</form>
-			</div>
+			</MobileWrapper>
 		);
 
 		const getCharInput = i => (
@@ -331,48 +346,30 @@ class MobileApp extends React.Component {
 		};
 
 		const CodeFormView = (
-			<div>
-				<h1>{this.state.instruction}</h1>
-				<h1>Username: {this.state.username}</h1>
-				<form className="sdfd" onSubmit={this.handleCodeSubmission}>
+			<MobileWrapper>
+				<form onSubmit={this.handleCodeSubmission}>
 					{getShiftingCharInputs()}
 					<input type="text" name="c5" maxlength="1" />
 					<input type="submit" value="Connect" />
 				</form>
-				<h1>{this.state.error}</h1>
-				<button onClick={this.handleQuickConnect}>Quick Connect</button>
-			</div>
+				<em>{this.state.error}</em>
+				{/*<button onClick={this.handleQuickConnect}>Quick Connect</button>*/}
+			</MobileWrapper>
 		);
 
 		const CalibrationButton = this.state.step === 2 && (
 			<button onClick={this.calibrationHandler}>Calibrate</button>
 		);
 
-		const CalibrationView = (
-			<div>
-				<h1>{this.state.instruction}</h1>
-				<ul>
-					<li>alpha: {this.state.ovec.alpha}</li>
-					<li>beta: {this.state.ovec.beta}</li>
-					<li>gamma: {this.state.ovec.gamma}</li>
-
-					<li> PROCESSED </li>
-
-					<li>x velocity: {this.state.velocity.x}</li>
-					<li>y velocity: {this.state.velocity.y}</li>
-				</ul>
-				{CalibrationButton}
-			</div>
-		);
+		const CalibrationView = <MobileWrapper>{CalibrationButton}</MobileWrapper>;
 
 		const GameView = (
-			<div>
-				<h1>{this.state.instruction}</h1>
-				<div
-					style={{ width: "100px", height: "100px", backgroundColor: "blue" }}
-					onTouchStart={this.shootHandler}
-					onTouchEnd={this.ceaseFireHandler}
-				/>
+			<div
+				style={{ width: "100%", height: "100%", backgroundColor: "yellow" }}
+				onTouchStart={this.shootHandler}
+				onTouchEnd={this.ceaseFireHandler}
+			>
+				Touch anywhere to shoot
 			</div>
 		);
 
@@ -388,6 +385,18 @@ class MobileApp extends React.Component {
 			case 4:
 				return GameView;
 		}
+	}
+
+	render() {
+		if (this.state.angle !== 90) {
+			return (
+				<div>
+					<h1>Mission 6ix</h1>
+					<p>Hold your phone rotated with the top pointing to the left.</p>
+				</div>
+			);
+		}
+		return this.renderMain();
 	}
 }
 

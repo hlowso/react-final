@@ -4,8 +4,7 @@
   "description": "y",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuild":
-      "webpack -p --config ./webpack.prod.config.js --progress",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
     "watch": "webpack --config ./webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
@@ -22,10 +21,12 @@
     "nosleep.js": "^0.7.0",
     "path": "^0.12.7",
     "phaser": "^3.3.0",
+    "prop-types": "^15.6.1",
     "react": "^16.3.1",
     "react-click-n-hold": "^1.0.6",
     "react-device-detect": "^1.0.1",
     "react-dom": "^16.3.1",
+    "react-screen-orientation": "0.0.3",
     "react-tools": "^0.13.3",
     "react-touch": "^0.4.3",
     "requirejs-babel-jsx": "^1.0.0",

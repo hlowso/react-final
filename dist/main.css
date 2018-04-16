@@ -51,7 +51,7 @@ canvas {
     cursor: pointer;
 }
 
-#root {
+/*#root {
     display: block;
 }
 
@@ -69,4 +69,4 @@ canvas {
 
         transform: rotate(90deg);
     }
-}
+}*/
