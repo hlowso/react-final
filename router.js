@@ -15,7 +15,7 @@ module.exports = db => {
   );
 
   router.get("/user-scores", (request, response) => {
-    userScoresCollection.find().toArray((err, scores) => {
+    userScoresCollection.find().limit(50).toArray((err, scores) => {
       if (err) {
         console.log("There was an error retrieving user scores");
         response.status(500);
@@ -27,23 +27,25 @@ module.exports = db => {
 
   router.post("/user-scores", (request, response) => {
     const { username, killCount } = request.body;
-    userScoresCollection.insertOne(
-      {
-        username,
-        killCount
-      },
-      (err, result) => {
-        if (err) {
-          console.log("There was an error adding a user score");
-          response.status(500);
+    if (killCount) {
+      userScoresCollection.insertOne(
+        {
+          username,
+          killCount
+        },
+        (err, result) => {
+          if (err) {
+            console.log("There was an error adding a user score");
+            response.status(500);
+          }
+          response.send(result);
         }
-        response.send(result);
-      }
-    );
+      );
+    }
   });
 
   router.get("/team-scores", (request, response) => {
-    teamScoresCollection.find().toArray((err, scores) => {
+    teamScoresCollection.find().limit(50).toArray((err, scores) => {
       if (err) {
         console.log("There was an error retrieving team scores");
         response.status(500);
@@ -55,20 +57,22 @@ module.exports = db => {
 
   router.post("/team-scores", (request, response) => {
     const { teamname, score, totalKills } = request.body;
-    teamScoresCollection.insertOne(
-      {
-        teamname,
-        score,
-        totalKills
-      },
-      (err, result) => {
-        if (err) {
-          console.log("There was an error adding a team score");
-          response.status(500);
+    if (totalKills) {
+      teamScoresCollection.insertOne(
+        {
+          teamname,
+          score,
+          totalKills
+        },
+        (err, result) => {
+          if (err) {
+            console.log("There was an error adding a team score");
+            response.status(500);
+          }
+          response.send(result);
         }
-        response.send(result);
-      }
-    );
+      );
+    }
   });
 
   router.post("/reviews", (request, response) => {

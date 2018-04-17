@@ -29,12 +29,40 @@ canvas {
 
 /* Modal Content/Box */
 .modal-content {
-    background-color: #fefefe;
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #c0c0c0;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
 }
+
+.modal table{
+    width: 50%;
+    border: black 1px solid;
+    border-collapse: collapse;
+}
+
+table caption{
+    font-size: 36px;
+    padding-bottom: 1em;
+}
+
+table thead{
+    font-size: 24px;
+    padding-bottom: 0.5em;
+    border: black 1px solid;
+}
+
+table thead td:first-letter{
+    text-transform: capitalize;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #dcdcdc;
+}
+
 
 /* The Close Button */
 .close {
