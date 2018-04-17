@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import Fullscreen from "react-fullscreen";
 import start from "./start-game.js";
 import MobileApp from "./MobileApp.js";
 

@@ -30,15 +30,12 @@ class MobileApp extends React.Component {
 			},
 			calibrationTime: 3000,
 			useOrientation: () => {},
-			idInFocus: "c0",
-			angle: window.orientation,
-			full: false
+			angle: window.orientation
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
 		this.shootHandler = this.shootHandler.bind(this);
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
-		this.handleQuickConnect = this.handleQuickConnect.bind(this);
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
@@ -106,6 +103,11 @@ class MobileApp extends React.Component {
 				}
 			};
 			this.ws.onclose = () => {
+				window.removeEventListener(
+					"deviceorientation",
+					orientationHandler,
+					true
+				);
 				this.setState({
 					step: 1,
 					instruction: "Connection closed. Enter in a new code to play again.",
@@ -265,10 +267,6 @@ class MobileApp extends React.Component {
 			subject: "shoot",
 			shooting: false
 		});
-	}
-
-	handleQuickConnect(event) {
-		this.connectToWSS(QUICK_CODE);
 	}
 
 	handleUsernameSubmission(event) {
