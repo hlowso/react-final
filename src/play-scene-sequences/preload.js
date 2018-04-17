@@ -1,5 +1,6 @@
 import EnemyIcon from "../assets/falcon.png";
 import SkyBackground from "../assets/sky.png";
+import gameBackground from "../assets/toronto.png";
 import GreenLaser from "../assets/bullet38.png";
 
 import WhiteEmitter from "../assets/white_emitter.png";
@@ -15,6 +16,7 @@ import Gem from "../assets/gem.png";
 
 export default function() {
 	this.load.image("background", SkyBackground);
+	this.load.image("game_background", gameBackground);
 	this.load.image("laser", GreenLaser);
 
 	this.load.image("heart", Heart);
