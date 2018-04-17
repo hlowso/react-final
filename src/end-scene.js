@@ -4,6 +4,7 @@ import NewGameButton from "./assets/new_game_button.png";
 import MenuButton from "./assets/menu_button.png";
 import ReviewButton from "./assets/review_button.png";
 
+// Sends scores and killcounts to the database
 const asyncPostScore = (collection, score) => {
 	return fetch(`/${collection}-scores`, {
 		method: "POST",
@@ -34,6 +35,7 @@ const endScene = new Phaser.Class({
 	},
 
 	create: function() {
+		// Event handler to start a new game
 		const clickHandler = button => {
 			button.off("clicked", clickHandler);
 			button.input.enabled = false;
@@ -42,6 +44,7 @@ const endScene = new Phaser.Class({
 			});
 		};
 
+		// Event handler to go back to the main menu
 		const menuButtonHandler = button => {
 			button.off("clicked", menuButtonHandler);
 			button.input.enabled = false;
@@ -50,6 +53,7 @@ const endScene = new Phaser.Class({
 			});
 		};
 
+		// Event handler to open the review submission handler
 		const reviewButtonHandler = button => {
 			const modal = document.getElementById("review-modal");
 			const form = document.getElementById("review-form");
@@ -89,6 +93,8 @@ const endScene = new Phaser.Class({
 
 		background.setScale(window.devicePixelRatio * 2);
 
+		// GAME SUMMARY
+
 		let gameOverText = this.add.text(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 4,
@@ -121,6 +127,7 @@ const endScene = new Phaser.Class({
 			totalKills += player.killcount;
 			teamname += teamname ? `, ${player.name}` : player.name;
 
+			// Submits the player's killcount if it is at least 1
 			if (player.killcount) {
 				asyncPostScore("user", {
 					username: player.name,
@@ -131,6 +138,7 @@ const endScene = new Phaser.Class({
 			step++;
 		}
 
+		// Submits the team's score and total killcount if it is at least 1
 		if (totalKills) {
 			asyncPostScore("team", {
 				teamname,
@@ -139,6 +147,7 @@ const endScene = new Phaser.Class({
 			});
 		}
 
+		// If there are still players connected, display the new game button
 		if (this.vars.player_ids.length) {
 			const replay_button = this.add.image(
 				gameAttributes.gameWidth / 3,
@@ -150,6 +159,7 @@ const endScene = new Phaser.Class({
 			replay_button.on("clicked", clickHandler, this);
 		}
 
+		// Button to redirect to the main scene
 		const menu_button = this.add.image(
 			2 * gameAttributes.gameWidth / 3,
 			gameAttributes.gameHeight - 300,
@@ -159,6 +169,7 @@ const endScene = new Phaser.Class({
 		menu_button.setInteractive();
 		menu_button.on("clicked", menuButtonHandler, this);
 
+		// Button for displaying the review modal
 		const review_button = this.add.image(
 			gameAttributes.gameWidth - 200,
 			gameAttributes.gameHeight / 2,
@@ -168,6 +179,7 @@ const endScene = new Phaser.Class({
 		review_button.setInteractive();
 		review_button.on("clicked", reviewButtonHandler, this);
 
+		// Enables buttons in phaser
 		this.input.on(
 			"gameobjectup",
 			function(pointer, gameObject) {

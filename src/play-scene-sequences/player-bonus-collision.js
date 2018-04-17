@@ -2,6 +2,7 @@ export default function(player, bonus) {
   if (bonus) {
     bonus.disableBody(true, true);
     switch (bonus.type) {
+      // Increases the life total of the player up to a maximum of 10
       case "heart":
         if (player.health < 10) {
           player.health++;
@@ -12,6 +13,7 @@ export default function(player, bonus) {
           );
         }
         break;
+        // Kills half of the enemies currently on the screen
       case "bomb":
         let enemies = this.entities.enemies.getChildren();
         if (enemies.length > 0) {
@@ -22,6 +24,7 @@ export default function(player, bonus) {
           enemies.forEach(this.destroyEnemy.bind(this));
         }
         break;
+        // Resurrection gem that brings back to life a dead player
       case "gem":
         let players = this.entities.players.individuals;
         for (let id in players) {

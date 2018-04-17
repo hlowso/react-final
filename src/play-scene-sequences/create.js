@@ -3,10 +3,12 @@ import gameAttributes from "../game-attributes.js";
 const MIN_SPEED_SQUARED = 250000;
 
 export default function() {
+	// Takes instructions from the phone websocket connection
 	this.vars.ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
 		const player = this.entities.players.individuals[message.player_id];
 		switch (message.subject) {
+			// Movemement
 			case "push":
 				let x_velocity = message.velocity.x;
 				let y_velocity = message.velocity.y;
@@ -49,9 +51,12 @@ export default function() {
 				player.setVelocityY(-1.0 * y_velocity);
 
 				break;
+			// Shooting
 			case "shoot":
 				player.shooting = message.shooting;
 				break;
+
+			// Player disconnect
 			case "disconnect":
 				let index = this.vars.player_ids.findIndex(id => id === player.id);
 				this.vars.player_ids.splice(index, 1);
@@ -65,6 +70,7 @@ export default function() {
 		}
 	};
 
+	// Background image
 	const background = this.add.image(
 		gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
@@ -73,6 +79,7 @@ export default function() {
 
 	background.setScale(window.devicePixelRatio * 2);
 
+	// Initializing physics group for players
 	this.entities.players = {
 		individuals: {},
 		group: this.physics.add.group({
@@ -83,12 +90,16 @@ export default function() {
 			}
 		})
 	};
-
 	let firstChild = this.entities.players.group.getChildren();
 	firstChild[0].destroy();
 
+	// Initializing group for emitters that will follow the players
 	this.entities.emitters = {};
+
+	// Initializing group for all text objects associated with the players
 	this.vars.playerTexts = {};
+
+	// Initializing physics group for different bonus drops from enemies
 	this.entities.bonuses = {
 		types: ["heart", "bomb"],
 		group: this.physics.add.group({
@@ -100,17 +111,7 @@ export default function() {
 		})
 	};
 
-	this.anims.create({
-		key: "falconFly",
-		frames: this.anims.generateFrameNumbers("falcon", {
-			start: 0,
-			end: 3,
-			first: 0
-		}),
-		frameRate: 20,
-		repeat: -1
-	});
-
+	// Initializing physics groups for the enemies and the tutorial dummies
 	this.entities.enemies = this.physics.add.group({
 		key: "falcon",
 		setXY: {
@@ -132,7 +133,7 @@ export default function() {
 	firstChild[0].destroy();
 
 
-	// TODO: REFACTOR MAYBE
+	// Positioning the dummies in the 4 corners
 	let tut1 = this.entities.dummies.create(gameAttributes.gameWidth - 100, 100, "falcon");
 	tut1.anims.play("falconFly");
 	let tut2 = this.entities.dummies.create(100, gameAttributes.gameHeight - 100, "falcon");
@@ -142,22 +143,7 @@ export default function() {
 	let tut4 = this.entities.dummies.create(100, 100, "falcon");
 	tut4.anims.play("falconFly");
 
-	this.anims.create({
-		key: "explode",
-		frames: this.anims.generateFrameNumbers("explosion", {
-			start: 0,
-			end: 23,
-			first: 0
-		}),
-		frameRate: 20
-	});
-
-	// let testBomb = this.entities.bonuses.group.create(400, 100, "gem");
-	// testBomb.type = "gem";
-	// console.log(this.entities.bonuses);
-	// firstChild = this.entities.bonusus.group.getChildren();
-	// firstChild[0].destroy();
-
+	// Player sprite creation. Positions the player based on number of players in the lobby and then establishes all base properties of the player.
 	const addPlayer = (player_id, player_name, index) => {
 		let startingPosition;
 		switch (index) {
@@ -199,14 +185,14 @@ export default function() {
 		player.setVelocityY(0);
 		player.originX = 0.5;
 		player.originY = 0.5;
-		// player.x = Math.random() * gameAttributes.gameWidth;
-		// player.y = Math.random() * gameAttributes.gameHeight;
 		this.entities.players.individuals[player_id] = player;
+		// Add health and killcount texts associated with the player
 		addPlayerTexts(player, index);
 
 		return player;
 	};
 
+	// Creates name, health, and killcount text objects that are associated with the player
 	const addPlayerTexts = (player, index) => {
 		let playerLabelText = this.add.text(100, 100 + index * 100, player.name, {
 			font: "48px Arial",
@@ -231,6 +217,8 @@ export default function() {
 		playerTexts.killcount = killcountText;
 	};
 
+	// ANIMATIONS
+
 	this.anims.create({
 		key: "pigeonFly",
 		frames: this.anims.generateFrameNumbers("pigeon", {
@@ -242,7 +230,28 @@ export default function() {
 		repeat: -1
 	});
 
+	this.anims.create({
+		key: "falconFly",
+		frames: this.anims.generateFrameNumbers("falcon", {
+			start: 0,
+			end: 3,
+			first: 0
+		}),
+		frameRate: 20,
+		repeat: -1
+	});
 
+	this.anims.create({
+		key: "explode",
+		frames: this.anims.generateFrameNumbers("explosion", {
+			start: 0,
+			end: 23,
+			first: 0
+		}),
+		frameRate: 20
+	});
+
+	// PLAYER CREATION
 
 	for (let i = 0; i < this.vars.player_ids.length; i++) {
 		let player_id = this.vars.player_ids[i];
@@ -254,6 +263,7 @@ export default function() {
 			`${this.vars.player_colours[player_id]}_emitter`
 		);
 
+		// Attaching an emitter to the player
 		let newPlayerEmitter = emitter.createEmitter({
 			speed: 100,
 			lifespan: 250,
@@ -266,13 +276,12 @@ export default function() {
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
+	// Creating tutorial textbox
 	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
 		gameAttributes.gameWidth / 2 - 425,
 		 450,
 		 875,
 		 325);
-	// this.vars.tutorialBox.centerOn();
-	// this.vars.tutorialBox.set÷Alpha(0.8);
 	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
 	this.vars.whiteFill.setAlpha(0.8);
 	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
@@ -292,6 +301,7 @@ export default function() {
 	);
 	this.vars.tutorialText.setOrigin(0.5);
 
+	// Score text, defaults to invisible. Made visible upon killing all tutorial dummies.
 	this.vars.gameScoreText = this.add.text(
 		gameAttributes.gameWidth / 2,
 		100,
@@ -301,6 +311,7 @@ export default function() {
 	this.vars.gameScoreText.setOrigin(0.5);
 	this.vars.gameScoreText.visible = false;
 
+	// Game start text. Made visible when killing the dummy birds.
 	this.vars.flyText = this.add.text(
 		gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
@@ -310,13 +321,15 @@ export default function() {
 	this.vars.flyText.setOrigin(0.5);
 	this.vars.flyText.visible = false;
 
+	// Creating physics group for for player bullets
 	this.entities.bullets = this.physics.add.group({
 		key: "laser",
 		setCollideWorldBounds: true
 	});
-
 	firstChild = this.entities.bullets.getChildren();
 	firstChild[0].destroy();
+
+	// OVERLAP/COLLIDER FUNCTIONS
 
 	this.physics.add.overlap(
 		this.entities.enemies,
@@ -349,6 +362,8 @@ export default function() {
 		null,
 		this
 	);
+
+	// GAME MUSIC
 
 	const music = this.sound.add("playSong", { loop: true });
 	console.log(music);

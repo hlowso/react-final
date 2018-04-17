@@ -15,6 +15,8 @@ import Gem from "../assets/gem.png";
 
 import ThemeSong from "../assets/Take_Down_2.mp3";
 
+// LOADING ASSETS FOR PLAY SCENE
+
 export default function() {
 	this.load.image("background", SkyBackground);
 	this.load.image("laser", GreenLaser);

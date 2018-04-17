@@ -3,10 +3,12 @@ import SkyBackground from "./assets/sky.png";
 import StartGameButton from "./assets/start_button.png";
 import leaderboardButton from "./assets/leaderboard_button.png";
 
+// Retrieve JSON from database with score information
 const asyncGetScores = collection => {
 	return fetch(`/${collection}-scores`).then(response => response.json());
 };
 
+// Create highscore tables from the retrieved JSON
 const fillScoresTable = (tableId, name, fields, scores) => {
 	const table = document.getElementById(tableId);
 	table.innerHTML = "";
@@ -15,7 +17,6 @@ const fillScoresTable = (tableId, name, fields, scores) => {
 	const header = table.createTHead();
 	const headRow = header.insertRow(0);
 	const body = table.createTBody();
-	// const bodyRow = table.insertRow(0);
 
 	let i, j;
 	for (i = 0; i < fields.length; i++) {
@@ -34,6 +35,7 @@ const fillScoresTable = (tableId, name, fields, scores) => {
 function displayLeaderboards(button) {
 	const modal = document.getElementById("leaderboard-modal");
 
+	// Call the functions to retrieve the highscores and then fill out the tables
 	asyncGetScores("user")
 		.then(scores => {
 			return fillScoresTable(
@@ -58,6 +60,7 @@ function displayLeaderboards(button) {
 			modal.style.display = "block";
 		});
 
+	// Close the modal
 	window.onclick = function(event) {
 		if (event.target == modal) {
 			modal.style.display = "none";
@@ -65,6 +68,7 @@ function displayLeaderboards(button) {
 	};
 }
 
+// Click handler for the start button to go to the lobby scene
 function startClickHandler(button) {
 	button.off("clicked", startClickHandler);
 	button.input.enabled = false;
@@ -73,6 +77,7 @@ function startClickHandler(button) {
 	});
 }
 
+// Phaser Scene Class for the title screen
 const titleScene = new Phaser.Class({
 	Extends: Phaser.Scene,
 
@@ -80,6 +85,7 @@ const titleScene = new Phaser.Class({
 		Phaser.Scene.call(this, { key: "Title" });
 	},
 
+	// Image assets
 	preload: function() {
 		this.load.image("background", SkyBackground);
 		this.load.image("start_button", StartGameButton);
@@ -99,25 +105,25 @@ const titleScene = new Phaser.Class({
 
 		background.setScale(window.devicePixelRatio * 2);
 
+		// Button for going to the lobby
 		const start_button = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 4,
 			"start_button"
 		);
+		start_button.setInteractive();
+		start_button.on("clicked", startClickHandler, this);
 
+		// Button to load the leaderboards
 		const leaderboard_button = this.add.image(
 			gameAttributes.gameWidth / 5,
 			gameAttributes.gameHeight / 2,
 			"leaderboard_button"
 		);
-
-		start_button.setInteractive();
-		start_button.on("clicked", startClickHandler, this);
-
 		leaderboard_button.setInteractive();
 		leaderboard_button.on("clicked", displayLeaderboards, this);
 
-
+		// Error message that displays on home screen if the websocket connection is closed on the phone side
 		if (this.vars && this.vars.message) {
 			this.add.text(
 				gameAttributes.gameWidth / 2,
@@ -127,6 +133,7 @@ const titleScene = new Phaser.Class({
 				);
 		}
 
+		// Makes buttons work in Phaser
 		this.input.on(
 			"gameobjectup",
 			function(pointer, gameObject) {
