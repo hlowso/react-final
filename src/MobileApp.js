@@ -309,9 +309,9 @@ class MobileApp extends React.Component {
 
 	renderMain() {
 		const MobileWrapper = props => (
-			<div>
-				<h1>Mission 6ix</h1>
-				<p>{this.state.instruction}</p>
+			<div className="enterName">
+				<h1 className="enterNameTitle">Mission 6ix</h1>
+				<p className="enterNameInstruction">{this.state.instruction}</p>
 				{props.children}
 			</div>
 		);
@@ -319,14 +319,14 @@ class MobileApp extends React.Component {
 		const WelcomeView = (
 			<MobileWrapper>
 				<form onSubmit={this.handleUsernameSubmission}>
-					<input type="text" name="username" maxlength="8" />
-					<input type="submit" name="button" value="Begin" />
+					<input type="text" name="username" maxlength="8" style={{ width: "25%", height: "30px" }} /><br></br><br></br>
+					<input className="usernameFormButton" type="submit" name="button" value="Begin" />
 				</form>
 			</MobileWrapper>
 		);
 
 		const getCharInput = i => (
-			<input
+			<input style={{ width: "10%", height: "30px" }}
 				type="text"
 				name={`c${i}`}
 				maxlength="1"
@@ -346,8 +346,8 @@ class MobileApp extends React.Component {
 			<MobileWrapper>
 				<form onSubmit={this.handleCodeSubmission}>
 					{getShiftingCharInputs()}
-					<input type="text" name="c5" maxlength="1" />
-					<input type="submit" value="Connect" />
+					<input type="text" name="c5" maxlength="1" style={{ width: "10%", height: "30px" }} /><br></br><br></br>
+					<input className="codeFormButton" type="submit" value="Connect" />
 				</form>
 				<em>{this.state.error}</em>
 				{/*<button onClick={this.handleQuickConnect}>Quick Connect</button>*/}
@@ -355,18 +355,18 @@ class MobileApp extends React.Component {
 		);
 
 		const CalibrationButton = this.state.step === 2 && (
-			<button onClick={this.calibrationHandler}>Calibrate</button>
+			<button className="calibrateButton" onClick={this.calibrationHandler}>Calibrate</button>
 		);
 
 		const CalibrationView = <MobileWrapper>{CalibrationButton}</MobileWrapper>;
 
 		const GameView = (
-			<div
-				style={{ width: "100%", height: "100%", backgroundColor: "yellow" }}
+			<div className="gameView"
+				// style={{ width: "100%", height: "100%", backgroundColor: "yellow" }}
 				onTouchStart={this.shootHandler}
 				onTouchEnd={this.ceaseFireHandler}
 			>
-				Touch anywhere to shoot
+				<p className="gameViewInstructions">Touch anywhere to shoot.</p>
 			</div>
 		);
 
@@ -387,9 +387,9 @@ class MobileApp extends React.Component {
 	render() {
 		if (this.state.angle !== 90) {
 			return (
-				<div>
-					<h1>Mission 6ix</h1>
-					<p>Hold your phone rotated with the top pointing to the left.</p>
+				<div className="wrong-orientation">
+					<h1 className="wrong-orientation-main-title">Mission 6ix</h1>
+					<p className="wrong-orientation-instructions">Hold your phone rotated with the top pointing to the left.</p>
 				</div>
 			);
 		}
