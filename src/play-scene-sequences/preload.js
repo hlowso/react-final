@@ -13,6 +13,8 @@ import Heart from "../assets/heart.png";
 import Bomb from "../assets/bomb.png";
 import Gem from "../assets/gem.png";
 
+import ThemeSong from "../assets/Take_Down_2.mp3";
+
 export default function() {
 	this.load.image("background", SkyBackground);
 	this.load.image("laser", GreenLaser);
@@ -40,4 +42,6 @@ export default function() {
 		frameHeight: 64,
 		endFrame: 23
 	});
+
+	this.load.audio("playSong", [ThemeSong]);
 }
