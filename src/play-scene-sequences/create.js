@@ -170,7 +170,7 @@ export default function() {
 				break;
 			case 1:
 				if (this.vars.player_ids.length === 2) {
-					startingPosition = gameAttributes.gameWidth + 160;
+					startingPosition = gameAttributes.gameWidth / 2 + 160;
 				} else {
 					startingPosition = gameAttributes.gameWidth / 2 - 320;
 				}
@@ -265,6 +265,17 @@ export default function() {
 
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
+
+	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
+		gameAttributes.gameWidth / 2 - 425,
+		 450,
+		 875,
+		 325);
+	// this.vars.tutorialBox.centerOn();
+	// this.vars.tutorialBox.set÷Alpha(0.8);
+	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
+	this.vars.whiteFill.setAlpha(0.8);
+	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
 
 	const tutContent = 	[
 		`To fly, tilt the phone back and forth.`,
