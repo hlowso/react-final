@@ -92,7 +92,7 @@ tbody tr:nth-child(odd) {
 /* MOBILE APP */
 
 #root {
-    position: fixed !important;
+    /*position: fixed !important;*/
     position: absolute;
     height: 100%;
     top: 0;
