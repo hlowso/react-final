@@ -15,6 +15,8 @@ export default function(enemy, bullet) {
         loop: true
       });
       this.vars.tutorialText.visible = false;
+      this.vars.tutorialBox.visible = false;
+      this.vars.whiteFill.visible = false;
       this.vars.score = 0;
       this.vars.gameScoreText.visible = true;
       this.vars.flyText.visible = true;

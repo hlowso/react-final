@@ -15,7 +15,7 @@ module.exports = db => {
   );
 
   router.get("/user-scores", (request, response) => {
-    userScoresCollection.find().toArray((err, scores) => {
+    userScoresCollection.find().limit(50).toArray((err, scores) => {
       if (err) {
         console.log("There was an error retrieving user scores");
         response.status(500);
@@ -43,7 +43,7 @@ module.exports = db => {
   });
 
   router.get("/team-scores", (request, response) => {
-    teamScoresCollection.find().toArray((err, scores) => {
+    teamScoresCollection.find().limit(50).toArray((err, scores) => {
       if (err) {
         console.log("There was an error retrieving team scores");
         response.status(500);

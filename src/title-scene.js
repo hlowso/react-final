@@ -14,27 +14,25 @@ const fillScoresTable = (tableId, name, fields, scores) => {
 	caption.innerHTML = `<b>${name}</b>`;
 	const header = table.createTHead();
 	const headRow = header.insertRow(0);
+	const body = table.createTBody();
+	// const bodyRow = table.insertRow(0);
 
 	let i, j;
 	for (i = 0; i < fields.length; i++) {
 		headRow.insertCell(i).innerHTML = `<b>${fields[i]}</b>`;
 	}
 
-	for (i = 1; i <= scores.length; i++) {
-		const row = table.insertRow(i);
-		const keys = Object.keys(scores[i - 1]);
+	for (i = 0; i < scores.length; i++) {
+		const row = body.insertRow(i);
+		const keys = Object.keys(scores[i]);
 		for (j = 1; j < keys.length; j++) {
-			row.insertCell(j - 1).innerHTML = scores[i - 1][keys[j]];
+			row.insertCell(j - 1).innerHTML = scores[i][keys[j]];
 		}
 	}
 };
 
 function displayLeaderboards(button) {
 	const modal = document.getElementById("leaderboard-modal");
-	const exit = document.getElementsByClassName("close-modal")[0];
-	exit.onclick = function() {
-		modal.style.display = "none";
-	};
 
 	asyncGetScores("user")
 		.then(scores => {

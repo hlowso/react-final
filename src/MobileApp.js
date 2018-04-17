@@ -1,6 +1,7 @@
 import React, { Button } from "react";
 import ReactDOM from "react-dom";
 import NoSleep from "nosleep.js";
+import TargetImage from "./assets/target.png";
 
 const initial_alphas = [];
 const initial_gammas = [];
@@ -255,6 +256,7 @@ class MobileApp extends React.Component {
 
 	shootHandler(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		this.send({
 			subject: "shoot",
 			shooting: true
@@ -263,6 +265,7 @@ class MobileApp extends React.Component {
 
 	ceaseFireHandler(event) {
 		event.preventDefault();
+		event.stopPropagation();
 		this.send({
 			subject: "shoot",
 			shooting: false
@@ -384,7 +387,10 @@ class MobileApp extends React.Component {
 				onTouchStart={this.shootHandler}
 				onTouchEnd={this.ceaseFireHandler}
 			>
-				<p className="gameViewInstructions">Touch anywhere to shoot.</p>
+				<img src={TargetImage}
+					onTouchStart={this.shootHandler}
+					onTouchEnd={this.ceaseFireHandler}
+				/>
 			</div>
 		);
 
