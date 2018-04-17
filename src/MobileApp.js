@@ -1,8 +1,5 @@
-// TODO make it so that it doesn't matter if they have their phone with their right thumb on the home button, or their left thumb on the home button
 import React, { Button } from "react";
 import ReactDOM from "react-dom";
-// import DeviceOrientation, { Orientation } from "react-screen-orientation";
-// import PropTypes from "prop-types";
 import NoSleep from "nosleep.js";
 
 const initial_alphas = [];
