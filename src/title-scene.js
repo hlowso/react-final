@@ -26,9 +26,6 @@ const fillScoresTable = (tableId, name, fields, scores) => {
 		const row = body.insertRow(i);
 		const keys = Object.keys(scores[i]);
 		for (j = 1; j < keys.length; j++) {
-			console.log(scores[i]);
-			console.log(keys[j]);
-			console.log(scores[i][keys[j]]);
 			row.insertCell(j - 1).innerHTML = scores[i][keys[j]];
 		}
 	}
