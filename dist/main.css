@@ -152,14 +152,14 @@ tbody tr:nth-child(odd) {
     width: auto;
     height: 100%;
     text-align: center;
-}
-
-.gameViewInstructions {
     font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     font-size: 80px;
     color: #4169e1;
 }
+
+/*.gameViewInstructions {
+}*/
 
 .usernameFormButton {
     background-color: red;

@@ -269,7 +269,7 @@ export default function() {
 	const tutContent = 	[
 		`To fly, tilt the phone back and forth.`,
 		`To turn, turn the phone left and right.`,
-		`Press the trigger on the phone to shoot.`,
+		`Press anywhere on the phone to shoot.`,
 		`Shoot the four birds to start the game!`
 	];
 

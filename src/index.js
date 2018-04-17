@@ -11,6 +11,7 @@ const isMobile = () => {
 };
 
 if (isMobile()) {
+  document.addEventListener('contextmenu', event => event.preventDefault());
 	ReactDOM.render(
 		<MobileApp />,
 
