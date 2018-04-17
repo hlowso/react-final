@@ -52,7 +52,6 @@ const endScene = new Phaser.Class({
 
 		const reviewButtonHandler = button => {
 			const modal = document.getElementById("review-modal");
-			const exit = document.getElementsByClassName("close-modal")[0];
 			const form = document.getElementById("review-form");
 			function handleSubmission(event) {
 				event.preventDefault();
@@ -74,10 +73,6 @@ const endScene = new Phaser.Class({
 
 			form.addEventListener("submit", handleSubmission);
 			modal.style.display = "block";
-
-			exit.onclick = function() {
-				modal.style.display = "none";
-			};
 
 			window.onclick = function(event) {
 				if (event.target == modal) {
@@ -126,19 +121,23 @@ const endScene = new Phaser.Class({
 			totalKills += player.killcount;
 			teamname += teamname ? `, ${player.name}` : player.name;
 
-			asyncPostScore("user", {
-				username: player.name,
-				killCount: player.killcount
-			});
+			if (player.killcount) {
+				asyncPostScore("user", {
+					username: player.name,
+					killCount: player.killcount
+				});
+			}
 
 			step++;
 		}
 
-		asyncPostScore("team", {
-			teamname,
-			score: this.vars.score,
-			totalKills
-		});
+		if (totalKills) {
+			asyncPostScore("team", {
+				teamname,
+				score: this.vars.score,
+				totalKills
+			});
+		}
 
 		if (this.vars.player_ids.length) {
 			const replay_button = this.add.image(

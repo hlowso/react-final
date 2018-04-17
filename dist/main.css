@@ -30,7 +30,6 @@ canvas {
 /* Modal Content/Box */
 .modal-content {
     display: flex;
-    justify-content: space-evenly;
     background-color: #c0c0c0;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
@@ -38,24 +37,32 @@ canvas {
     width: 80%; /* Could be more or less, depending on screen size */
 }
 
-.modal table{
+#leaderboard-modal .modal-content {
+    justify-content: space-evenly;
+}
+
+#review-modal .modal-content{
+    flex-direction: column;
+}
+
+.modal table {
     width: 50%;
     border: black 1px solid;
     border-collapse: collapse;
 }
 
-table caption{
+table caption {
     font-size: 36px;
     padding-bottom: 1em;
 }
 
-table thead{
+table thead {
     font-size: 24px;
     padding-bottom: 0.5em;
     border: black 1px solid;
 }
 
-table thead td:first-letter{
+table thead td:first-letter {
     text-transform: capitalize;
 }
 
