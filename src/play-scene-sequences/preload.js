@@ -6,7 +6,7 @@ import WhiteEmitter from "../assets/white_emitter.png";
 import RedEmitter from "../assets/red_emitter.png";
 import YellowEmitter from "../assets/yellow_emitter.png";
 
-import Explosion from "../assets/explosion.png";
+// import Explosion from "../assets/explosion.png";
 import Pigeon from "../assets/pigeon.png";
 
 import Heart from "../assets/heart.png";
