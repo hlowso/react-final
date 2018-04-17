@@ -1,3 +1,5 @@
+// Generates random character code for lobby linking
+
 const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 const generateCode = () => {
