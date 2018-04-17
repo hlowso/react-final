@@ -1,5 +1,8 @@
 body {
     background-color: white;
+    height: 100%;
+    /*    margin: 0;
+    padding: 0;*/
 }
 
 canvas {
@@ -51,72 +54,83 @@ canvas {
     cursor: pointer;
 }
 
+/* MOBILE APP */
+
+#root {
+    position: fixed !important;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #c0c0c0;
+}
+
 .wrong-orientation {
     margin: auto;
     width: auto;
-    height: 2000px;
-    background-color: #C0C0C0;
+    height: 100%;
+    /*height: 2000px;*/
     text-align: center;
 }
 
 .wrong-orientation-main-title {
-    font-size: 120px;
+    font-size: 60px;
     margin-top: 0px;
-    padding-top: 800px;
-    font-family: 'Faster One', cursive;
-    color: #4169E1;
+    /*padding-top: 800px;*/
+    font-family: "Faster One", cursive;
+    color: #4169e1;
 }
 
 .wrong-orientation-instructions {
-    font-size: 70px;
-    font-family: 'Rajdhani', sans-serif;
+    font-size: 50px;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     color: white;
 }
 
-.enterName {
+.wrapper {
     margin: auto;
     width: auto;
-    height: 600px;
+    height: 100%;
     text-align: center;
-    background-color: #C0C0C0;
 }
 
-.enterNameTitle {
-    margin-top: 0px;
-    font-size: 80px;
-    padding-top: 70px;
-    font-family: 'Faster One', cursive;
-    color: #4169E1;
+.wrapper-title {
+    /*margin-top: 0px;*/
+    font-size: 60px;
+    /*padding-top: 70px;*/
+    font-family: "Faster One", cursive;
+    color: #4169e1;
 }
 
-.enterNameInstruction {
-    font-size: 40px;
+.instruction {
+    font-size: 30px;
     color: white;
-    font-family:'Rajdhani', sans-serif;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
 }
 
 .gameView {
     margin: auto;
     width: auto;
-    height: 600px;
+    height: 100%;
     text-align: center;
-    background-color: #C0C0C0;
 }
 
 .gameViewInstructions {
-    font-family:'Rajdhani', sans-serif;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     font-size: 80px;
-    color: #4169E1;
+    color: #4169e1;
 }
 
 .usernameFormButton {
     background-color: red;
     border-color: grey;
     color: white;
-    font-family:'Rajdhani', sans-serif;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     font-size: 30px;
     width: 130px;
@@ -127,7 +141,7 @@ canvas {
     background-color: red;
     border-color: grey;
     color: white;
-    font-family:'Rajdhani', sans-serif;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     font-size: 30px;
     width: 160px;
@@ -138,7 +152,7 @@ canvas {
     background-color: red;
     border-color: grey;
     color: white;
-    font-family:'Rajdhani', sans-serif;
+    font-family: "Rajdhani", sans-serif;
     font-weight: 500;
     font-size: 30px;
     width: 160px;

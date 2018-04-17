@@ -26,6 +26,8 @@
     "react-click-n-hold": "^1.0.6",
     "react-device-detect": "^1.0.1",
     "react-dom": "^16.3.1",
+    "react-full-screen": "^0.2.2",
+    "react-fullscreen": "^0.1.0",
     "react-screen-orientation": "0.0.3",
     "react-tools": "^0.13.3",
     "react-touch": "^0.4.3",

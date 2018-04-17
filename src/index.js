@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+// import Fullscreen from "react-fullscreen";
 import start from "./start-game.js";
 import MobileApp from "./MobileApp.js";
 
@@ -10,7 +11,11 @@ const isMobile = () => {
 };
 
 if (isMobile()) {
-	ReactDOM.render(<MobileApp />, document.getElementById("root"));
+	ReactDOM.render(
+		<MobileApp />,
+
+		document.getElementById("root")
+	);
 } else {
 	window.onload = start();
 }
