@@ -84,18 +84,21 @@ export default function() {
 
 	const instruction = this.add.text(
 		200,
+		// gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
 		"Go to the site on your iPhone and enter the game code to join. \nUp to three players may join one local game.",
-		{ font: "48px Courier New", fill: "#000000" }
+		{ font: "48px Rajdhani", fill: "#4169e1" }
 	);
 
 	const game_code = this.add.text(
 		100,
 		100,
+		// gameAttributes.gameWidth / 2,
+		// gameAttributes.gameHeight / 4,
 		`GAME CODE: ${gameAttributes.code}`,
 		{
-			font: "96px Courier New",
-			fill: "#000000"
+			font: "96px Rajdhani",
+			fill: "#4169e1"
 		}
 	);
 

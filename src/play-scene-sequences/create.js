@@ -6,14 +6,13 @@ export default function() {
 	// Start insomnia up
 	this.vars.insomnia.enable();
 
-	// Background image
-	const background = this.add.image(
+	const gameBackground = this.add.image(
 		gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
-		"background"
+		"game_background"
 	);
 
-	background.setScale(window.devicePixelRatio * 2);
+	gameBackground.setScale(window.devicePixelRatio * 2);
 
 	// Creating tutorial textbox
 	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
