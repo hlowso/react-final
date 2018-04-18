@@ -1,5 +1,5 @@
 import EnemyIcon from "../assets/falcon.png";
-// import SkyBackground from "../assets/sky.png";
+import secondBackground from "../assets/back.png";
 import gameBackground from "../assets/toronto.png";
 // import gameOverBackground from "../assets/game-over.png";
 import GreenLaser from "../assets/bullet38.png";
@@ -18,7 +18,7 @@ import Gem from "../assets/gem.png";
 import ThemeSong from "../assets/Take_Down_2.mp3";
 
 export default function() {
-	// this.load.image("background", SkyBackground);
+	this.load.image("back", secondBackground);
 	this.load.image("game_background", gameBackground);
 	// this.load.image("game-over", gameOverBackground);
 	this.load.image("laser", GreenLaser);

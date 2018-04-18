@@ -93,7 +93,7 @@ const endScene = new Phaser.Class({
 			gameAttributes.gameHeight / 2,
 			"game-over"
 		);
-		gameOverBackground.setScale(window.devicePixelRatio * 2);
+		gameOverBackground.setScale(window.devicePixelRatio * 2 + 1);
 
 		// let gameOverText = this.add.text(
 		// 	gameAttributes.gameWidth / 2,

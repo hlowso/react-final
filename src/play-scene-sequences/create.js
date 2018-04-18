@@ -65,13 +65,13 @@ export default function() {
 		}
 	};
 
-	// const background = this.add.image(
-	// 	gameAttributes.gameWidth / 2,
-	// 	gameAttributes.gameHeight / 2,
-	// 	"background"
-	// );
+	const secondBackground = this.add.image(
+		gameAttributes.gameWidth / 2,
+		gameAttributes.gameHeight / 2,
+		"back"
+	);
 
-	// background.setScale(window.devicePixelRatio * 2);
+	secondBackground.setScale(window.devicePixelRatio * 2);
 
 	const gameBackground = this.add.image(
 		gameAttributes.gameWidth / 2,
@@ -79,7 +79,7 @@ export default function() {
 		"game_background"
 	);
 
-	gameBackground.setScale(window.devicePixelRatio * 2);
+	gameBackground.setScale(window.devicePixelRatio * 2 + 0.3);
 
 	// const gameOverBackground = this.add.image(
 	// 	gameAttributes.gameWidth / 2,

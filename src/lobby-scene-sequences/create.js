@@ -43,14 +43,15 @@ export default function() {
 					this.vars.player_colours[id] = PLAYER_COLOURS.shift();
 				}
 				playerStatusTextObjects[id] = this.add.text(
-					100,
-					200 + 100 * i++,
+					gameAttributes.gameWidth / 2,
+					350 + 100 * i++,
 					this.vars.playerStatuses[id],
 					{
-						font: "96px Courier New",
+						font: "96px Rajdhani",
 						fill: `${this.vars.player_colours[id]}`
 					}
 				);
+				playerStatusTextObjects[id].setOrigin(0.5);
 			} else {
 				let index = this.vars.player_ids.indexOf(id);
 				this.vars.player_ids.splice(index, 1);
@@ -87,20 +88,20 @@ export default function() {
 		// gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
 		"Go to the site on your iPhone and enter the game code to join. \nUp to three players may join one local game.",
-		{ font: "48px Rajdhani", fill: "#4169e1" }
+		{ font: "80px Rajdhani", fill: "#4169e1" }
 	);
+	instruction.setOrigin(-0.1);
 
 	const game_code = this.add.text(
-		100,
-		100,
-		// gameAttributes.gameWidth / 2,
-		// gameAttributes.gameHeight / 4,
+		gameAttributes.gameWidth / 2,
+		200,
 		`GAME CODE: ${gameAttributes.code}`,
 		{
-			font: "96px Rajdhani",
+			font: "130px Rajdhani",
 			fill: "#4169e1"
 		}
 	);
+	game_code.setOrigin(0.5);
 
 	this.input.on(
 		"gameobjectup",
