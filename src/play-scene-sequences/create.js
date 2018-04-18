@@ -15,6 +15,31 @@ export default function() {
 
 	background.setScale(window.devicePixelRatio * 2);
 
+	// Creating tutorial textbox
+	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
+		gameAttributes.gameWidth / 2 - 625,
+		450,
+		1200,
+		325
+	);
+	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
+	this.vars.whiteFill.setAlpha(0.8);
+	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
+
+	const tutContent = [
+		`Gently tilt your phone up, down, left and right to fly.`,
+		`Press anywhere on the phone to shoot.`,
+		`Shoot the four birds to start the game!`
+	];
+
+	this.vars.tutorialText = this.add.text(
+		gameAttributes.gameWidth / 2,
+		600,
+		tutContent,
+		{ font: "48px Arial", fill: "black" }
+	);
+	this.vars.tutorialText.setOrigin(0.5);
+
 	// Initializing physics group for players
 	this.entities.players = {
 		individuals: {},
@@ -222,31 +247,6 @@ export default function() {
 	tut3.anims.play("falconFly");
 	let tut4 = this.entities.dummies.create(100, 100, "falcon");
 	tut4.anims.play("falconFly");
-
-	// Creating tutorial textbox
-	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
-		gameAttributes.gameWidth / 2 - 425,
-		450,
-		875,
-		325
-	);
-	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
-	this.vars.whiteFill.setAlpha(0.8);
-	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
-
-	const tutContent = [
-		`Gently tilt your phone up, down, left and right to fly.`,
-		`Press anywhere on the phone to shoot.`,
-		`Shoot the four birds to start the game!`
-	];
-
-	this.vars.tutorialText = this.add.text(
-		gameAttributes.gameWidth / 2,
-		600,
-		tutContent,
-		{ font: "48px Arial", fill: "black" }
-	);
-	this.vars.tutorialText.setOrigin(0.5);
 
 	// Score text, defaults to invisible. Made visible upon killing all tutorial dummies.
 	this.vars.gameScoreText = this.add.text(
