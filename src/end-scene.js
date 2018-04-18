@@ -95,19 +95,19 @@ const endScene = new Phaser.Class({
 		);
 		gameOverBackground.setScale(window.devicePixelRatio * 2);
 
-		let gameOverText = this.add.text(
-			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight / 4,
-			`GAME OVER!`,
-			{ font: "128px Courier New", fill: "#000000" }
-		);
-		gameOverText.setOrigin(0.5);
+		// let gameOverText = this.add.text(
+		// 	gameAttributes.gameWidth / 2,
+		// 	gameAttributes.gameHeight / 4,
+		// 	`GAME OVER!`,
+		// 	{ font: "128px Rajdhani", fill: "#000000" }
+		// );
+		// gameOverText.setOrigin(0.5);
 
 		let teamScoreText = this.add.text(
 			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight / 3,
+			2 * gameAttributes.gameHeight / 5,
 			"Score: " + this.vars.score,
-			{ font: "96px Rajdhani", fill: "#000000" }
+			{ font: "110px Rajdhani", fill: "#000000" }
 		);
 		teamScoreText.setOrigin(0.5);
 
@@ -143,8 +143,8 @@ const endScene = new Phaser.Class({
 
 		if (this.vars.player_ids.length) {
 			const replay_button = this.add.image(
-				gameAttributes.gameWidth / 3,
-				gameAttributes.gameHeight - 100,
+				gameAttributes.gameWidth / 2,
+				gameAttributes.gameHeight - 500,
 				"new-game-button"
 			);
 
@@ -153,8 +153,8 @@ const endScene = new Phaser.Class({
 		}
 
 		const menu_button = this.add.image(
-			2 * gameAttributes.gameWidth / 3,
-			gameAttributes.gameHeight - 300,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight - 350,
 			"menu-button"
 		);
 
@@ -162,8 +162,8 @@ const endScene = new Phaser.Class({
 		menu_button.on("clicked", menuButtonHandler, this);
 
 		const review_button = this.add.image(
-			gameAttributes.gameWidth - 200,
-			gameAttributes.gameHeight / 2,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight - 200,
 			"review-button"
 		);
 

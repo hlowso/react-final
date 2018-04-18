@@ -101,15 +101,23 @@ const titleScene = new Phaser.Class({
 
 		background.setScale(window.devicePixelRatio * 2);
 
-		const start_button = this.add.image(
+		let titleText = this.add.text(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 4,
+			"Mission 6ix",
+			{ font: "250px Faster One", fill: "#4169e1" }
+		);
+		titleText.setOrigin(0.5);
+
+		const start_button = this.add.image(
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2,
 			"start_button"
 		);
 
 		const leaderboard_button = this.add.image(
-			gameAttributes.gameWidth / 5,
-			gameAttributes.gameHeight / 2,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2.5,
 			"leaderboard_button"
 		);
 
