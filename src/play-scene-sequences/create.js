@@ -1,6 +1,6 @@
 import gameAttributes from "../game-attributes.js";
 
-const MIN_SPEED_SQUARED = 250000;
+const MIN_SPEED_SQUARED = 160000;
 
 export default function() {
 	// Start insomnia up

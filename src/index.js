@@ -11,13 +11,13 @@ const isMobile = () => {
 };
 
 if (isMobile()) {
-  document.addEventListener('contextmenu', event => event.preventDefault());
+	document.addEventListener("contextmenu", event => event.preventDefault());
 	ReactDOM.render(
 		<MobileApp />,
 
 		document.getElementById("root")
 	);
 } else {
-  // Start the phaser game if the browser is not mobile
+	// Start the phaser game if the browser is not mobile
 	window.onload = start();
 }
