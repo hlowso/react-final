@@ -7,13 +7,83 @@ export default function() {
 	// Start insomnia up
 	this.vars.insomnia.enable();
 
+	this.vars.ws.onmessage = incoming_message => {
+		const message = JSON.parse(incoming_message.data);
+		const player = this.entities.players.individuals[message.player_id];
+		switch (message.subject) {
+			case "push":
+				let x_velocity = message.velocity.x;
+				let y_velocity = message.velocity.y;
+
+				let x_sign = 0;
+				let y_sign = 0;
+
+				if (x_velocity !== 0.0) {
+					x_sign = x_velocity / Math.abs(x_velocity);
+				}
+				if (y_velocity !== 0.0) {
+					y_sign = y_velocity / Math.abs(y_velocity);
+				}
+
+				if (Math.pow(x_velocity, 2) + Math.pow(y_velocity, 2) < 0.02) {
+					y_velocity = Math.sqrt(
+						MIN_SPEED_SQUARED / (1.0 + Math.pow(x_velocity / y_velocity, 2))
+					);
+					x_velocity = Math.sqrt(MIN_SPEED_SQUARED - Math.pow(y_velocity, 2));
+					y_velocity *= y_sign;
+					x_velocity *= x_sign;
+				} else {
+					x_velocity *= 5000.0;
+					y_velocity *= 5000.0;
+				}
+
+				if (y_velocity > 0) {
+					player.rotation = Math.atan(x_velocity / y_velocity);
+				} else if (y_velocity === 0.0) {
+					if (x_velocity < 0) {
+						player.rotation = 0.5 * Math.PI;
+					} else {
+						player.rotation = 1.5 * Math.PI;
+					}
+				} else {
+					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
+				}
+
+				player.setVelocityX(x_velocity);
+				player.setVelocityY(-1.0 * y_velocity);
+
+				break;
+			case "shoot":
+				player.shooting = message.shooting;
+				break;
+			case "disconnect":
+				let index = this.vars.player_ids.findIndex(id => id === player.id);
+				this.vars.player_ids.splice(index, 1);
+				player.alive = false;
+				player.disableBody(true, true);
+				this.entities.emitters[player.id].on = false;
+				delete this.entities.players.individuals[player.id];
+				this.vars.playerTexts[player.id].health.setText("DISCONNECTED");
+				this.vars.playerTexts[player.id].killcount.setVisible(false);
+				break;
+		}
+	};
+
+	const secondBackground = this.add.image(
+		gameAttributes.gameWidth / 2,
+		gameAttributes.gameHeight / 2,
+		"back"
+	);
+
+	secondBackground.setScale(window.devicePixelRatio * 2);
+
 	const gameBackground = this.add.image(
 		gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
 		"game_background"
 	);
 
-	gameBackground.setScale(window.devicePixelRatio * 2);
+	gameBackground.setScale(window.devicePixelRatio * 2 + 0.3);
 
 	// Creating tutorial textbox
 	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
