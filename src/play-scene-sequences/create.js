@@ -1,6 +1,7 @@
 import gameAttributes from "../game-attributes.js";
 
 const MIN_SPEED_SQUARED = 160000;
+const SPEED_FACTOR = 2000.0;
 
 export default function() {
 	// Start insomnia up
@@ -27,7 +28,7 @@ export default function() {
 
 	const tutContent = [
 		`Gently tilt your phone up, down, left and right to fly.`,
-		`Press anywhere on the phone to shoot.`,
+		`Press and hold anywhere on the phone to shoot.`,
 		`Shoot the four birds to start the game!`
 	];
 
@@ -343,8 +344,8 @@ export default function() {
 					y_velocity *= y_sign;
 					x_velocity *= x_sign;
 				} else {
-					x_velocity *= 5000.0;
-					y_velocity *= 5000.0;
+					x_velocity *= SPEED_FACTOR;
+					y_velocity *= SPEED_FACTOR;
 				}
 
 				if (y_velocity > 0) {
