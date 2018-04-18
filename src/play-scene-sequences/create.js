@@ -3,73 +3,6 @@ import gameAttributes from "../game-attributes.js";
 const MIN_SPEED_SQUARED = 250000;
 
 export default function() {
-	// Takes instructions from the phone websocket connection
-	this.vars.ws.onmessage = incoming_message => {
-		const message = JSON.parse(incoming_message.data);
-		const player = this.entities.players.individuals[message.player_id];
-		switch (message.subject) {
-			// Movemement
-			case "push":
-				let x_velocity = message.velocity.x;
-				let y_velocity = message.velocity.y;
-
-				let x_sign = 0;
-				let y_sign = 0;
-
-				if (x_velocity !== 0.0) {
-					x_sign = x_velocity / Math.abs(x_velocity);
-				}
-				if (y_velocity !== 0.0) {
-					y_sign = y_velocity / Math.abs(y_velocity);
-				}
-
-				if (Math.pow(x_velocity, 2) + Math.pow(y_velocity, 2) < 0.02) {
-					y_velocity = Math.sqrt(
-						MIN_SPEED_SQUARED / (1.0 + Math.pow(x_velocity / y_velocity, 2))
-					);
-					x_velocity = Math.sqrt(MIN_SPEED_SQUARED - Math.pow(y_velocity, 2));
-					y_velocity *= y_sign;
-					x_velocity *= x_sign;
-				} else {
-					x_velocity *= 5000.0;
-					y_velocity *= 5000.0;
-				}
-
-				if (y_velocity > 0) {
-					player.rotation = Math.atan(x_velocity / y_velocity);
-				} else if (y_velocity === 0.0) {
-					if (x_velocity < 0) {
-						player.rotation = 0.5 * Math.PI;
-					} else {
-						player.rotation = 1.5 * Math.PI;
-					}
-				} else {
-					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
-				}
-
-				player.setVelocityX(x_velocity);
-				player.setVelocityY(-1.0 * y_velocity);
-
-				break;
-			// Shooting
-			case "shoot":
-				player.shooting = message.shooting;
-				break;
-
-			// Player disconnect
-			case "disconnect":
-				let index = this.vars.player_ids.findIndex(id => id === player.id);
-				this.vars.player_ids.splice(index, 1);
-				player.alive = false;
-				player.disableBody(true, true);
-				this.entities.emitters[player.id].on = false;
-				delete this.entities.players.individuals[player.id];
-				this.vars.playerTexts[player.id].health.setText("DISCONNECTED");
-				this.vars.playerTexts[player.id].killcount.setVisible(false);
-				break;
-		}
-	};
-
 	// Background image
 	const background = this.add.image(
 		gameAttributes.gameWidth / 2,
@@ -132,17 +65,6 @@ export default function() {
 	firstChild = this.entities.dummies.getChildren();
 	firstChild[0].destroy();
 
-
-	// Positioning the dummies in the 4 corners
-	let tut1 = this.entities.dummies.create(gameAttributes.gameWidth - 100, 100, "falcon");
-	tut1.anims.play("falconFly");
-	let tut2 = this.entities.dummies.create(100, gameAttributes.gameHeight - 100, "falcon");
-	tut2.anims.play("falconFly");
-	let tut3 = this.entities.dummies.create(gameAttributes.gameWidth - 100, gameAttributes.gameHeight - 100, "falcon");
-	tut3.anims.play("falconFly");
-	let tut4 = this.entities.dummies.create(100, 100, "falcon");
-	tut4.anims.play("falconFly");
-
 	// Player sprite creation. Positions the player based on number of players in the lobby and then establishes all base properties of the player.
 	const addPlayer = (player_id, player_name, index) => {
 		let startingPosition;
@@ -162,7 +84,7 @@ export default function() {
 				}
 				break;
 			case 2:
-			startingPosition = gameAttributes.gameWidth / 2 + 320;
+				startingPosition = gameAttributes.gameWidth / 2 + 320;
 		}
 
 		let player = this.entities.players.group.create(
@@ -276,19 +198,41 @@ export default function() {
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
+	// Adding the dummy instances
+	let tut1 = this.entities.dummies.create(
+		gameAttributes.gameWidth - 100,
+		100,
+		"falcon"
+	);
+	tut1.anims.play("falconFly");
+	let tut2 = this.entities.dummies.create(
+		100,
+		gameAttributes.gameHeight - 100,
+		"falcon"
+	);
+	tut2.anims.play("falconFly");
+	let tut3 = this.entities.dummies.create(
+		gameAttributes.gameWidth - 100,
+		gameAttributes.gameHeight - 100,
+		"falcon"
+	);
+	tut3.anims.play("falconFly");
+	let tut4 = this.entities.dummies.create(100, 100, "falcon");
+	tut4.anims.play("falconFly");
+
 	// Creating tutorial textbox
 	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
 		gameAttributes.gameWidth / 2 - 425,
-		 450,
-		 875,
-		 325);
+		450,
+		875,
+		325
+	);
 	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
 	this.vars.whiteFill.setAlpha(0.8);
 	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
 
-	const tutContent = 	[
-		`To fly, tilt the phone back and forth.`,
-		`To turn, turn the phone left and right.`,
+	const tutContent = [
+		`Gently tilt your phone up, down, left and right to fly.`,
 		`Press anywhere on the phone to shoot.`,
 		`Shoot the four birds to start the game!`
 	];
@@ -329,6 +273,8 @@ export default function() {
 	firstChild = this.entities.bullets.getChildren();
 	firstChild[0].destroy();
 
+	console.log("getting to overlaps");
+
 	// OVERLAP/COLLIDER FUNCTIONS
 
 	this.physics.add.overlap(
@@ -365,7 +311,78 @@ export default function() {
 
 	// GAME MUSIC
 
+	console.log("getting to music");
+
 	const music = this.sound.add("playSong", { loop: true });
-	console.log(music);
 	music.play();
+
+	console.log("getting past music");
+
+	// Takes instructions from the phone websocket connection
+	this.vars.ws.onmessage = incoming_message => {
+		const message = JSON.parse(incoming_message.data);
+		const player = this.entities.players.individuals[message.player_id];
+
+		switch (message.subject) {
+			// Movemement
+			case "push":
+				let x_velocity = message.velocity.x;
+				let y_velocity = message.velocity.y;
+
+				let x_sign = 0;
+				let y_sign = 0;
+
+				if (x_velocity !== 0.0) {
+					x_sign = x_velocity / Math.abs(x_velocity);
+				}
+				if (y_velocity !== 0.0) {
+					y_sign = y_velocity / Math.abs(y_velocity);
+				}
+
+				if (Math.pow(x_velocity, 2) + Math.pow(y_velocity, 2) < 0.02) {
+					y_velocity = Math.sqrt(
+						MIN_SPEED_SQUARED / (1.0 + Math.pow(x_velocity / y_velocity, 2))
+					);
+					x_velocity = Math.sqrt(MIN_SPEED_SQUARED - Math.pow(y_velocity, 2));
+					y_velocity *= y_sign;
+					x_velocity *= x_sign;
+				} else {
+					x_velocity *= 5000.0;
+					y_velocity *= 5000.0;
+				}
+
+				if (y_velocity > 0) {
+					player.rotation = Math.atan(x_velocity / y_velocity);
+				} else if (y_velocity === 0.0) {
+					if (x_velocity < 0) {
+						player.rotation = 0.5 * Math.PI;
+					} else {
+						player.rotation = 1.5 * Math.PI;
+					}
+				} else {
+					player.rotation = Math.atan(x_velocity / y_velocity) + Math.PI;
+				}
+
+				player.setVelocityX(x_velocity);
+				player.setVelocityY(-1.0 * y_velocity);
+
+				break;
+			// Shooting
+			case "shoot":
+				player.shooting = message.shooting;
+				break;
+
+			// Player disconnect
+			case "disconnect":
+				let index = this.vars.player_ids.findIndex(id => id === player.id);
+				this.vars.player_ids.splice(index, 1);
+				player.alive = false;
+				player.disableBody(true, true);
+				this.entities.emitters[player.id].on = false;
+				delete this.entities.players.individuals[player.id];
+				this.vars.playerTexts[player.id].health.setText("DISCONNECTED");
+				this.vars.playerTexts[player.id].killcount.setVisible(false);
+				break;
+		}
+	};
 }
