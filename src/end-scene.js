@@ -1,5 +1,6 @@
 import gameAttributes from "./game-attributes.js";
-import SkyBackground from "./assets/sky.png";
+// import SkyBackground from "./assets/sky.png";
+import gameOverBackground from "./assets/game-over.png";
 import NewGameButton from "./assets/new_game_button.png";
 import MenuButton from "./assets/menu_button.png";
 import ReviewButton from "./assets/review_button.png";
@@ -22,7 +23,8 @@ const endScene = new Phaser.Class({
 	},
 
 	preload: function() {
-		this.load.image("background", SkyBackground);
+		// this.load.image("background", SkyBackground);
+		this.load.image("game-over", gameOverBackground);
 		this.load.image("new-game-button", NewGameButton);
 		this.load.image("menu-button", MenuButton);
 		this.load.image("review-button", ReviewButton);
@@ -86,13 +88,12 @@ const endScene = new Phaser.Class({
 			};
 		};
 
-		const background = this.add.image(
+		const gameOverBackground = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
-			"background"
+			"game-over"
 		);
-
-		background.setScale(window.devicePixelRatio * 2);
+		gameOverBackground.setScale(window.devicePixelRatio * 2);
 
 		let gameOverText = this.add.text(
 			gameAttributes.gameWidth / 2,
@@ -106,7 +107,7 @@ const endScene = new Phaser.Class({
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 3,
 			"Score: " + this.vars.score,
-			{ font: "96px Courier New", fill: "#000000" }
+			{ font: "96px Rajdhani", fill: "#000000" }
 		);
 		teamScoreText.setOrigin(0.5);
 
@@ -119,7 +120,7 @@ const endScene = new Phaser.Class({
 				gameAttributes.gameWidth / 2,
 				gameAttributes.gameHeight / 2 + step * 75,
 				player.name + "'s kills: " + player.killcount,
-				{ font: "72px Courier New", fill: player.colour }
+				{ font: "72px Rajdhani", fill: player.colour }
 			);
 			killcountText.setOrigin(0.5);
 

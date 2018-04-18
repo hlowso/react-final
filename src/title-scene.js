@@ -119,6 +119,16 @@ const titleScene = new Phaser.Class({
 		leaderboard_button.setInteractive();
 		leaderboard_button.on("clicked", displayLeaderboards, this);
 
+
+		if (this.vars && this.vars.message) {
+			this.add.text(
+				gameAttributes.gameWidth / 2,
+				gameAttributes.gameHeight / 2,
+				"Connection closed, please go back to lobby.",
+				{ font: "48px Arial" }
+				);
+		}
+
 		this.input.on(
 			"gameobjectup",
 			function(pointer, gameObject) {
