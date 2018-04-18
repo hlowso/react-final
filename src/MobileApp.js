@@ -216,8 +216,8 @@ class MobileApp extends React.Component {
 								this.setState(
 									{
 										velocity: {
-											x: -1.0 * x / 90.0,
-											y: -1.0 * y / 90.0
+											x: x / 90.0,
+											y: y / 90.0
 										}
 									},
 									() => {
