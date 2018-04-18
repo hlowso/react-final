@@ -3,6 +3,9 @@ import gameAttributes from "../game-attributes.js";
 const MIN_SPEED_SQUARED = 250000;
 
 export default function() {
+	// Start insomnia up
+	this.vars.insomnia.enable();
+
 	// Background image
 	const background = this.add.image(
 		gameAttributes.gameWidth / 2,
@@ -273,8 +276,6 @@ export default function() {
 	firstChild = this.entities.bullets.getChildren();
 	firstChild[0].destroy();
 
-	console.log("getting to overlaps");
-
 	// OVERLAP/COLLIDER FUNCTIONS
 
 	this.physics.add.overlap(
@@ -311,12 +312,8 @@ export default function() {
 
 	// GAME MUSIC
 
-	console.log("getting to music");
-
 	const music = this.sound.add("playSong", { loop: true });
 	music.play();
-
-	console.log("getting past music");
 
 	// Takes instructions from the phone websocket connection
 	this.vars.ws.onmessage = incoming_message => {
