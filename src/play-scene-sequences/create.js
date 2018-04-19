@@ -365,7 +365,7 @@ export default function() {
 
 	// GAME MUSIC
 
-	const music = this.sound.add("playSong", { loop: true });
-	console.log(music);
-	music.play();
+	this.entities.music = this.sound.add("playSong", { loop: true });
+
+	this.entities.music.play();
 }

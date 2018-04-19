@@ -26,6 +26,7 @@ export default function() {
 					subject: "ignore"
 				})
 			);
+			this.entities.music.stop();
 			this.scene.start("End", { vars: this.vars, entities: this.entities });
 		}
 	} else {
@@ -36,6 +37,7 @@ export default function() {
 				subject: "ignore"
 			})
 		);
+		this.entities.music.stop();
 		this.scene.start("Lobby", { vars: this.vars });
 	}
 }
