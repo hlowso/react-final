@@ -1,5 +1,5 @@
 import gameAttributes from "./game-attributes.js";
-import SkyBackground from "./assets/sky.png";
+import greyedTOBackground from "./assets/toronto_greyed.png";
 import StartGameButton from "./assets/start_button.png";
 import leaderboardButton from "./assets/leaderboard_button.png";
 
@@ -87,7 +87,7 @@ const titleScene = new Phaser.Class({
 
 	// Image assets
 	preload: function() {
-		this.load.image("background", SkyBackground);
+		this.load.image("toronto_greyed", greyedTOBackground);
 		this.load.image("start_button", StartGameButton);
 		this.load.image("leaderboard_button", leaderboardButton);
 	},
@@ -97,19 +97,19 @@ const titleScene = new Phaser.Class({
 	},
 
 	create: function() {
-		const background = this.add.image(
+		const greyedTOBackground = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
-			"background"
+			"toronto_greyed"
 		);
 
-		background.setScale(window.devicePixelRatio * 2);
+		greyedTOBackground.setScale(window.devicePixelRatio * 2);
 
 		let titleText = this.add.text(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 4,
 			"Mission 6ix",
-			{ font: "250px Faster One", fill: "#4169e1" }
+			{ font: "300px Faster One", fill: "#ffffff" }
 		);
 		titleText.setOrigin(0.5);
 
