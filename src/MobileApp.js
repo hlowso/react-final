@@ -339,7 +339,7 @@ class MobileApp extends React.Component {
 
 		const getCharInput = i => (
 			<input
-				style={{ width: "10%", height: "30px" }}
+				style={{ width: "5%", height: "30px" }}
 				type="text"
 				name={`c${i}`}
 				maxlength="1"
@@ -363,7 +363,7 @@ class MobileApp extends React.Component {
 						type="text"
 						name="c5"
 						maxlength="1"
-						style={{ width: "10%", height: "30px" }}
+						style={{ width: "5%", height: "30px" }}
 					/>
 					<br />
 					<br />

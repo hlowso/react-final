@@ -223,12 +223,12 @@ export default function() {
 	};
 
 	const addPlayerTexts = (player, index) => {
-		let playerLabelText = this.add.text(100, 100 + index * 100, player.name, {
+		let playerLabelText = this.add.text(200, 100 + index * 100, player.name, {
 			font: "48px Arial",
 			fill: player.colour
 		});
 		let healthText = this.add.text(
-			290,
+			400,
 			100 + index * 100,
 			`Health: ${"❤️".repeat(player.health)}`,
 			{ font: "48px Arial", fill: player.colour }
@@ -236,7 +236,7 @@ export default function() {
 		healthText.id = player.id;
 		const playerTexts = (this.vars.playerTexts[player.id] = {});
 		let killcountText = this.add.text(
-			290,
+			400,
 			140 + index * 100,
 			"Kill Count: " + player.killcount,
 			{ font: "48px Arial", fill: player.colour }
