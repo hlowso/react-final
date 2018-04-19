@@ -31,15 +31,12 @@ class MobileApp extends React.Component {
 			},
 			calibrationTime: 3000,
 			useOrientation: () => {},
-			idInFocus: "c0",
-			angle: window.orientation,
-			full: false
+			angle: window.orientation
 		};
 		this.calibrationHandler = this.calibrationHandler.bind(this);
 		this.handleCodeSubmission = this.handleCodeSubmission.bind(this);
 		this.shootHandler = this.shootHandler.bind(this);
 		this.ceaseFireHandler = this.ceaseFireHandler.bind(this);
-		this.handleQuickConnect = this.handleQuickConnect.bind(this);
 		this.handleUsernameSubmission = this.handleUsernameSubmission.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.insomnia = new NoSleep();
@@ -107,6 +104,11 @@ class MobileApp extends React.Component {
 				}
 			};
 			this.ws.onclose = () => {
+				window.removeEventListener(
+					"deviceorientation",
+					orientationHandler,
+					true
+				);
 				this.setState({
 					step: 1,
 					instruction: "Connection closed. Enter in a new code to play again.",
@@ -270,10 +272,6 @@ class MobileApp extends React.Component {
 		});
 	}
 
-	handleQuickConnect(event) {
-		this.connectToWSS(QUICK_CODE);
-	}
-
 	handleUsernameSubmission(event) {
 		event.preventDefault();
 		const username = event.target.username.value;
@@ -342,7 +340,7 @@ class MobileApp extends React.Component {
 
 		const getCharInput = i => (
 			<input
-				style={{ width: "10%", height: "30px" }}
+				style={{ width: "5%", height: "30px" }}
 				type="text"
 				name={`c${i}`}
 				maxlength="1"
@@ -366,7 +364,7 @@ class MobileApp extends React.Component {
 						type="text"
 						name="c5"
 						maxlength="1"
-						style={{ width: "10%", height: "30px" }}
+						style={{ width: "5%", height: "30px" }}
 					/>
 					<br />
 					<br />
@@ -389,7 +387,8 @@ class MobileApp extends React.Component {
 				onTouchStart={this.shootHandler}
 				onTouchEnd={this.ceaseFireHandler}
 			>
-				<img src={TargetImage}
+				<img
+					src={TargetImage}
 					onTouchStart={this.shootHandler}
 					onTouchEnd={this.ceaseFireHandler}
 				/>

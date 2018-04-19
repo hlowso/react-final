@@ -1,8 +1,10 @@
 import gameAttributes from "./game-attributes.js";
-import SkyBackground from "./assets/sky.png";
+// import SkyBackground from "./assets/sky.png";
+import gameOverBackground from "./assets/game-over.png";
 import NewGameButton from "./assets/new_game_button.png";
 import MenuButton from "./assets/menu_button.png";
 import ReviewButton from "./assets/review_button.png";
+import GameOver from "./assets/game_over.mp3";
 
 // Sends scores and killcounts to the database
 const asyncPostScore = (collection, score) => {
@@ -23,10 +25,13 @@ const endScene = new Phaser.Class({
 	},
 
 	preload: function() {
-		this.load.image("background", SkyBackground);
+		// this.load.image("background", SkyBackground);
+		this.load.image("game-over", gameOverBackground);
 		this.load.image("new-game-button", NewGameButton);
 		this.load.image("menu-button", MenuButton);
 		this.load.image("review-button", ReviewButton);
+
+		this.load.audio("gameOver", [GameOver]);
 	},
 
 	init: function(data) {
@@ -85,29 +90,29 @@ const endScene = new Phaser.Class({
 			};
 		};
 
-		const background = this.add.image(
+		this.vars.gameOverSound = this.sound.add("gameOver");
+		this.vars.gameOverSound.play();
+
+		const gameOverBackground = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
-			"background"
+			"game-over"
 		);
+		gameOverBackground.setScale(window.devicePixelRatio * 2 + 1);
 
-		background.setScale(window.devicePixelRatio * 2);
-
-		// GAME SUMMARY
-
-		let gameOverText = this.add.text(
-			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight / 4,
-			`GAME OVER!`,
-			{ font: "128px Courier New", fill: "#000000" }
-		);
-		gameOverText.setOrigin(0.5);
+		// let gameOverText = this.add.text(
+		// 	gameAttributes.gameWidth / 2,
+		// 	gameAttributes.gameHeight / 4,
+		// 	`GAME OVER!`,
+		// 	{ font: "128px Rajdhani", fill: "#000000" }
+		// );
+		// gameOverText.setOrigin(0.5);
 
 		let teamScoreText = this.add.text(
 			gameAttributes.gameWidth / 2,
-			gameAttributes.gameHeight / 3,
+			2 * gameAttributes.gameHeight / 5,
 			"Score: " + this.vars.score,
-			{ font: "96px Courier New", fill: "#000000" }
+			{ font: "110px Rajdhani", fill: "#000000" }
 		);
 		teamScoreText.setOrigin(0.5);
 
@@ -120,7 +125,7 @@ const endScene = new Phaser.Class({
 				gameAttributes.gameWidth / 2,
 				gameAttributes.gameHeight / 2 + step * 75,
 				player.name + "'s kills: " + player.killcount,
-				{ font: "72px Courier New", fill: player.colour }
+				{ font: "72px Rajdhani", fill: player.colour }
 			);
 			killcountText.setOrigin(0.5);
 
@@ -150,8 +155,8 @@ const endScene = new Phaser.Class({
 		// If there are still players connected, display the new game button
 		if (this.vars.player_ids.length) {
 			const replay_button = this.add.image(
-				gameAttributes.gameWidth / 3,
-				gameAttributes.gameHeight - 100,
+				gameAttributes.gameWidth / 2,
+				gameAttributes.gameHeight - 500,
 				"new-game-button"
 			);
 
@@ -161,8 +166,8 @@ const endScene = new Phaser.Class({
 
 		// Button to redirect to the main scene
 		const menu_button = this.add.image(
-			2 * gameAttributes.gameWidth / 3,
-			gameAttributes.gameHeight - 300,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight - 350,
 			"menu-button"
 		);
 
@@ -171,8 +176,8 @@ const endScene = new Phaser.Class({
 
 		// Button for displaying the review modal
 		const review_button = this.add.image(
-			gameAttributes.gameWidth - 200,
-			gameAttributes.gameHeight / 2,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight - 200,
 			"review-button"
 		);
 

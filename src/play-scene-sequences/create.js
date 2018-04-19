@@ -1,14 +1,16 @@
 import gameAttributes from "../game-attributes.js";
 
-const MIN_SPEED_SQUARED = 250000;
+const MIN_SPEED_SQUARED = 160000;
+const SPEED_FACTOR = 2000.0;
 
 export default function() {
-	// Takes instructions from the phone websocket connection
+	// Start insomnia up
+	this.vars.insomnia.enable();
+
 	this.vars.ws.onmessage = incoming_message => {
 		const message = JSON.parse(incoming_message.data);
 		const player = this.entities.players.individuals[message.player_id];
 		switch (message.subject) {
-			// Movemement
 			case "push":
 				let x_velocity = message.velocity.x;
 				let y_velocity = message.velocity.y;
@@ -51,12 +53,9 @@ export default function() {
 				player.setVelocityY(-1.0 * y_velocity);
 
 				break;
-			// Shooting
 			case "shoot":
 				player.shooting = message.shooting;
 				break;
-
-			// Player disconnect
 			case "disconnect":
 				let index = this.vars.player_ids.findIndex(id => id === player.id);
 				this.vars.player_ids.splice(index, 1);
@@ -70,14 +69,46 @@ export default function() {
 		}
 	};
 
-	// Background image
-	const background = this.add.image(
+	const secondBackground = this.add.image(
 		gameAttributes.gameWidth / 2,
 		gameAttributes.gameHeight / 2,
-		"background"
+		"back"
 	);
 
-	background.setScale(window.devicePixelRatio * 2);
+	secondBackground.setScale(window.devicePixelRatio * 2);
+
+	const gameBackground = this.add.image(
+		gameAttributes.gameWidth / 2,
+		gameAttributes.gameHeight / 2,
+		"game_background"
+	);
+
+	gameBackground.setScale(window.devicePixelRatio * 2 + 0.3);
+
+	// Creating tutorial textbox
+	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
+		gameAttributes.gameWidth / 2 - 625,
+		450,
+		1200,
+		325
+	);
+	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
+	this.vars.whiteFill.setAlpha(0.8);
+	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
+
+	const tutContent = [
+		`Gently tilt your phone up, down, left and right to fly.`,
+		`Press and hold anywhere on the phone to shoot.`,
+		`Shoot the four birds to start the game!`
+	];
+
+	this.vars.tutorialText = this.add.text(
+		gameAttributes.gameWidth / 2,
+		600,
+		tutContent,
+		{ font: "48px Arial", fill: "black" }
+	);
+	this.vars.tutorialText.setOrigin(0.5);
 
 	// Initializing physics group for players
 	this.entities.players = {
@@ -132,17 +163,6 @@ export default function() {
 	firstChild = this.entities.dummies.getChildren();
 	firstChild[0].destroy();
 
-
-	// Positioning the dummies in the 4 corners
-	let tut1 = this.entities.dummies.create(gameAttributes.gameWidth - 100, 100, "falcon");
-	tut1.anims.play("falconFly");
-	let tut2 = this.entities.dummies.create(100, gameAttributes.gameHeight - 100, "falcon");
-	tut2.anims.play("falconFly");
-	let tut3 = this.entities.dummies.create(gameAttributes.gameWidth - 100, gameAttributes.gameHeight - 100, "falcon");
-	tut3.anims.play("falconFly");
-	let tut4 = this.entities.dummies.create(100, 100, "falcon");
-	tut4.anims.play("falconFly");
-
 	// Player sprite creation. Positions the player based on number of players in the lobby and then establishes all base properties of the player.
 	const addPlayer = (player_id, player_name, index) => {
 		let startingPosition;
@@ -162,7 +182,7 @@ export default function() {
 				}
 				break;
 			case 2:
-			startingPosition = gameAttributes.gameWidth / 2 + 320;
+				startingPosition = gameAttributes.gameWidth / 2 + 320;
 		}
 
 		let player = this.entities.players.group.create(
@@ -194,12 +214,12 @@ export default function() {
 
 	// Creates name, health, and killcount text objects that are associated with the player
 	const addPlayerTexts = (player, index) => {
-		let playerLabelText = this.add.text(100, 100 + index * 100, player.name, {
+		let playerLabelText = this.add.text(200, 100 + index * 100, player.name, {
 			font: "48px Arial",
 			fill: player.colour
 		});
 		let healthText = this.add.text(
-			290,
+			400,
 			100 + index * 100,
 			`Health: ${"❤️".repeat(player.health)}`,
 			{ font: "48px Arial", fill: player.colour }
@@ -207,7 +227,7 @@ export default function() {
 		healthText.id = player.id;
 		const playerTexts = (this.vars.playerTexts[player.id] = {});
 		let killcountText = this.add.text(
-			290,
+			400,
 			140 + index * 100,
 			"Kill Count: " + player.killcount,
 			{ font: "48px Arial", fill: player.colour }
@@ -276,30 +296,27 @@ export default function() {
 		this.entities.emitters[player_id] = newPlayerEmitter;
 	}
 
-	// Creating tutorial textbox
-	this.vars.tutorialBox = new Phaser.Geom.Rectangle(
-		gameAttributes.gameWidth / 2 - 425,
-		 450,
-		 875,
-		 325);
-	this.vars.whiteFill = this.add.graphics({ fillStyle: { color: 0xffffff } });
-	this.vars.whiteFill.setAlpha(0.8);
-	this.vars.whiteFill.fillRectShape(this.vars.tutorialBox);
-
-	const tutContent = 	[
-		`To fly, tilt the phone back and forth.`,
-		`To turn, turn the phone left and right.`,
-		`Press anywhere on the phone to shoot.`,
-		`Shoot the four birds to start the game!`
-	];
-
-	this.vars.tutorialText = this.add.text(
-		gameAttributes.gameWidth / 2,
-		600,
-		tutContent,
-		{ font: "48px Arial", fill: "black" }
+	// Adding the dummy instances
+	let tut1 = this.entities.dummies.create(
+		gameAttributes.gameWidth - 100,
+		100,
+		"falcon"
 	);
-	this.vars.tutorialText.setOrigin(0.5);
+	tut1.anims.play("falconFly");
+	let tut2 = this.entities.dummies.create(
+		100,
+		gameAttributes.gameHeight - 100,
+		"falcon"
+	);
+	tut2.anims.play("falconFly");
+	let tut3 = this.entities.dummies.create(
+		gameAttributes.gameWidth - 100,
+		gameAttributes.gameHeight - 100,
+		"falcon"
+	);
+	tut3.anims.play("falconFly");
+	let tut4 = this.entities.dummies.create(100, 100, "falcon");
+	tut4.anims.play("falconFly");
 
 	// Score text, defaults to invisible. Made visible upon killing all tutorial dummies.
 	this.vars.gameScoreText = this.add.text(
@@ -365,7 +382,8 @@ export default function() {
 
 	// GAME MUSIC
 
-	this.entities.music = this.sound.add("playSong", { loop: true });
+	// this.entities.music = this.sound.add("playSong", { loop: true });
 
-	this.entities.music.play();
+	this.vars.music.play();
+
 }

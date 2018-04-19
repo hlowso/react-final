@@ -1,5 +1,5 @@
 import gameAttributes from "./game-attributes.js";
-import SkyBackground from "./assets/sky.png";
+import greyedTOBackground from "./assets/toronto_greyed.png";
 import StartGameButton from "./assets/start_button.png";
 import leaderboardButton from "./assets/leaderboard_button.png";
 
@@ -87,7 +87,7 @@ const titleScene = new Phaser.Class({
 
 	// Image assets
 	preload: function() {
-		this.load.image("background", SkyBackground);
+		this.load.image("toronto_greyed", greyedTOBackground);
 		this.load.image("start_button", StartGameButton);
 		this.load.image("leaderboard_button", leaderboardButton);
 	},
@@ -97,18 +97,25 @@ const titleScene = new Phaser.Class({
 	},
 
 	create: function() {
-		const background = this.add.image(
+		const greyedTOBackground = this.add.image(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 2,
-			"background"
+			"toronto_greyed"
 		);
 
-		background.setScale(window.devicePixelRatio * 2);
+		greyedTOBackground.setScale(window.devicePixelRatio * 2);
 
-		// Button for going to the lobby
-		const start_button = this.add.image(
+		let titleText = this.add.text(
 			gameAttributes.gameWidth / 2,
 			gameAttributes.gameHeight / 4,
+			"Mission 6ix",
+			{ font: "300px Faster One", fill: "#ffffff" }
+		);
+		titleText.setOrigin(0.5);
+
+		const start_button = this.add.image(
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2,
 			"start_button"
 		);
 		start_button.setInteractive();
@@ -116,8 +123,8 @@ const titleScene = new Phaser.Class({
 
 		// Button to load the leaderboards
 		const leaderboard_button = this.add.image(
-			gameAttributes.gameWidth / 5,
-			gameAttributes.gameHeight / 2,
+			gameAttributes.gameWidth / 2,
+			gameAttributes.gameHeight / 2.5,
 			"leaderboard_button"
 		);
 		leaderboard_button.setInteractive();
@@ -130,7 +137,7 @@ const titleScene = new Phaser.Class({
 				gameAttributes.gameHeight / 2,
 				"Connection closed, please go back to lobby.",
 				{ font: "48px Arial" }
-				);
+			);
 		}
 
 		// Makes buttons work in Phaser

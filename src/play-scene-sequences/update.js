@@ -20,24 +20,26 @@ export default function() {
 		}
 		// If game_over is true, tell the desktop to ignore messages from the phone and go to the end game scene
 		if (game_over) {
+			this.vars.insomnia.disable();
 			this.vars.ws.send(
 				JSON.stringify({
 					device: "desktop",
 					subject: "ignore"
 				})
 			);
-			this.entities.music.stop();
+			this.vars.music.stop();
 			this.scene.start("End", { vars: this.vars, entities: this.entities });
 		}
 	} else {
 		// If there are no more connected players, then redirect to the lobby
+		this.vars.insomnia.disable();
 		this.vars.ws.send(
 			JSON.stringify({
 				device: "desktop",
 				subject: "ignore"
 			})
 		);
-		this.entities.music.stop();
+		this.vars.music.stop();
 		this.scene.start("Lobby", { vars: this.vars });
 	}
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import Fullscreen from "react-fullscreen";
 import start from "./start-game.js";
 import MobileApp from "./MobileApp.js";
 
@@ -12,13 +11,13 @@ const isMobile = () => {
 };
 
 if (isMobile()) {
-  document.addEventListener('contextmenu', event => event.preventDefault());
+	document.addEventListener("contextmenu", event => event.preventDefault());
 	ReactDOM.render(
 		<MobileApp />,
 
 		document.getElementById("root")
 	);
 } else {
-  // Start the phaser game if the browser is not mobile
+	// Start the phaser game if the browser is not mobile
 	window.onload = start();
 }

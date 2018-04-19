@@ -88,7 +88,7 @@ export default function() {
 			// Creates the timeline for the enemy to follow
 			let enemyTimeline = this.tweens.timeline({
 				targets: enemy,
-				duration: 1000,
+				duration: 3000,
 				loop: -1,
 				ease: "Sine.easeInOut",
 				tweens: path
